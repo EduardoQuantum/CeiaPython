@@ -1,0 +1,57 @@
+project:
+  type: website
+  output-dir: "docs"
+  resources:
+    - imagenes/        # Esto fuerza a Quarto
+  render: 
+    - "*.qmd"
+    - "!SEPARADORES_*.qmd"
+
+lang: es
+author: "Eduardo Lencina"
+
+# Configuración de ejecución de celdas
+execute:
+  freeze: auto
+  echo: true
+  eval: false
+
+# Configuración visual global
+format:
+  html:
+    theme: flatly
+    css: styles.css
+    toc: true
+    toc-title: "En esta página"
+    code-copy: true
+    code-link: true
+    fig-responsive: true
+
+# Configuración de la estructura del sitio
+website:
+  title: "Python + Pandas + IA - CEIA - FLACSO"
+  
+  navbar:
+    background: "#003366"
+    search: true
+    collapse: true
+    left:
+      - text: "Material de Clases"
+        icon: journal-code
+        menu: 
+          - text: 'Clase 01: El Ecosistema'
+            file: clase_01.qmd
+          - text: 'Clase 02: Python + Pandas'
+            file: clase_02.qmd
+          - text: 'Clase 03: Selección de Datos'
+            file: clase_03.qmd
+          - text: 'Clase 04: Split-Apply-Combine'
+            file: clase_04.qmd
+          - text: 'Clase 05: Ponderación'
+            file: clase_05.qmd
+    right:
+      - href: https://github.com/EduardoQuantum/CeiaFlacso
+        icon: github
+        text: Repo del Curso
+
+  

@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Eduardo Lencina">
+
+<title>Python + Pandas + IA - CEIA - FLACSO - Clase 03: Arquitectura de la Selección</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Python + Pandas + IA - CEIA - FLACSO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-material-de-clases" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+      <i class="bi bi-journal-code" role="img">
+</i> 
+ <span class="menu-text">Material de Clases</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-material-de-clases">    
+        <li>
+    <a class="dropdown-item" href="./clase_01.html" rel="" target="">
+ <span class="dropdown-text">Clase 01: El Ecosistema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_02.html" rel="" target="">
+ <span class="dropdown-text">Clase 02: Python + Pandas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_03.html" rel="" target="">
+ <span class="dropdown-text">Clase 03: Selección de Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_04.html" rel="" target="">
+ <span class="dropdown-text">Clase 04: Split-Apply-Combine</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_05.html" rel="" target="">
+ <span class="dropdown-text">Clase 05: Ponderación</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/EduardoQuantum/CeiaFlacso" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text">Repo del Curso</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#la-lógica-de-selección-en-pandas" id="toc-la-lógica-de-selección-en-pandas" class="nav-link active" data-scroll-target="#la-lógica-de-selección-en-pandas">1. La Lógica de Selección en Pandas</a>
+  <ul class="collapse">
+  <li><a href="#selección-por-máscara-booleana-filtering" id="toc-selección-por-máscara-booleana-filtering" class="nav-link" data-scroll-target="#selección-por-máscara-booleana-filtering">1.1 Selección por Máscara Booleana (Filtering)</a></li>
+  </ul></li>
+  <li><a href="#definición-del-índice-indexing-strategy" id="toc-definición-del-índice-indexing-strategy" class="nav-link" data-scroll-target="#definición-del-índice-indexing-strategy">2. Definición del Índice (Indexing Strategy)</a>
+  <ul class="collapse">
+  <li><a href="#el-tratamiento-especial-identidad-vs.-contenido" id="toc-el-tratamiento-especial-identidad-vs.-contenido" class="nav-link" data-scroll-target="#el-tratamiento-especial-identidad-vs.-contenido">2.1 El tratamiento especial: Identidad vs.&nbsp;Contenido</a></li>
+  <li><a href="#el-método-set_index" id="toc-el-método-set_index" class="nav-link" data-scroll-target="#el-método-set_index">2.2 El método set_index()</a></li>
+  </ul></li>
+  <li><a href="#selección-técnica-con-.loc" id="toc-selección-técnica-con-.loc" class="nav-link" data-scroll-target="#selección-técnica-con-.loc">3. Selección Técnica con .loc</a>
+  <ul class="collapse">
+  <li><a href="#selección-técnica-con-.loc-ii" id="toc-selección-técnica-con-.loc-ii" class="nav-link" data-scroll-target="#selección-técnica-con-.loc-ii">3.1 Selección Técnica con .loc (II)</a></li>
+  <li><a href="#selección-encadenada-o-pipeline" id="toc-selección-encadenada-o-pipeline" class="nav-link" data-scroll-target="#selección-encadenada-o-pipeline">3.2 Selección encadenada o “pipeline”</a></li>
+  <li><a href="#selección-encadenada-o-pipeline-ahora-con-métodos-expresivos" id="toc-selección-encadenada-o-pipeline-ahora-con-métodos-expresivos" class="nav-link" data-scroll-target="#selección-encadenada-o-pipeline-ahora-con-métodos-expresivos">3.3 Selección encadenada o “pipeline” ahora con métodos expresivos</a></li>
+  <li><a href="#métodos-de-selección-y-listas" id="toc-métodos-de-selección-y-listas" class="nav-link" data-scroll-target="#métodos-de-selección-y-listas">3.4 Métodos de selección y listas</a></li>
+  </ul></li>
+  <li><a href="#selección-por-rangos-numéricos-el-método-.between" id="toc-selección-por-rangos-numéricos-el-método-.between" class="nav-link" data-scroll-target="#selección-por-rangos-numéricos-el-método-.between">5. Selección por rangos numéricos: El método .between()</a>
+  <ul class="collapse">
+  <li><a href="#selección-por-rangos-numéricos-método-between" id="toc-selección-por-rangos-numéricos-método-between" class="nav-link" data-scroll-target="#selección-por-rangos-numéricos-método-between">5.1 — SELECCIÓN POR RANGOS NUMÉRICOS (MÉTODO BETWEEN) —</a></li>
+  <li><a href="#volvemos-sobre-la-naturaleza-de-la-instrucción-de-filtrado" id="toc-volvemos-sobre-la-naturaleza-de-la-instrucción-de-filtrado" class="nav-link" data-scroll-target="#volvemos-sobre-la-naturaleza-de-la-instrucción-de-filtrado">5.1 Volvemos sobre la naturaleza de la instrucción de “Filtrado”</a></li>
+  <li><a href="#la-naturaleza-de-la-máscara" id="toc-la-naturaleza-de-la-máscara" class="nav-link" data-scroll-target="#la-naturaleza-de-la-máscara">1. La naturaleza de la “Máscara”</a></li>
+  <li><a href="#el-mecanismo-de-alineación-por-índice" id="toc-el-mecanismo-de-alineación-por-índice" class="nav-link" data-scroll-target="#el-mecanismo-de-alineación-por-índice">2. El mecanismo de alineación por Índice</a></li>
+  <li><a href="#inmutabilidad-y-flujo-de-datos" id="toc-inmutabilidad-y-flujo-de-datos" class="nav-link" data-scroll-target="#inmutabilidad-y-flujo-de-datos">3. Inmutabilidad y Flujo de Datos</a></li>
+  </ul></li>
+  <li><a href="#selección-por-intervalos-discretos-el-uso-de-listas" id="toc-selección-por-intervalos-discretos-el-uso-de-listas" class="nav-link" data-scroll-target="#selección-por-intervalos-discretos-el-uso-de-listas">6. Selección por intervalos discretos: El uso de listas</a>
+  <ul class="collapse">
+  <li><a href="#selección-por-intervalos-discretos-valores-puntuales" id="toc-selección-por-intervalos-discretos-valores-puntuales" class="nav-link" data-scroll-target="#selección-por-intervalos-discretos-valores-puntuales">6.1 — SELECCIÓN POR INTERVALOS DISCRETOS (VALORES PUNTUALES) —</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 03: Arquitectura de la Selección</h1>
+<p class="subtitle lead">Lógica de Máscaras y Operadores en Pandas</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Eduardo Lencina </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="la-lógica-de-selección-en-pandas" class="level2">
+<h2 class="anchored" data-anchor-id="la-lógica-de-selección-en-pandas">1. La Lógica de Selección en Pandas</h2>
+<p>El análisis de datos es en muchos aspectos recortar la realidad de los datos y agruparla para resumirla. Vamos a abordar estas operaciones desde lo más básico hasta escalarlas en un pipeline completo.</p>
+<section id="selección-por-máscara-booleana-filtering" class="level3">
+<h3 class="anchored" data-anchor-id="selección-por-máscara-booleana-filtering">1.1 Selección por Máscara Booleana (Filtering)</h3>
+<p>El método más robusto para filtrar filas consiste en crear una “máscara”: una serie de valores booleanos que determina qué registros cumplen con un criterio técnico.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- SELECCIÓN POR REGIÓN (EJEMPLO DIDÁCTICO) ---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Construcción de un DataFrame ilustrativo</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'nro_hogar'</span>: [<span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>],</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'GBA'</span>, <span class="st">'Centro'</span>, <span class="st">'Cuyo'</span>],</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">510000</span>, <span class="dv">380000</span>, <span class="dv">290000</span>]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df_ejemplo <span class="op">=</span> pd.DataFrame(data)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Definición de la condición (Máscara)</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Buscamos identificar hogares de la región GBA</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>mascara_gba <span class="op">=</span> df_ejemplo[<span class="st">'region'</span>] <span class="op">==</span> <span class="st">'GBA'</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Aplicación del filtro</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Pandas extrae solo las filas donde la máscara es True</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>df_gba <span class="op">=</span> df_ejemplo[mascara_gba]</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Subconjunto: Región GBA"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_gba)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+El proceso subyacente
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Al ejecutar <code>df['columna'] == 'valor'</code>, Pandas no devuelve los datos inmediatamente. Genera un objeto de tipo <code>Series</code> compuesto por booleanos. Cuando pasamos este objeto al DataFrame original entre corchetes, realizamos una alineación de índices que descarta los valores <code>False</code>.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="definición-del-índice-indexing-strategy" class="level2">
+<h2 class="anchored" data-anchor-id="definición-del-índice-indexing-strategy">2. Definición del Índice (Indexing Strategy)</h2>
+<p>Al importar datos de fuentes externas (Excel, SPSS, SQL), Pandas asigna por defecto un índice numérico secuencial (0, 1, 2…). Sin embargo, para realizar selecciones con <code>.loc</code>, es una práctica estándar promover una columna con valores únicos a la categoría de <strong>Índice</strong>.</p>
+<p>Un índice es un <strong>identificador único y persistente</strong> para cada registro. En términos técnicos, es el “sistema de direcciones” de nuestro DataFrame.</p>
+<p>Debemos entender que Pandas opera sobre dos ejes de indexación:</p>
+<ol type="1">
+<li><strong>Index (Eje 0):</strong> El índice de las filas. Es el “nombre” de cada caso o fila.</li>
+<li><strong>Columns (Eje 1):</strong> El índice de las columnas. Es el nombre de nuestras variables (<code>P21</code>, <code>CH04</code>, etc.).</li>
+</ol>
+<section id="el-tratamiento-especial-identidad-vs.-contenido" class="level3">
+<h3 class="anchored" data-anchor-id="el-tratamiento-especial-identidad-vs.-contenido">2.1 El tratamiento especial: Identidad vs.&nbsp;Contenido</h3>
+<p>Es fundamental que el analista comprenda una regla de oro: <strong>Los índices requieren un tratamiento especial porque no son parte de nuestros datos (valores), sino de nuestra estructura.</strong></p>
+<ul>
+<li><strong>No son operables:</strong> Si realizamos una operación aritmética (como un promedio o una suma) sobre el DataFrame, Pandas ignorará automáticamente el índice. El índice “mira” cómo se organiza la tabla, pero no “participa” de los cálculos estadísticos.</li>
+<li><strong>Transformación de Datos en Índices:</strong> Aunque un índice no es un dato en sí mismo, <strong>una columna de nuestros datos puede (y suele) convertirse en un índice.</strong> Por ejemplo, el ID de un hogar en la EPH puede pasar de ser una variable a ser la “llave de acceso” a la fila.</li>
+<li><strong>Inmutabilidad:</strong> Mientras que los datos de una celda pueden cambiar fácilmente, el índice está diseñado para ser estable. Cambiar un índice es una operación estructural, no una simple edición de valor.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+En resumen
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El índice es el <strong>punto de anclaje</strong>. Al usar <code>.loc</code>, le hablamos a las etiquetas de esos índices. Si no definimos un índice propio, estamos obligados a usar los números por defecto (0, 1, 2…), perdiendo la trazabilidad semántica de nuestros datos.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="el-método-set_index" class="level3">
+<h3 class="anchored" data-anchor-id="el-método-set_index">2.2 El método set_index()</h3>
+<p>Imaginemos que importamos un listado de hogares donde la columna <code>cod_hogar</code> es nuestro identificador clave.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EJEMPLO: TRANSFORMACIÓN DE COLUMNA EN ÍNDICE ---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulación de datos importados (Estructura cruda)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>],</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>],</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"DataFrame con índice por defecto (numérico):"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head(<span class="dv">2</span>))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Promovemos 'cod_hogar' como el nuevo índice técnico. </span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Reasignamos al objeto para aplicar el cambio.</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">DataFrame con 'cod_hogar' como índice:"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head(<span class="dv">2</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Implicancias de set_index
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Al convertir una columna en índice, esta deja de ser una columna “normal”: es una protección de Pandas para no romper nuestra estructura de datos. Cada vez que intentemos operar sobre <code>cod_hogar</code> como si fuera una variable numérica, Pandas nos recordará que ahora es el eje de coordenadas.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="selección-técnica-con-.loc" class="level2">
+<h2 class="anchored" data-anchor-id="selección-técnica-con-.loc">3. Selección Técnica con .loc</h2>
+<p>Una vez que el DataFrame tiene etiquetas semánticas en sus filas, el método <code>.loc</code> se convierte en la herramienta de precisión para extraer segmentos específicos.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EXTRACCIÓN DE SEGMENTOS ESPECÍFICOS ---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Construcción del DataFrame de ejemplo</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># En un entorno real, estos datos provendrían de la carga de la EPH</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>],</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>],</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>]</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Definimos 'cod_hogar' como el índice técnico del objeto</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>df.set_index(<span class="st">'cod_hogar'</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Seleccionar un hogar específico y ver todas sus variables</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># El resultado es una Series de Pandas</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>hogar_interes <span class="op">=</span> df.loc[<span class="st">'H_003'</span>]</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Datos del hogar H_003:"</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(hogar_interes)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<section id="selección-técnica-con-.loc-ii" class="level3">
+<h3 class="anchored" data-anchor-id="selección-técnica-con-.loc-ii">3.1 Selección Técnica con .loc (II)</h3>
+<p>En el siguiente ejemplo “agregamos una capa” de complejidad para observar la sintaxis de Pandas: Seleccionamos un conjunto de etiquetas de interés “y además” seleccionamos una columna de interés, en este caso “ingresos”.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- EXTRACCIÓN DE SEGMENTOS ESPECÍFICOS ---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Construcción del DataFrame de ejemplo</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># En un entorno real, estos datos provendrían de la carga de la EPH</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>],</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>],</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>]</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Definimos 'cod_hogar' como el índice técnico del objeto</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>df.set_index(<span class="st">'cod_hogar'</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Seleccionar un rango de hogares y solo la columna 'ingreso'</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Recordar: En .loc, el límite superior ('H_004') SI se incluye.</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>ingresos_segmento <span class="op">=</span> df.loc[<span class="st">'H_001'</span>:<span class="st">'H_004'</span>, [<span class="st">'ingreso'</span>]]</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Resultado de la selección segmentada:"</span>)</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ingresos_segmento)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p>El resultado es un dataframe “más corto” que contiene menos filas y columnas que el original.</p>
+</section>
+<section id="selección-encadenada-o-pipeline" class="level3">
+<h3 class="anchored" data-anchor-id="selección-encadenada-o-pipeline">3.2 Selección encadenada o “pipeline”</h3>
+<p>Volvamos sobre esta sintaxis:</p>
+<p><code>ingresos_segmento = df.loc['H_001':'H_004', ['ingreso']]</code></p>
+<p>Se comprende pero es menos legible y soporta mal el mantenimiento: esto significa que en caso de cambios - cosa que ocurre todo el tiempo en el ámbito de análisis - es menos “transparente” e incluso menos “elegante”. A nuestros prompts, a nuestras interacciones con la IA debemos enseñarle a que nos devuelva código, legible, transparente y elegante. Para ello tenemos que aprender a reconocerlo:</p>
+<p>Este código es ejemplo de código que NO es elegante…</p>
+<p><code>ingresos_segmento = df.loc['H_001':'H_004', ['ingreso']]</code></p>
+<p>Vamos a solucionarlo: Tomamos el mismo ejemplo y vamos a introducir el concepto de trazabilidad.</p>
+<p>Además de elegancia ganamos en “trazabilidad” la palabra mágica en procesamiento de datos: Eso nos permite establecer un punto de corte en cualquier parte de nuestro código, inspeccionar sus resultados y eventualmente corregir.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- SELECCIÓN "pipeline" código "elegante" ---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>],</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>],</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>]</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizamos una copia de nuestro dataframe original, solo para inspección</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>df_original <span class="op">=</span> df.copy()</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Primera etapa: Filtrado de filas (casos) de interés</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Seleccionamos un rango de hogares por su etiqueta de índice</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>df_filtrado <span class="op">=</span> df.loc[<span class="st">'H_001'</span>:<span class="st">'H_004'</span>]</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 1: DataFrame con filas filtradas (todas las columnas):"</span>)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_filtrado)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Segunda etapa: Selección de columnas </span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Sobre el DataFrame ya filtrado, elegimos solo la variable 'ingreso'</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>df_filtrado <span class="op">=</span> df_filtrado[[<span class="st">'ingreso'</span>]]</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 2: DataFrame final (solo columna 'ingreso'):"</span>)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_filtrado)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 2.1: inspección nuestro DataFrame original está intacto"</span>)</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_original)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p>Ahora el mismo ejemplo pero “limpio”</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- SELECCIÓN "pipeline" código "elegante" ---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>],</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>],</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>df_filtrado <span class="op">=</span> df.loc[<span class="st">'H_001'</span>:<span class="st">'H_004'</span>]</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>df_filtrado <span class="op">=</span> df_filtrado[[<span class="st">'ingreso'</span>]]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_filtrado)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p>Este código debe llamarnos la atención:</p>
+<p><code>df_filtrado = df_filtrado[['ingreso']]</code></p>
+<p>Estamos asignando el resultado de <code>df_filtrado[['ingreso']]</code> a <code>df_filtrado</code>, es decir, estamos “pisando” el contenido de un dataframe al siguiente dataframe, estamos encadenando las selecciones: esto es a lo que llamamos un “pipeline”.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+La importancia del doble corchete <code>[[]]</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En Pandas, la diferencia entre usar un corchete simple o doble es estructural:</p>
+<ol type="1">
+<li><strong>Corchete simple <code>df['ingreso']</code></strong>: Devuelve una <strong>Series</strong>. Es un objeto unidimensional (una sola columna suelta). Muchos métodos de limpieza de datos fallan si no tienen una estructura de tabla.</li>
+<li><strong>Doble corchete <code>df[['ingreso']]</code></strong>: Devuelve un <strong>DataFrame</strong>. Al pasarle una lista (el corchete interno), le pedimos a Pandas que mantenga la estructura de filas y columnas, incluso si solo le queda una.</li>
+</ol>
+<p>Mantener el formato DataFrame es fundamental para poder seguir aplicando filtros o transformaciones en etapas posteriores sin perder la consistencia de la tabla.</p>
+</div>
+</div>
+</section>
+<section id="selección-encadenada-o-pipeline-ahora-con-métodos-expresivos" class="level3">
+<h3 class="anchored" data-anchor-id="selección-encadenada-o-pipeline-ahora-con-métodos-expresivos">3.3 Selección encadenada o “pipeline” ahora con métodos expresivos</h3>
+<div class="monitor-box">
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- SELECCIÓN "PIPELINE" CON MÉTODOS EXPRESIVOS ---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>],</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>],</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>]</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Realizamos una copia para verificar la integridad de los datos originales</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>df_original <span class="op">=</span> df.copy()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Ejecución del Pipeline utilizando .query() y .filter()</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Este enfoque busca mayor legibilidad al usar verbos en lugar de coordenadas.</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 1: Filtrado de filas por condición lógica (ingresos altos)</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>df_paso1 <span class="op">=</span> df.query(<span class="st">"ingreso &gt; 350000"</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 1: Filas que cumplen la condición (Ingreso &gt; 350.000):"</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_paso1)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 2: Selección de columnas por nombre (sin usar loc ni corchetes directos)</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>df_final <span class="op">=</span> df_paso1.<span class="bu">filter</span>(items<span class="op">=</span>[<span class="st">'ingreso'</span>])</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 2: DataFrame final (solo columna seleccionada):"</span>)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_final)</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Verificación de Inmutabilidad</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 2.1: Inspección de nuestro DataFrame original (está intacto):"</span>)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_original)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+La selección semántica: .query() y .filter()
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para el análisis de datos sociales, donde las bases suelen tener cientos de variables (como la EPH), contar con métodos que acepten texto en lugar de coordenadas físicas es una ventaja competitiva.</p>
+<section id="el-poder-de-.query" class="level3">
+<h3 class="anchored" data-anchor-id="el-poder-de-.query">1. El poder de .query()</h3>
+<p>El método <code>.query()</code> procesa una cadena de texto (string) que representa una condición lógica.</p>
+<ul>
+<li><strong>Legibilidad</strong>: Es mucho más cercano al lenguaje natural o al SQL que la sintaxis de corchetes.</li>
+<li><strong>Variables externas</strong>: Permite referenciar variables de nuestro entorno de Python usando el prefijo <code>@</code> (ej. <code>df.query("ingreso &gt; @umbral_pobreza")</code>).</li>
+<li><strong>Eficiencia</strong>: En bases de datos muy grandes, <code>.query()</code> suele ser ligeramente más rápido que el filtrado tradicional con máscaras booleanas.</li>
+</ul>
+</section>
+<section id="la-versatilidad-de-.filter" class="level3">
+<h3 class="anchored" data-anchor-id="la-versatilidad-de-.filter">2. La versatilidad de .filter()</h3>
+<p>Mientras que los corchetes <code>[[]]</code> son rígidos, <code>.filter()</code> es dinámico. No solo permite elegir columnas por nombre exacto (<code>items</code>), sino también por patrones:</p>
+<ul>
+<li><strong>Pattern Matching</strong>: Con el argumento <code>like='P21'</code>, podrías traer todas las columnas que contengan ese nombre (útil para traer ingresos de distintos períodos).</li>
+<li><strong>Regex</strong>: Permite el uso de expresiones regulares para selecciones de alta complejidad (ej. traer todas las variables que empiecen con ‘CH’ seguidas de un número).</li>
+</ul>
+<p>En definitiva, usamos estos métodos cuando priorizamos la <strong>inteligibilidad del código</strong> y la <strong>mantenibilidad</strong> de nuestros scripts de investigación a largo plazo.</p>
+</section>
+</div>
+</div>
+<hr>
+</section>
+<section id="métodos-de-selección-y-listas" class="level3">
+<h3 class="anchored" data-anchor-id="métodos-de-selección-y-listas">3.4 Métodos de selección y listas</h3>
+<p>Es fundamental distinguir las tres estructuras de datos de Python que utilizamos constantemente para “darle órdenes” a Pandas. Comprender sus diferencias evita errores de ejecución. Usaremos estas estructuras todo el tiempo: son legibles y transparentes.</p>
+<section id="listas" class="level4">
+<h4 class="anchored" data-anchor-id="listas">Listas <code>[ ]</code></h4>
+<p>Son colecciones ordenadas y <strong>mutables</strong>. En nuestro flujo de trabajo, las usamos principalmente como <strong>contenedores de selección</strong>. Cuando pasamos una lista a Pandas, le estamos dando una hoja de ruta de elementos a buscar o extraer.</p>
+<ul>
+<li><strong>Uso típico:</strong> Definir las columnas que queremos conservar o los valores para un filtro <code>.isin()</code>.</li>
+<li><strong>Ejemplo:</strong> <code>variables = ['ingreso', 'region', 'edad']</code></li>
+</ul>
+</section>
+<section id="tuplas" class="level4">
+<h4 class="anchored" data-anchor-id="tuplas">Tuplas <code>( )</code></h4>
+<p>A diferencia de las listas, las tuplas son <strong>inmutables</strong> (no se pueden modificar una vez creadas). Funcionan como registros fijos. Pandas las utiliza internamente para garantizar que ciertas estructuras (como las dimensiones de la tabla o los niveles de un índice complejo) no sufran alteraciones accidentales.</p>
+<ul>
+<li><strong>Uso típico:</strong> Representar coordenadas o pares de datos que deben permanecer unidos.</li>
+<li><strong>Ejemplo:</strong> <code>dimensiones = (100, 5)</code> # Representa 100 filas y 5 columnas.</li>
+</ul>
+</section>
+<section id="diccionarios" class="level4">
+<h4 class="anchored">Diccionarios <code>{ }</code></h4>
+<p>Los diccionarios almacenan pares de <strong>Clave-Valor</strong>. Es la estructura más potente para la traducción de datos. En ciencias sociales, son nuestros mejores aliados para pasar de los códigos numéricos de una encuesta a etiquetas legibles.</p>
+<ul>
+<li><strong>Uso típico:</strong> Renombrar columnas o recodificar categorías de una variable.</li>
+<li><strong>Ejemplo:</strong> <code>sexo_map = {1: 'Varon', 2: 'Mujer'}</code></li>
+</ul>
+<hr>
+<p>En el siguiente ejemplo de selección utilizamos una lista:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- SELECCIÓN EDITABLE: PARÁMETROS BASADOS EN LISTAS ---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>, <span class="st">'H_006'</span>],</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>, <span class="st">'GBA'</span>],</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>],</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>]</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. DEFINICIÓN DE PARÁMETROS (Listas editables)</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Separar los valores de la lógica es una "Best Practice" en arquitectura de datos.</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Permite modificar el estudio sin tocar el código operativo.</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>regiones_de_interes <span class="op">=</span> [<span class="st">'GBA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Centro'</span>]</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>umbral_ingreso_min <span class="op">=</span> <span class="dv">400000</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. CONSTRUCCIÓN DE MÁSCARAS </span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co"># La máscara se alimenta directamente de nuestra lista.</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>mascara_region <span class="op">=</span> df[<span class="st">'region'</span>].isin(regiones_de_interes)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>mascara_ingreso <span class="op">=</span> df[<span class="st">'ingreso'</span>] <span class="op">&gt;=</span> umbral_ingreso_min</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. APLICACIÓN DE LA SELECCIÓN</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Combinamos ambas dimensiones con el operador de intersección (&amp;)</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>df_resultado <span class="op">=</span> df[mascara_region <span class="op">&amp;</span> mascara_ingreso]</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Criterios: Regiones </span><span class="sc">{</span>regiones_de_interes<span class="sc">}</span><span class="ss"> e Ingresos &gt;= </span><span class="sc">{</span>umbral_ingreso_min<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resultado)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+¿A qué llamamos “máscara” y por qué?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>En el contexto de Pandas, una <strong>máscara</strong> (o <em>boolean mask</em>) es un vector de valores verdaderos (<code>True</code>) y falsos (<code>False</code>) que tiene exactamente la misma longitud que el eje que estamos intentando filtrar.</p>
+<section id="por-qué-se-usa-esta-metáfora" class="level3">
+<h3 class="anchored" data-anchor-id="por-qué-se-usa-esta-metáfora">¿Por qué se usa esta metáfora?</h3>
+<p>El término proviene del mundo del revelado fotográfico o la pintura con aerosol. Una máscara es una plantilla que “tapa” ciertas partes de la superficie y deja “expuestas” otras:</p>
+<ol type="1">
+<li><strong>Lo que se tapa (<code>False</code>)</strong>: Son los datos que Pandas ignorará. Permanecen en el DataFrame original pero no pasan a través del filtro.</li>
+<li><strong>Lo que queda expuesto (<code>True</code>)</strong>: Son los registros que coinciden con nuestro criterio (ej. las regiones de nuestra lista). Estos son los datos que “vemos” en el resultado final.</li>
+</ol>
+</section>
+<section id="funcionamiento-técnico" class="level3">
+<h3 class="anchored" data-anchor-id="funcionamiento-técnico">Funcionamiento técnico</h3>
+<p>Cuando ejecutamos <code>df[mascara_region]</code>, no estamos borrando datos. Le estamos superponiendo una rejilla lógica al DataFrame. Pandas recorre la tabla fila por fila: * Si la fila 1 es <code>True</code> en la máscara, la deja pasar. * Si la fila 2 es <code>False</code>, la bloquea.</p>
+<p>Esta separación entre la <strong>lógica del filtro</strong> (la máscara) y los <strong>datos</strong> (el DataFrame) es lo que nos permite realizar análisis complejos sin alterar la fuente de información original, manteniendo la integridad de nuestra base de datos durante toda la sesión de trabajo.</p>
+</section>
+</div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+El Método .isin(): La navaja suiza de la selección categórica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El método <code>.isin()</code> es la herramienta optimizada para gestionar selecciones sin recurrir a estructuras lógicas engorrosas.</p>
+<section id="superación-del-operador-or" class="level3">
+<h3 class="anchored" data-anchor-id="superación-del-operador-or">1. Superación del Operador OR ( | )</h3>
+<p>Tradicionalmente, para seleccionar tres regiones, deberíamos escribir: <code>(df['region'] == 'GBA') | (df['region'] == 'NOA') | (df['region'] == 'Centro')</code></p>
+<p>Con <code>.isin()</code>, simplemente pasamos una lista: <code>df['region'].isin(['GBA', 'NOA', 'Centro'])</code></p>
+<p>Esto no solo reduce la posibilidad de errores de sintaxis (como olvidar un paréntesis), sino que hace que el código sea significativamente más legible y elegante.</p>
+</section>
+<section id="dinamismo-y-externabilidad" class="level3">
+<h3 class="anchored" data-anchor-id="dinamismo-y-externabilidad">2. Dinamismo y Externabilidad</h3>
+<p>La verdadera potencia de <code>.isin()</code> aparece cuando la lista de criterios proviene de una fuente externa o de un paso previo del análisis. Por ejemplo, podríamos tener una lista de “Hogares X” generada en otro DataFrame y usarla para filtrar nuestra base principal:</p>
+<p><code>base_vivienda[base_vivienda['id'].isin(lista_hogares_X)]</code></p>
+</section>
+<section id="negación-lo-que-no-está-en-la-lista" class="level3">
+<h3 class="anchored" data-anchor-id="negación-lo-que-no-está-en-la-lista">3. Negación: Lo que NO está en la lista</h3>
+<p>Pandas permite invertir la lógica de <code>.isin()</code> de forma extremadamente sencilla mediante el operador tilde <code>~</code>. Si queremos seleccionar todas las regiones <strong>excepto</strong> las de nuestra lista, escribimos:</p>
+<p><code>df[~df['region'].isin(regiones_de_interes)]</code></p>
+<p>Esta “selección por exclusión” es vital y debe gestionarse con cuidado.</p>
+</section>
+<section id="rendimiento-técnico" class="level3">
+<h3 class="anchored" data-anchor-id="rendimiento-técnico">4. Rendimiento Técnico</h3>
+<p>A nivel computacional, <code>.isin()</code> está implementado sobre algoritmos de búsqueda altamente optimizados (similares a los <em>sets</em> de Python). Cuando la base de datos escala a cientos de miles de registros, usar <code>.isin()</code> es sustancialmente más rápido que encadenar múltiples comparaciones de igualdad con el operador <code>|</code>.</p>
+</section>
+</div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Didáctica de la Editabilidad: Listas vs.&nbsp;Hardcoding
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Siempre se debe elegir el uso de “listas” en el llamado a una función. Eso nos permite hacer cambios organizados y controlables: construir una lista en un Excel y traerla a nuestro script.</p>
+<p>Se recomienda usar nombres de listas descriptivos en minúscula y con guiones bajos, ejemplo: “regiones_de_interes”. Recordar no usar caracteres raros ni espacios en blanco; recordar que Python es sensible a mayúsculas y minúsculas: “regiones_de_interes” y “Regiones_de_interes” son dos listas diferentes.</p>
+<p>Construir funciones basadas en <code>listas</code> ofrece tres ventajas de diseño:</p>
+<ol type="1">
+<li><strong>Desacoplamiento</strong>: Separamos los <strong>datos</strong> (la lista de regiones) de la <strong>lógica</strong> (el comando <code>.isin()</code>). Si mañana el estudio debe incluir al NOA, solo modificamos la lista al inicio del script.</li>
+<li><strong>Legibilidad</strong>: Al leer <code>df['region'].isin(regiones_de_interes)</code>, el propósito del código es evidente. No hay cadenas de texto extensas ni operadores repetitivos.</li>
+<li><strong>Escalabilidad</strong>: Este método funciona igual de bien para 2 categorías que para 200. Es el estándar para procesar variables con múltiples etiquetas, como los códigos de rama de actividad o parentesco.</li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+</section>
+</section>
+<section id="selección-por-rangos-numéricos-el-método-.between" class="level2">
+<h2 class="anchored" data-anchor-id="selección-por-rangos-numéricos-el-método-.between">5. Selección por rangos numéricos: El método .between()</h2>
+<p>Para la selección de variables cuantitativas (como ingresos, edades o años de escolaridad), contamos con un método <code>.between()</code> auto descriptivo y transparente, que simplifica la sintaxis y reduce la posibilidad de errores en los límites del intervalo.</p>
+<section id="selección-por-rangos-numéricos-método-between" class="level3">
+<h3 class="anchored" data-anchor-id="selección-por-rangos-numéricos-método-between">5.1 — SELECCIÓN POR RANGOS NUMÉRICOS (MÉTODO BETWEEN) —</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>, <span class="st">'H_006'</span>],</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>, <span class="st">'GBA'</span>],</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>],</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. DEFINICIÓN DE PARÁMETROS (Rango de ingresos)</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Definimos los límites de ingresos</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>ingreso_min <span class="op">=</span> <span class="dv">350000</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>ingreso_max <span class="op">=</span> <span class="dv">500000</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. CONSTRUCCIÓN DE MÁSCARA DE RANGO</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># El método .between() es la forma más limpia y transparente de filtrar rangos</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Equivale a: (df['ingreso'] &gt;= ingreso_min) &amp; (df['ingreso'] &lt;= ingreso_max)</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>mascara_rango_ingreso <span class="op">=</span> df[<span class="st">'ingreso'</span>].between(ingreso_min, ingreso_max)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. APLICACIÓN DE LA SELECCIÓN</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>df_resultado <span class="op">=</span> df[mascara_rango_ingreso]</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Filtrando hogares con ingresos entre $</span><span class="sc">{</span>ingreso_min<span class="sc">}</span><span class="ss"> y $</span><span class="sc">{</span>ingreso_max<span class="sc">}</span><span class="ss">:"</span>)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resultado)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="volvemos-sobre-la-naturaleza-de-la-instrucción-de-filtrado" class="level3">
+<h3 class="anchored" data-anchor-id="volvemos-sobre-la-naturaleza-de-la-instrucción-de-filtrado">5.1 Volvemos sobre la naturaleza de la instrucción de “Filtrado”</h3>
+<p>Vamos a detenernos en este codigo: <code>df_resultado = df[mascara_rango_ingreso]</code> y vamos a hablar de que es lo que pasa una vez más:</p>
+<p>La línea <code>df_resultado = df[mascara_rango_ingreso]</code> es el corazón de la selección en Pandas. Aunque parece una simple operación de corchetes, lo que ocurre internamente es un proceso de <strong>indexación booleana</strong> que separa la lógica de los datos.</p>
+</section>
+<section id="la-naturaleza-de-la-máscara" class="level3">
+<h3 class="anchored" data-anchor-id="la-naturaleza-de-la-máscara">1. La naturaleza de la “Máscara”</h3>
+<p>Antes de llegar a esa línea, <code>mascara_rango_ingreso</code> no es un DataFrame, sino una <strong>Series Booleana</strong>.</p>
+<ul>
+<li>Tiene el mismo índice que <code>df</code>.</li>
+<li>Sus valores son únicamente <code>True</code> o <code>False</code>.</li>
+<li>Es, literalmente, una “plantilla” que calza perfecto sobre tu tabla original.</li>
+</ul>
+</section>
+<section id="el-mecanismo-de-alineación-por-índice" class="level3">
+<h3 class="anchored" data-anchor-id="el-mecanismo-de-alineación-por-índice">2. El mecanismo de alineación por Índice</h3>
+<p>Cuando ejecutamos la instrucción, Pandas realiza una operación de <strong>alineación</strong>: 1. Compara el índice de la máscara con el índice del DataFrame. 2. Fila por fila, pregunta: “¿Cuál es el valor en la máscara para esta dirección?”. 3. Si es <code>True</code>, la fila se incluye en el nuevo objeto. 4. Si es <code>False</code>, la fila se descarta (se “tapa”).</p>
+</section>
+<section id="inmutabilidad-y-flujo-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="inmutabilidad-y-flujo-de-datos">3. Inmutabilidad y Flujo de Datos</h3>
+<p>Es fundamental entender que esta operación <strong>no modifica el DataFrame original (<code>df</code>)</strong>.</p>
+<ul>
+<li><code>df_resultado</code> es un <strong>nuevo objeto</strong> que contiene una selección de los datos.</li>
+<li>Esta separación garantiza la integridad de la base original, permitiéndonos realizar múltiples experimentos o recortes sin “romper” la fuente de información.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+El método .between() y la precisión en los límites
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para el análisis de ingresos o edades, el método <code>.between()</code> es preferible a los operadores manuales por dos razones:</p>
+<ol type="1">
+<li><strong>Sintaxis Humana</strong>: Es mucho más natural leer “ingreso entre X e Y” que construir una lógica de comparación doble con ampersands.</li>
+<li><strong>Inclusión de límites</strong>: Por defecto, <code>.between()</code> es <strong>inclusivo</strong> (incluye exactamente el valor mínimo y el máximo).</li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="selección-por-intervalos-discretos-el-uso-de-listas" class="level2">
+<h2 class="anchored" data-anchor-id="selección-por-intervalos-discretos-el-uso-de-listas">6. Selección por intervalos discretos: El uso de listas</h2>
+<p>A menudo nos encontramos con variables que, aunque son numéricas, se comportan como categorías o “saltos” específicos (por ejemplo, años de escolaridad cumplidos o cantidad de hijos). Cuando el criterio de selección no es un rango continuo (del 1 al 10), sino un conjunto de valores salteados o específicos, recurrimos a la selección por intervalos discretos utilizando listas.</p>
+<p>Esta técnica nos permite “pescar” valores puntuales dentro de una distribución sin necesidad de escribir múltiples condiciones de igualdad.</p>
+<section id="selección-por-intervalos-discretos-valores-puntuales" class="level3">
+<h3 class="anchored" data-anchor-id="selección-por-intervalos-discretos-valores-puntuales">6.1 — SELECCIÓN POR INTERVALOS DISCRETOS (VALORES PUNTUALES) —</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH)</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Agregamos la columna 'miembros' para ilustrar valores discretos</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>, <span class="st">'H_006'</span>],</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>, <span class="st">'GBA'</span>],</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>],</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'miembros'</span>: [<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">6</span>, <span class="dv">2</span>, <span class="dv">4</span>]</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. DEFINICIÓN DEL CRITERIO DISCRETO</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co"># En nuestro ejemplo: necesitamos filtrar hogares de tamaño "par" (2 y 4 personas)</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>dimension_hogares_interes <span class="op">=</span> [<span class="dv">2</span>, <span class="dv">4</span>]</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. CONSTRUCCIÓN DE LA MÁSCARA</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co"># El método .isin() funciona perfectamente con números, tratándolos como etiquetas discretas</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>mascara_hogares <span class="op">=</span> df[<span class="st">'miembros'</span>].isin(dimension_hogares_interes)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. APLICACIÓN DE LA SELECCIÓN</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>df_resultado <span class="op">=</span> df[mascara_hogares]</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Analizando hogares con tamaño específico: </span><span class="sc">{</span>dimension_hogares_interes<span class="sc">}</span><span class="ss"> miembros"</span>)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resultado)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+¿Cuándo usar listas en lugar de rangos?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La selección discreta mediante listas es la herramienta correcta cuando:</p>
+<ol type="1">
+<li><strong>Los valores no son correlativos</strong>: Por ejemplo, si necesitas analizar los años de finalización de ciclos educativos (7, 12 y 17 años de estudio) saltando los valores intermedios.</li>
+<li><strong>Evita el error de “arrastre”</strong>: Si usas un rango (ej. <code>between(2, 4)</code>), incluirías hogares de 3 personas. Si tu hipótesis solo aplica a hogares de 2 y 4, la lista asegura que el valor 3 quede excluido de la muestra.</li>
+<li><strong>Claridad en la intención</strong>: Al declarar <code>dimension_hogares_interes = [2, 4]</code>, cualquier otro investigador entiende inmediatamente que esos son los únicos grupos bajo observación, sin ambigüedades sobre los límites.</li>
+</ol>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

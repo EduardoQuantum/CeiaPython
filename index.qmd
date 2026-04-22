@@ -1,0 +1,11 @@
+---
+title: "Bienvenidos a la Diplomatura CEIA"
+subtitle: "Análisis de Datos con Python y Pandas"
+---
+
+::: {.gray-italic-box}
+Este repositorio contiene el material dinámico de las clases, ejemplos de arquitectura de datos y scripts de automatización.
+:::
+
+## Hoja de Ruta
+...

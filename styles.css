@@ -1,0 +1,80 @@
+/* =========================================================
+   ESTILOS CEIA-FLACSO (VERSIÓN SIN BANNER)
+   ========================================================= */
+
+/* 1. ESTRUCTURA Y TIPOGRAFÍA */
+body {
+    padding-top: 20px; /* Espacio extra al quitar el banner */
+}
+
+h1, h2, h3, h4 {
+    color: #003366 !important;
+    font-weight: 700;
+}
+
+/* Enlaces con hover sutil */
+a {
+    color: #003366;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* 2. OPTIMIZACIÓN PARA PANDAS (ANCHO TOTAL) */
+/* Esto permite que los DataFrames respiren y no tengan scroll innecesario */
+.cell-output-display table {
+    width: 100% !important;
+    margin: 1em 0;
+    border-collapse: collapse;
+}
+
+/* 3. ZONA DE PROMPT (IA) */
+.gray-italic-box {
+    background-color: #fcfcfc;
+    border-left: 5px solid #003366; /* Cambiado a azul para consistencia */
+    padding: 1.5em;
+    font-style: italic;
+    color: #444;
+    margin: 2em 0;
+    border-radius: 4px;
+    font-family: 'Georgia', serif;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 4. EL MONITOR (ÁMBAR RETRO) - TU MARCA REGISTRADA */
+.monitor-box {
+    background-color: #000000 !important;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 8px solid #ffcc00;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.monitor-box pre, .monitor-box code, .monitor-box .sourceCode {
+    background-color: #000000 !important;
+    color: #ffcc00 !important;
+    font-family: 'Fira Code', 'Consolas', monospace !important; /* Fira Code es ideal para Python */
+}
+
+/* Comentarios en verde neón */
+.monitor-box span.co, .monitor-box span.st {
+    color: #00ff00 !important;
+}
+
+/* 5. AJUSTES DE CÓDIGO ESTÁNDAR */
+.cell-code {
+    background-color: #f8f9fa !important;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+}
+
+/* Estilo del botón de copiar para que no desentone */
+.quarto-copy-button {
+    background-color: #003366 !important;
+    border-radius: 4px;
+}

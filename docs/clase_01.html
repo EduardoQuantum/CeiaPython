@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Eduardo Lencina">
+
+<title>Python + Pandas + IA - CEIA - FLACSO - Clase 01: El Ecosistema de Trabajo</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Python + Pandas + IA - CEIA - FLACSO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-material-de-clases" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+      <i class="bi bi-journal-code" role="img">
+</i> 
+ <span class="menu-text">Material de Clases</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-material-de-clases">    
+        <li>
+    <a class="dropdown-item" href="./clase_01.html" rel="" target="">
+ <span class="dropdown-text">Clase 01: El Ecosistema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_02.html" rel="" target="">
+ <span class="dropdown-text">Clase 02: Python + Pandas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_03.html" rel="" target="">
+ <span class="dropdown-text">Clase 03: Selección de Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_04.html" rel="" target="">
+ <span class="dropdown-text">Clase 04: Split-Apply-Combine</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_05.html" rel="" target="">
+ <span class="dropdown-text">Clase 05: Ponderación</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/EduardoQuantum/CeiaFlacso" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text">Repo del Curso</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#el-editor-visual-studio-code-vsc" id="toc-el-editor-visual-studio-code-vsc" class="nav-link active" data-scroll-target="#el-editor-visual-studio-code-vsc">1. El Editor: Visual Studio Code (VSC)</a>
+  <ul class="collapse">
+  <li><a href="#instalación-y-extensiones" id="toc-instalación-y-extensiones" class="nav-link" data-scroll-target="#instalación-y-extensiones">1.1 Instalación y Extensiones</a></li>
+  </ul></li>
+  <li><a href="#el-motor-python-3.x" id="toc-el-motor-python-3.x" class="nav-link" data-scroll-target="#el-motor-python-3.x">2. El Motor: Python 3.x</a>
+  <ul class="collapse">
+  <li><a href="#pasos-críticos-para-una-instalación-exitosa" id="toc-pasos-críticos-para-una-instalación-exitosa" class="nav-link" data-scroll-target="#pasos-críticos-para-una-instalación-exitosa">2.1 Pasos críticos para una instalación exitosa</a></li>
+  <li><a href="#verificando-la-instalación" id="toc-verificando-la-instalación" class="nav-link" data-scroll-target="#verificando-la-instalación">2.2 Verificando la instalación</a></li>
+  </ul></li>
+  <li><a href="#preparando-el-laboratorio-entorno-virtual" id="toc-preparando-el-laboratorio-entorno-virtual" class="nav-link" data-scroll-target="#preparando-el-laboratorio-entorno-virtual">3. Preparando el laboratorio: Entorno Virtual</a>
+  <ul class="collapse">
+  <li><a href="#comandos-para-armar-el-laboratorio" id="toc-comandos-para-armar-el-laboratorio" class="nav-link" data-scroll-target="#comandos-para-armar-el-laboratorio">3.1 Comandos para armar el laboratorio</a></li>
+  </ul></li>
+  <li><a href="#instalando-las-herramientas-de-datos" id="toc-instalando-las-herramientas-de-datos" class="nav-link" data-scroll-target="#instalando-las-herramientas-de-datos">4. Instalando las herramientas de datos</a></li>
+  <li><a href="#el-archivo-code-workspace-cursopandas.code-workspace" id="toc-el-archivo-code-workspace-cursopandas.code-workspace" class="nav-link" data-scroll-target="#el-archivo-code-workspace-cursopandas.code-workspace">5. El archivo code-workspace: <code>CursoPandas.code-workspace</code></a>
+  <ul class="collapse">
+  <li><a href="#apertura-desde-la-terminal-cmd" id="toc-apertura-desde-la-terminal-cmd" class="nav-link" data-scroll-target="#apertura-desde-la-terminal-cmd">5.1 Apertura desde la Terminal (CMD)</a></li>
+  <li><a href="#el-venv-rebelde" id="toc-el-venv-rebelde" class="nav-link" data-scroll-target="#el-venv-rebelde">5.2 El <code>(venv)</code> Rebelde</a></li>
+  <li><a href="#la-burbuja-muy-rebelde" id="toc-la-burbuja-muy-rebelde" class="nav-link" data-scroll-target="#la-burbuja-muy-rebelde">5.3 La burbuja MUY rebelde</a></li>
+  </ul></li>
+  <li><a href="#verificación-final-de-librerías" id="toc-verificación-final-de-librerías" class="nav-link" data-scroll-target="#verificación-final-de-librerías">6. Verificación Final de Librerías</a></li>
+  <li><a href="#formas-de-ejecutar-nuestro-script-test.py" id="toc-formas-de-ejecutar-nuestro-script-test.py" class="nav-link" data-scroll-target="#formas-de-ejecutar-nuestro-script-test.py">7. Formas de ejecutar nuestro script “test.py”</a>
+  <ul class="collapse">
+  <li><a href="#opción-a-el-camino-del-mouse-visual" id="toc-opción-a-el-camino-del-mouse-visual" class="nav-link" data-scroll-target="#opción-a-el-camino-del-mouse-visual">7.1 Opción A: El camino del Mouse (Visual)</a></li>
+  <li><a href="#opción-b-el-atajo-de-teclado-velocidad" id="toc-opción-b-el-atajo-de-teclado-velocidad" class="nav-link" data-scroll-target="#opción-b-el-atajo-de-teclado-velocidad">7.2 Opción B: El Atajo de Teclado (Velocidad)</a></li>
+  <li><a href="#opción-c-directo-desde-la-terminal-control-total" id="toc-opción-c-directo-desde-la-terminal-control-total" class="nav-link" data-scroll-target="#opción-c-directo-desde-la-terminal-control-total">7.3 Opción C: Directo desde la Terminal (Control Total)</a></li>
+  </ul></li>
+  <li><a href="#mesa-de-ayuda-no-pasa-nada-al-ejecutar" id="toc-mesa-de-ayuda-no-pasa-nada-al-ejecutar" class="nav-link" data-scroll-target="#mesa-de-ayuda-no-pasa-nada-al-ejecutar">7.4 Mesa de Ayuda: “No pasa nada al ejecutar”</a>
+  <ul class="collapse">
+  <li><a href="#como-debería-verse-una-vez-ejecutado-test.py" id="toc-como-debería-verse-una-vez-ejecutado-test.py" class="nav-link" data-scroll-target="#como-debería-verse-una-vez-ejecutado-test.py">7.5 Como debería verse una vez ejecutado <code>test.py</code> :</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 01: El Ecosistema de Trabajo</h1>
+<p class="subtitle lead">Instalación de VS Code, Python y Librerías</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Eduardo Lencina </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>A continuación, presentamos una guía de instalación de las herramientas que nos acompañarán durante todo el curso. El objetivo es que los estudiantes logren autonomía técnica. La IA oficiará como asistente y como experto.</p>
+<p>Asumimos que somos usuarios de Windows 11 y que contamos con permisos de administrador en nuestros equipos; caso contrario, no podremos avanzar.</p>
+<p>En la web y en la IA existen una enorme cantidad de formas de llegar más o menos al mismo resultado, dependiendo del estilo, necesidades y gusto de cada usuario. La que sigue es una guía “minimalista” que persigue el objetivo de contar con un entorno operativo que pueda ir creciendo a medida de nuestras necesidades, y no antes.</p>
+<p>Este es un material “vivo” que se ajusta y modifica según las necesidades. La tecnología nos permite esta ventaja con poco esfuerzo: revisar, modificar y publicar en una misma acción. ¡Bienvenida/o a este sitio!</p>
+<p>Todas las instrucciones y los links fueron probados. En caso de algún fallo, puede deberse a una errata y/o a un cambio posterior a la creación de este material; en ese caso, se agradecerá reportar el evento a <code>eduardo.lencina@gmail.com</code> para su evaluación y/o corrección.</p>
+<hr>
+<section id="el-editor-visual-studio-code-vsc" class="level2">
+<h2 class="anchored" data-anchor-id="el-editor-visual-studio-code-vsc">1. El Editor: Visual Studio Code (VSC)</h2>
+<p>El editor es nuestro lienzo de trabajo. Allí escribiremos código o copiaremos y pegaremos el código que le hayamos solicitado a la IA. Elegimos VSC porque es el estándar de la industria y el que se ajusta a los objetivos de establecer con solidez un pipeline de trabajo. Existen otras herramientas populares para aprender o enseñar, como <code>Jupyter Notebook</code> —YouTube está lleno de tutoriales donde los ejemplos se desarrollan allí— pero, a juicio de este curso, eso dificulta dar el salto a un <em>pipeline</em> profesional.</p>
+<p>VSC no es tan vistoso al principio ni es tan fácil para dar los primeros pasos, pero en cambio, cuando se dominan media docena de comandos de entorno y de conceptos, estamos listos para lo que viene en el mundo real del análisis y procesamiento de datos.</p>
+<section id="instalación-y-extensiones" class="level3">
+<h3 class="anchored" data-anchor-id="instalación-y-extensiones">1.1 Instalación y Extensiones</h3>
+<ol type="1">
+<li><p>Descargá el instalador para Windows en <a href="https://code.visualstudio.com/download/">code.visualstudio.com</a>.</p></li>
+<li><p>Una vez instalado, ve al icono de cuadrados en la barra lateral izquierda (<strong>Extensions</strong>).</p></li>
+<li><p>Busca e instala las siguientes extensiones:</p>
+<ul>
+<li><strong>Python</strong> (de Microsoft): Vital para que el editor entienda nuestro código.</li>
+<li><strong>Spanish Language Pack</strong>: Para tener la interfaz en castellano.</li>
+<li><strong>GitHub Theme</strong>: Permite configurar fondos y colores, similar a como se hace en el mundo Windows.</li>
+</ul></li>
+</ol>
+<blockquote class="blockquote">
+<p><strong>Nota sobre las extensiones:</strong> Son paquetes que permiten dotar a VSC de nuevas capacidades. Normalmente, si queremos que VSC haga algo nuevo, necesitamos instalar la extensión correspondiente.</p>
+</blockquote>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Una buena idea es…
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Pedirle a la IA que nos explique más: “Respondeme como experto en Python, pandas y en Visual Studio Code. Estoy dando mis primeros pasos en el mundo Python+Pandas y quiero saber más sobre extensiones para VSC: ¿cómo se instalan?, ¿cómo sé si la tengo instalada?, ¿cómo se desinstalan?”. Es una excelente forma de familiarizarse con el entorno y con el modo de interactuar con la IA.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="el-motor-python-3.x" class="level2">
+<h2 class="anchored" data-anchor-id="el-motor-python-3.x">2. El Motor: Python 3.x</h2>
+<p>Python es el lenguaje, pero para que tu computadora lo “hable”, necesitas instalar el <strong>Intérprete</strong> contenido en el instalador: <code>python-3.13.x-amd64.exe</code> (Windows installer 64-bit).</p>
+<section id="pasos-críticos-para-una-instalación-exitosa" class="level3">
+<h3 class="anchored" data-anchor-id="pasos-críticos-para-una-instalación-exitosa">2.1 Pasos críticos para una instalación exitosa</h3>
+<ol type="1">
+<li><strong>Descarga:</strong> Ve a <a href="https://www.python.org/downloads/windows/">python.org</a> y busca el link <code>Download Windows installer (64-bit)</code>. Este es el recomendado porque instala Python y el gestor de paquetes <code>pip</code>.</li>
+<li><strong>La Pantalla de Configuración (Punto Crítico):</strong> Ejecuta el archivo descargado. <strong>¡ALTO! No hagas clic en “Install Now” todavía.</strong> Debes marcar estas casillas en la parte inferior:
+<ul>
+<li><strong>Marcar “Add python.exe to PATH”</strong>: Si no se marca, Windows no sabrá qué es “python” cuando lo escribas en la consola.</li>
+<li><strong>Marcar “Use admin privileges when installing py.exe”</strong>: Asegura los permisos necesarios en el sistema.</li>
+<li>Haz clic en <strong>“Customize installation”</strong>.</li>
+</ul></li>
+<li><strong>Características Opcionales (Optional Features):</strong> Asegúrate de que todas estén marcadas, especialmente <strong>pip</strong> y <strong>tcl/tk</strong>. Haz clic en <em>Next</em>.</li>
+<li><strong>Opciones Avanzadas (Advanced Options):</strong> Aquí configuraremos una ruta limpia:
+<ul>
+<li>Marca <strong>“Install Python 3.13 for all users”</strong>.</li>
+<li><strong>FUERTE RECOMENDACIÓN:</strong> En “Customize install location”, cambia la ruta a algo simple como <code>C:\Python313</code>. Anota esta ruta en un sitio que podamos consultar después.</li>
+<li>Haz clic en <strong>Install</strong>.</li>
+</ul></li>
+<li><strong>El paso final: “Disable path length limit”:</strong> Al terminar la barra de progreso, aparecerá una pantalla de éxito. Haz clic en el enlace que dice <strong>“Disable path length limit”</strong>. Esto elimina la restricción de 260 caracteres en Windows, evitando errores de rutas largas.</li>
+</ol>
+</section>
+<section id="verificando-la-instalación" class="level3">
+<h3 class="anchored" data-anchor-id="verificando-la-instalación">2.2 Verificando la instalación</h3>
+<p>Vamos a ir a la terminal <code>cmd</code>. Vamos a trabajar mucho con la terminal; para desplazarnos dentro de ella debemos aprender algunos comandos. Le podemos pedir a la IA una lista, es muy pequeña.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Abre la terminal (Windows + R, escribe 'cmd' y presiona Enter):</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>C:\Users\Admin<span class="op">&gt;</span>python <span class="op">--</span>version</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>Python <span class="fl">3.13</span>.x</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>¿Qué significa todo esto? Que tenemos instalada la versión Python 3.13.x y que está activa; caso contrario, tenemos que comenzar de nuevo.</p>
+<hr>
+</section>
+</section>
+<section id="preparando-el-laboratorio-entorno-virtual" class="level2">
+<h2 class="anchored" data-anchor-id="preparando-el-laboratorio-entorno-virtual">3. Preparando el laboratorio: Entorno Virtual</h2>
+<p>El siguiente paso es instalar el entorno virtual, que no es otra cosa que una modalidad utilizada para crear una “burbuja” de software para un objetivo específico. En nuestro caso, vamos a instalar un <strong>Entorno Virtual</strong> para análisis de datos.</p>
+<p>El estilo que recomendamos es tener un solo <strong>Entorno Virtual</strong> centralizado en una carpeta de nuestra computadora. Cuidado aquí, porque la IA siempre nos lleva al concepto de “un proyecto, un entorno virtual”, y es el punto donde tenemos que aclararle que nuestra preferencia es tener uno solo centralizado en la carpeta del curso. De esa forma, nosotros dirigimos lo que necesitamos a la IA y no al revés.</p>
+<p>Es hora de crear nuestra carpeta en el sitio <code>C:\CursoPandas</code>. Es muy importante la ruta y el nombre, porque nuestra configuración recomendada se basa en que tengamos dicha carpeta. Más adelante podrán contar con otras carpetas y otros nombres de proyectos en paralelo.</p>
+<section id="comandos-para-armar-el-laboratorio" class="level3">
+<h3 class="anchored" data-anchor-id="comandos-para-armar-el-laboratorio">3.1 Comandos para armar el laboratorio</h3>
+<p>Abrí la terminal en VS Code (<code>Terminal -&gt; New Terminal</code>) y ejecutá estos comandos en orden:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Creamos la carpeta (si no la creaste antes manualmente)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mkdir C:\CursoPandas</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Vamos a la carpeta:</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>cd C:\CursoPandas</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Creamos el Entorno Virtual (la burbuja)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>python <span class="op">-</span>m venv venv</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Activamos el entorno (encendemos la burbuja)</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>.\venv\Scripts\activate</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><code>mkdir</code></strong>: Creamos el contenedor de nuestro proyecto.</li>
+<li><strong><code>cd C:\CursoPandas</code></strong>: Nos movemos a la carpeta de trabajo.</li>
+<li><strong><code>python -m venv venv</code></strong>: Crea una copia aislada de Python dentro de tu carpeta.</li>
+<li><strong><code>activate</code></strong>: Notarás que aparece un <strong>(venv)</strong> al inicio de la línea de comandos. Indica que el laboratorio está activo.</li>
+<li>Podemos tener varios <strong>Entorno Virtual (venv)</strong>, pero en esta etapa de iniciación no lo recomendamos: preferimos tener uno instalado y que nuestros proyectos apunten siempre a la misma carpeta, en nuestro caso <code>C:\CursoPandas\venv</code>.</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="instalando-las-herramientas-de-datos" class="level2">
+<h2 class="anchored" data-anchor-id="instalando-las-herramientas-de-datos">4. Instalando las herramientas de datos</h2>
+<p>Con el entorno activo <code>(venv) C:\CursoPandas&gt;</code>, instalaremos Pandas y los motores necesarios.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Actualizamos el instalador de paquetes</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>python <span class="op">-</span>m pip install <span class="op">--</span>upgrade pip</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Instalamos el cuarteto fundamental</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>pip install pandas openpyxl pyreadstat pyarrow</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imagenes/entorno_virtual.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Aspecto del entorno virtual y las librearias una vez instaladas</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+¿Qué acabamos de hacer?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>pip</strong>: El instalador de paquetes oficial de Python. Es también un índice y es una buena práctica actualizarlo antes de cualquier instalación.</li>
+<li><strong>pandas</strong>: Nuestra herramienta principal para análisis y procesamiento de datos.</li>
+<li><strong>openpyxl</strong>: Permite leer y escribir archivos Excel (<code>.xlsx</code>).</li>
+<li><strong>pyreadstat</strong>: Vital para leer bases de datos de SPSS (<code>.sav</code>).</li>
+<li><strong>pyarrow</strong>: Necesario para bases Parquet</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+<section id="el-archivo-code-workspace-cursopandas.code-workspace" class="level2">
+<h2 class="anchored" data-anchor-id="el-archivo-code-workspace-cursopandas.code-workspace">5. El archivo code-workspace: <code>CursoPandas.code-workspace</code></h2>
+<p>Crea un archivo de texto en <code>C:\CursoPandas</code> llamado <code>CursoPandas.code-workspace</code> y pega este código exactamente así. ¡Cuidado con la extensión! El nombre podrá ser cualquiera, pero la extensión <code>.code-workspace</code> es <strong>MUY IMPORTANTE</strong> para que VSC la reconozca como un archivo de configuración.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb4"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"folders"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"path"</span><span class="fu">:</span> <span class="st">"."</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"settings"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"terminal.integrated.allowChords"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"terminal.integrated.enableMultiLinePasteWarning"</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"terminal.integrated.defaultProfile.windows"</span><span class="fu">:</span> <span class="st">"Command Prompt"</span><span class="fu">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"terminal.integrated.profiles.windows"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"Command Prompt"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                <span class="dt">"path"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"${env:windir}</span><span class="ch">\\</span><span class="st">System32</span><span class="ch">\\</span><span class="st">cmd.exe"</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>                <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>                <span class="dt">"args"</span><span class="fu">:</span> <span class="ot">[</span><span class="st">"/k"</span><span class="ot">,</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">CursoPandas</span><span class="ch">\\</span><span class="st">venv</span><span class="ch">\\</span><span class="st">Scripts</span><span class="ch">\\</span><span class="st">activate.bat"</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>                <span class="dt">"icon"</span><span class="fu">:</span> <span class="st">"terminal-cmd"</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            <span class="fu">}</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">},</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"python.defaultInterpreterPath"</span><span class="fu">:</span> <span class="st">"C:</span><span class="ch">\\</span><span class="st">CursoPandas</span><span class="ch">\\</span><span class="st">venv</span><span class="ch">\\</span><span class="st">Scripts</span><span class="ch">\\</span><span class="st">python.exe"</span><span class="fu">,</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"python.terminal.activateEnvInCurrentTerminal"</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"debug.openDebug"</span><span class="fu">:</span> <span class="st">"neverOpen"</span><span class="fu">,</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"terminal.integrated.fontFamily"</span><span class="fu">:</span> <span class="st">"Consolas"</span><span class="fu">,</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"workbench.colorCustomizations"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"terminal.background"</span><span class="fu">:</span> <span class="st">"#0c0c0c"</span><span class="fu">,</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"terminal.foreground"</span><span class="fu">:</span> <span class="st">"#CCCCCC"</span><span class="fu">,</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"terminal.ansiGreen"</span><span class="fu">:</span> <span class="st">"#A5D6A7"</span><span class="fu">,</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"terminal.ansiBlue"</span><span class="fu">:</span> <span class="st">"#90CAF9"</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+¿Qué acabamos de hacer?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>CursoPandas.code-workspace</code> es un archivo de configuración que nos acompañará adonde vayamos: guarda nuestras preferencias, sabe dónde está el “venv” y, lo más importante, lo <strong>ACTIVA</strong> automáticamente.</p>
+</div>
+</div>
+<hr>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🆘 Mesa de Ayuda:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El archivo <code>.code-workspace</code> es un archivo de extensión JSON de configuración y es un poco “tiquismiquis” con las sangrias y los espacios. Una buena practica es pedirl a la IA que ajuste el archivo <code>.code-workspace</code> por nosotros.</p>
+</div>
+</div>
+<hr>
+<div class="gray-italic-box">
+<p><strong>Zona de Prompting:</strong> “Actúa como experto en Windows y Visual Studio Code. Genera el contenido para un archivo <code>ProyectoPandas.code-workspace</code>. Mi carpeta de proyecto es <code>C:\CursoPandas</code> y mi entorno virtual está en <code>C:\CursoPandas\venv\</code>. Asegúrate de que el <code>python.defaultInterpreterPath</code> apunte correctamente a <code>Scripts/python.exe</code> y que el terminal reconozca el venv automáticamente al abrir el espacio de trabajo. Devuélveme el código en formato JSON.”</p>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🆘 Mesa de Ayuda: El Workspace no reconoce mi venv
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si después de usar el prompt y crear el archivo, VS Code no activa el entorno automáticamente:</p>
+<ol type="1">
+<li><strong>Cierra y abre:</strong> VS Code a veces necesita un “reinicio” para leer los cambios del workspace.</li>
+<li><strong>Selección Manual:</strong> Presiona <code>Ctrl + Shift + P</code>, busca “Python: Select Interpreter” y elige el que está dentro de la carpeta <code>venv</code>.</li>
+<li><strong>Rutas:</strong> Verifica que en el archivo no haya quedado ninguna barra invertida simple (<code>\</code>). En los archivos de configuración de VS Code, se deben usar barras inclinadas (<code>/</code>) o doble barra (<code>\\</code>).</li>
+</ol>
+</div>
+</div>
+<section id="apertura-desde-la-terminal-cmd" class="level3">
+<h3 class="anchored" data-anchor-id="apertura-desde-la-terminal-cmd">5.1 Apertura desde la Terminal (CMD)</h3>
+<p>Lanzar el archivo ‘ProyectoPandas.code-workspace’ desde la terminal es el método más avanzado: carga configuraciones específicas y rutas predefinidas de un solo golpe.</p>
+<p><strong>Instrucciones:</strong> Abrir la terminal (<strong>Tecla Win + R</strong>, escribir ‘cmd’ y <strong>Enter</strong>).</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- TERMINAL DE WINDOWS (CMD) ---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Navegar a la raíz del disco C:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>cd <span class="op">\</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Entrar a la carpeta del proyecto</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>cd C:\CursoPandas</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Lanzar el Workspace de Visual Studio Code</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>code CursoPandas.code<span class="op">-</span>workspace</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Navegación:</strong> Usamos ‘cd ' para ir a la base del disco y luego ’cd C:’ para entrar en nuestra carpeta de trabajo.</li>
+<li><strong>Lanzamiento:</strong> El comando ‘code’ abre VS Code, y al pasarle el nombre del archivo ‘.code-workspace’, el editor se abre con todas nuestras preferencias ya cargadas.</li>
+</ol>
+</div>
+</div>
+<div class="gray-italic-box">
+<p><strong>Zona de Prompting:</strong> “Actúa como experto en Windows y Ciencia de Datos. Explícame el paso a paso para ingresar a mi proyecto en Visual Studio Code desde la terminal de Windows (CMD), considerando que mi carpeta de trabajo es C:y utilizo un archivo .code-workspace.”</p>
+</div>
+<hr>
+</section>
+<section id="el-venv-rebelde" class="level3">
+<h3 class="anchored" data-anchor-id="el-venv-rebelde">5.2 El <code>(venv)</code> Rebelde</h3>
+<p>En la instalación, el <code>(venv)</code> puede negarse a estar activo desde la primera vez. Es algo con lo que debemos convivir.</p>
+<p><strong>El paso manual:</strong> 1. Presiona <strong>Ctrl + Shift + P</strong>. 2. Escribe: <strong>Python: Select Interpreter</strong>. 3. Selecciona la opción. Verás una lista de los Python encontrados. 4. Si no ves el de <code>C:\CursoPandas\venv</code>, haz clic en <strong>+ Enter interpreter path…</strong>. 5. Haz clic en <strong>Find…</strong> y selecciona el ejecutable en: <code>C:\CursoPandas\venv\Scripts\python.exe</code>.</p>
+<p><strong>Otra buena práctica:</strong> &amp; 1. Presiona <strong>Ctrl + Shift + P</strong>. 2. Escribe: <strong>Recargar ventana</strong>. Esto fuerza a VSC a leer nuevamente el workspace.</p>
+</section>
+<section id="la-burbuja-muy-rebelde" class="level3">
+<h3 class="anchored" data-anchor-id="la-burbuja-muy-rebelde">5.3 La burbuja MUY rebelde</h3>
+<p>Si sigue sin activarse, siempre podemos hacerlo manualmente en la terminal:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Presiona Ctrl + ñ. </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Asegúrate de estar en la ruta (si no, usa cd):</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>cd C:\CursoPandas</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Activamos manualmente:</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>.\venv\Scripts\activate</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<div class="gray-italic-box">
+<p><strong>Zona de Prompting:</strong> “Actúa como experto en Windows, Python y Visual Studio Code. Este es mi ‘workspace’ (subir archivo). Ayúdame a verificar la configuración para asegurar que el entorno virtual se active automáticamente al abrir la carpeta.”</p>
+</div>
+</section>
+</section>
+<section id="verificación-final-de-librerías" class="level2">
+<h2 class="anchored" data-anchor-id="verificación-final-de-librerías">6. Verificación Final de Librerías</h2>
+<p>Antes de dar por terminada la instalación, vamos a ejecutar un pequeño archivo <code>test.py</code>. Si este código corre sin darnos errores (letras rojas), significa que tu laboratorio está 100% operativo.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- </span><span class="al">TEST</span><span class="co"> DE SALUD DEL ENTORNO test.py---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> openpyxl</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyreadstat</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyarrow <span class="im">as</span> pa</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificamos versiones</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Pandas versión: </span><span class="sc">{</span>pd<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"PyArrow versión: </span><span class="sc">{</span>pa<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Test de funcionamiento de PyArrow</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    tabla_test <span class="op">=</span> pa.Table.from_pandas(pd.DataFrame({<span class="st">'test'</span>: [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]}))</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Motor PyArrow: ¡Operativo y Veloz!"</span>)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">Exception</span> <span class="im">as</span> e:</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Error en PyArrow: </span><span class="sc">{</span>e<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Motores Excel y SPSS: ¡Detectados y Listos!"</span>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--- Configuración Exitosa ---"</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><code>import pyarrow as pa</code></strong>: Importamos la librería con el alias <code>pa</code>. Es el estándar en la industria.</li>
+<li><strong><code>pa.Table.from_pandas</code></strong>: Es una prueba de fuego. Le pedimos a PyArrow que convierta una tabla de Pandas a su formato nativo. Si esto funciona, la librería está perfectamente vinculada.</li>
+<li><strong><code>try / except</code></strong>: Es una estructura de seguridad. Si algo falla, en lugar de cerrarse bruscamente, el programa nos explicará qué pasó.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="formas-de-ejecutar-nuestro-script-test.py" class="level2">
+<h2 class="anchored" data-anchor-id="formas-de-ejecutar-nuestro-script-test.py">7. Formas de ejecutar nuestro script “test.py”</h2>
+<p>En VS Code existen tres caminos para “darle Play” a nuestro código. Aprenderlos te dará la velocidad necesaria para trabajar como un profesional.</p>
+<hr>
+<section id="opción-a-el-camino-del-mouse-visual" class="level3">
+<h3 class="anchored" data-anchor-id="opción-a-el-camino-del-mouse-visual">7.1 Opción A: El camino del Mouse (Visual)</h3>
+<p>Es la forma más intuitiva al empezar.</p>
+<ul>
+<li><strong>1.</strong> Abre tu archivo <code>test.py</code> en el editor.</li>
+<li><strong>2.</strong> Busca en la esquina superior derecha un pequeño icono de <strong>“Play”</strong> (un triángulo hacia la derecha).</li>
+<li><strong>3.</strong> Haz clic allí. VSC abrirá la terminal automáticamente y ejecutará el código.</li>
+</ul>
+<hr>
+</section>
+<section id="opción-b-el-atajo-de-teclado-velocidad" class="level3">
+<h3 class="anchored" data-anchor-id="opción-b-el-atajo-de-teclado-velocidad">7.2 Opción B: El Atajo de Teclado (Velocidad)</h3>
+<p>Cuando estés procesando datos, no querrás soltar el teclado. Este es el método que usan los expertos:</p>
+<ul>
+<li><strong>Atajo:</strong> Presiona la tecla <code>Ctrl + F5</code> .</li>
+<li><strong>Resultado:</strong> El código se dispara instantáneamente. El favorito.</li>
+</ul>
+<hr>
+</section>
+<section id="opción-c-directo-desde-la-terminal-control-total" class="level3">
+<h3 class="anchored" data-anchor-id="opción-c-directo-desde-la-terminal-control-total">7.3 Opción C: Directo desde la Terminal (Control Total)</h3>
+<p>Esta es la forma más “pura” y la que mejor te permite entender qué está pasando. Aquí tú tienes el mando.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Asegúrate de estar en la carpeta correcta:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>(venv) C:\CursoPandas<span class="op">&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Escribe el nombre del intérprete seguido del nombre del archivo:</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>(venv) C:\CursoPandas<span class="op">&gt;</span>python test.py</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><code>python</code></strong>: Es el comando que llama al motor que instalamos en la Clase 01.</li>
+<li><strong><code>test.py</code></strong>: Es el “papel” con las instrucciones que el motor debe leer, el archivo que acabamos de escribir.</li>
+<li>Si el archivo estuviera en otra carpeta, tendrías que navegar con <code>cd</code> antes de lanzarlo.</li>
+</ul>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="mesa-de-ayuda-no-pasa-nada-al-ejecutar" class="level2">
+<h2 class="anchored" data-anchor-id="mesa-de-ayuda-no-pasa-nada-al-ejecutar">7.4 Mesa de Ayuda: “No pasa nada al ejecutar”</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+🆘 S.O.S. Mi código no arranca
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>¿Guardaste el archivo?</strong> Si ves un círculo blanco en la pestaña del nombre del archivo en VSC, significa que hay cambios sin guardar. Presiona <code>Ctrl + S</code>.</li>
+<li><strong>¿El venv está activo?</strong> Si en la terminal no ves el prefijo <code>(venv)</code>, el comando <code>python</code> podría fallar o no encontrar las librerías.</li>
+<li><strong>Error de nombre:</strong> Si tu archivo se llama <code>Prueba.py</code> y escribes <code>python prueba.py</code> (en minúsculas), a veces Windows lo perdona, pero es una mala práctica. Acostúmbrate a respetar las mayúsculas.</li>
+</ol>
+</div>
+</div>
+<hr>
+<div class="gray-italic-box">
+<p><strong>Zona de Prompting:</strong> “Actúa como experto en productividad en Visual Studio Code. Enséñame otros atajos de teclado útiles para manejar la terminal integrada (abrir, cerrar, limpiar) que me ayuden a trabajar más rápido con mis scripts de Python.”</p>
+</div>
+<section id="como-debería-verse-una-vez-ejecutado-test.py" class="level3">
+<h3 class="anchored" data-anchor-id="como-debería-verse-una-vez-ejecutado-test.py">7.5 Como debería verse una vez ejecutado <code>test.py</code> :</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imagenes/librerias_instaladas.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Librearias instaladas</figcaption>
+</figure>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,627 @@
+---
+title: "Clase 03: Arquitectura de la Selección"
+subtitle: "Lógica de Máscaras y Operadores en Pandas"
+---
+
+## 1. La Lógica de Selección en Pandas
+
+El análisis de datos es en muchos aspectos recortar la realidad de los datos y agruparla para resumirla. Vamos a abordar estas operaciones desde lo más básico hasta escalarlas en un pipeline completo.
+
+### 1.1 Selección por Máscara Booleana (Filtering)
+
+El método más robusto para filtrar filas consiste en crear una "máscara": una serie de valores booleanos que determina qué registros cumplen con un criterio técnico.
+
+::: {.monitor-box}
+```python
+# --- SELECCIÓN POR REGIÓN (EJEMPLO DIDÁCTICO) ---
+import pandas as pd
+
+# Construcción de un DataFrame ilustrativo
+data = {
+    'nro_hogar': [10, 11, 12, 13, 14],
+    'region': ['GBA', 'NOA', 'GBA', 'Centro', 'Cuyo'],
+    'ingreso': [450000, 320000, 510000, 380000, 290000]
+}
+
+df_ejemplo = pd.DataFrame(data)
+
+# 1. Definición de la condición (Máscara)
+# Buscamos identificar hogares de la región GBA
+mascara_gba = df_ejemplo['region'] == 'GBA'
+
+# 2. Aplicación del filtro
+# Pandas extrae solo las filas donde la máscara es True
+df_gba = df_ejemplo[mascara_gba]
+
+print("Subconjunto: Región GBA")
+print(df_gba)
+```
+:::
+
+---
+
+::: {.callout-note}
+## El proceso subyacente
+Al ejecutar `df['columna'] == 'valor'`, Pandas no devuelve los datos inmediatamente. Genera un objeto de tipo `Series` compuesto por booleanos. Cuando pasamos este objeto al DataFrame original entre corchetes, realizamos una alineación de índices que descarta los valores `False`.
+:::
+---
+
+
+## 2. Definición del Índice (Indexing Strategy)
+
+Al importar datos de fuentes externas (Excel, SPSS, SQL), Pandas asigna por defecto un índice numérico secuencial (0, 1, 2...). Sin embargo, para realizar selecciones con `.loc`, es una práctica estándar promover una columna con valores únicos a la categoría de **Índice**.
+
+Un índice es un **identificador único y persistente** para cada registro. En términos técnicos, es el "sistema de direcciones" de nuestro DataFrame. 
+
+Debemos entender que Pandas opera sobre dos ejes de indexación:
+
+1. **Index (Eje 0):** El índice de las filas. Es el "nombre" de cada caso o fila.
+2. **Columns (Eje 1):** El índice de las columnas. Es el nombre de nuestras variables (`P21`, `CH04`, etc.).
+
+### 2.1 El tratamiento especial: Identidad vs. Contenido
+
+Es fundamental que el analista comprenda una regla de oro: **Los índices requieren un tratamiento especial porque no son parte de nuestros datos (valores), sino de nuestra estructura.**
+
+* **No son operables:** Si realizamos una operación aritmética (como un promedio o una suma) sobre el DataFrame, Pandas ignorará automáticamente el índice. El índice "mira" cómo se organiza la tabla, pero no "participa" de los cálculos estadísticos.
+* **Transformación de Datos en Índices:** Aunque un índice no es un dato en sí mismo, **una columna de nuestros datos puede (y suele) convertirse en un índice.** Por ejemplo, el ID de un hogar en la EPH puede pasar de ser una variable a ser la "llave de acceso" a la fila.
+* **Inmutabilidad:** Mientras que los datos de una celda pueden cambiar fácilmente, el índice está diseñado para ser estable. Cambiar un índice es una operación estructural, no una simple edición de valor.
+
+::: {.callout-note}
+## En resumen
+El índice es el **punto de anclaje**. Al usar `.loc`, le hablamos a las etiquetas de esos índices. Si no definimos un índice propio, estamos obligados a usar los números por defecto (0, 1, 2...), perdiendo la trazabilidad semántica de nuestros datos.
+:::
+---
+
+
+### 2.2 El método set_index()
+
+Imaginemos que importamos un listado de hogares donde la columna `cod_hogar` es nuestro identificador clave. 
+
+::: {.monitor-box}
+```python
+# --- EJEMPLO: TRANSFORMACIÓN DE COLUMNA EN ÍNDICE ---
+import pandas as pd
+
+# Simulación de datos importados (Estructura cruda)
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000]
+}
+
+df = pd.DataFrame(data)
+
+print("DataFrame con índice por defecto (numérico):")
+print(df.head(2))
+
+# Promovemos 'cod_hogar' como el nuevo índice técnico. 
+# Reasignamos al objeto para aplicar el cambio.
+df = df.set_index('cod_hogar')
+
+print("\nDataFrame con 'cod_hogar' como índice:")
+print(df.head(2))
+```
+:::
+
+---
+
+::: {.callout-note}
+## Implicancias de set_index
+Al convertir una columna en índice, esta deja de ser una columna "normal": es una protección de Pandas para no romper nuestra estructura de datos. Cada vez que intentemos operar sobre `cod_hogar` como si fuera una variable numérica, Pandas nos recordará que ahora es el eje de coordenadas.
+:::
+
+---
+
+
+## 3. Selección Técnica con .loc
+
+Una vez que el DataFrame tiene etiquetas semánticas en sus filas, el método `.loc` se convierte en la herramienta de precisión para extraer segmentos específicos.
+
+::: {.monitor-box}
+```python
+# --- EXTRACCIÓN DE SEGMENTOS ESPECÍFICOS ---
+import pandas as pd
+
+# 0. Construcción del DataFrame de ejemplo
+# En un entorno real, estos datos provendrían de la carga de la EPH
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000]
+}
+
+df = pd.DataFrame(data)
+
+# Definimos 'cod_hogar' como el índice técnico del objeto
+df.set_index('cod_hogar', inplace=True)
+
+# 1. Seleccionar un hogar específico y ver todas sus variables
+# El resultado es una Series de Pandas
+hogar_interes = df.loc['H_003']
+
+print("Datos del hogar H_003:")
+print(hogar_interes)
+print("-" * 30)
+```
+:::
+
+---
+
+
+### 3.1 Selección Técnica con .loc (II)
+
+En el siguiente ejemplo "agregamos una capa" de complejidad para observar la sintaxis de Pandas: Seleccionamos un conjunto de etiquetas de interés "y además" seleccionamos una columna de interés, en este caso "ingresos".
+
+
+::: {.monitor-box}
+```python
+# --- EXTRACCIÓN DE SEGMENTOS ESPECÍFICOS ---
+import pandas as pd
+
+# 0. Construcción del DataFrame de ejemplo
+# En un entorno real, estos datos provendrían de la carga de la EPH
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000]
+}
+
+df = pd.DataFrame(data)
+
+# Definimos 'cod_hogar' como el índice técnico del objeto
+df.set_index('cod_hogar', inplace=True)
+
+# 2. Seleccionar un rango de hogares y solo la columna 'ingreso'
+# Recordar: En .loc, el límite superior ('H_004') SI se incluye.
+ingresos_segmento = df.loc['H_001':'H_004', ['ingreso']]
+
+print("Resultado de la selección segmentada:")
+print(ingresos_segmento)
+```
+:::
+
+---
+
+El resultado es un dataframe "más corto" que contiene menos filas y columnas que el original.
+
+
+### 3.2 Selección encadenada o "pipeline" 
+
+Volvamos sobre esta sintaxis:
+
+`ingresos_segmento = df.loc['H_001':'H_004', ['ingreso']]`
+
+Se comprende pero es menos legible y soporta mal el mantenimiento: esto significa que en caso de cambios - cosa que ocurre todo el tiempo en el ámbito de análisis - es menos "transparente" e incluso menos "elegante".
+A nuestros prompts, a nuestras interacciones con la IA debemos enseñarle a que nos devuelva código, legible, transparente y elegante. Para ello tenemos que aprender a reconocerlo:
+
+Este código es ejemplo de código que NO es elegante...
+
+`ingresos_segmento = df.loc['H_001':'H_004', ['ingreso']]`
+
+Vamos a solucionarlo: Tomamos el mismo ejemplo y vamos a introducir el concepto de trazabilidad. 
+
+Además de elegancia ganamos en "trazabilidad" la palabra mágica en procesamiento de datos: Eso nos permite establecer un punto de corte en cualquier parte de nuestro código, inspeccionar sus resultados y eventualmente corregir. 
+
+
+::: {.monitor-box}
+```python
+# --- SELECCIÓN "pipeline" código "elegante" ---
+import pandas as pd
+
+# 0. Preparación del DataFrame (Simulacro EPH)
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000]
+}
+
+df = pd.DataFrame(data).set_index('cod_hogar')
+
+# Realizamos una copia de nuestro dataframe original, solo para inspección
+df_original = df.copy()
+
+# 1. Primera etapa: Filtrado de filas (casos) de interés
+# Seleccionamos un rango de hogares por su etiqueta de índice
+df_filtrado = df.loc['H_001':'H_004']
+
+
+print("Paso 1: DataFrame con filas filtradas (todas las columnas):")
+print(df_filtrado)
+print("-" * 30)
+
+# 2. Segunda etapa: Selección de columnas 
+# Sobre el DataFrame ya filtrado, elegimos solo la variable 'ingreso'
+df_filtrado = df_filtrado[['ingreso']]
+
+print("Paso 2: DataFrame final (solo columna 'ingreso'):")
+print(df_filtrado)
+
+print("Paso 2.1: inspección nuestro DataFrame original está intacto")
+print(df_original)
+```
+:::
+
+---
+
+
+Ahora el mismo ejemplo pero "limpio"
+
+
+::: {.monitor-box}
+```python
+# --- SELECCIÓN "pipeline" código "elegante" ---
+import pandas as pd
+
+# 0. Preparación del DataFrame (Simulacro EPH)
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000]
+}
+
+df = pd.DataFrame(data).set_index('cod_hogar')
+
+df_filtrado = df.loc['H_001':'H_004']
+df_filtrado = df_filtrado[['ingreso']]
+
+print(df_filtrado)
+```
+:::
+
+---
+
+Este código debe llamarnos la atención: 
+
+`df_filtrado = df_filtrado[['ingreso']]`
+
+Estamos asignando el resultado de `df_filtrado[['ingreso']]` a `df_filtrado`, es decir, estamos "pisando" el contenido de un dataframe al siguiente dataframe, estamos encadenando las selecciones: esto es a lo que llamamos un "pipeline".
+
+
+::: {.callout-note}
+## La importancia del doble corchete `[[]]`
+
+En Pandas, la diferencia entre usar un corchete simple o doble es estructural:
+
+1. **Corchete simple `df['ingreso']`**: Devuelve una **Series**. Es un objeto unidimensional (una sola columna suelta). Muchos métodos de limpieza de datos fallan si no tienen una estructura de tabla.
+2. **Doble corchete `df[['ingreso']]`**: Devuelve un **DataFrame**. Al pasarle una lista (el corchete interno), le pedimos a Pandas que mantenga la estructura de filas y columnas, incluso si solo le queda una.
+
+Mantener el formato DataFrame es fundamental para poder seguir aplicando filtros o transformaciones en etapas posteriores sin perder la consistencia de la tabla.
+:::
+
+
+
+### 3.3 Selección encadenada o "pipeline" ahora con métodos expresivos
+
+
+::: {.monitor-box}
+```python
+# --- SELECCIÓN "PIPELINE" CON MÉTODOS EXPRESIVOS ---
+import pandas as pd
+
+# 0. Preparación del DataFrame (Simulacro EPH)
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000]
+}
+
+df = pd.DataFrame(data).set_index('cod_hogar')
+
+# Realizamos una copia para verificar la integridad de los datos originales
+df_original = df.copy()
+
+# 1. Ejecución del Pipeline utilizando .query() y .filter()
+# Este enfoque busca mayor legibilidad al usar verbos en lugar de coordenadas.
+
+# Etapa 1: Filtrado de filas por condición lógica (ingresos altos)
+df_paso1 = df.query("ingreso > 350000")
+
+print("Paso 1: Filas que cumplen la condición (Ingreso > 350.000):")
+print(df_paso1)
+print("-" * 30)
+
+# Etapa 2: Selección de columnas por nombre (sin usar loc ni corchetes directos)
+df_final = df_paso1.filter(items=['ingreso'])
+
+print("Paso 2: DataFrame final (solo columna seleccionada):")
+print(df_final)
+print("-" * 30)
+
+# 2. Verificación de Inmutabilidad
+print("Paso 2.1: Inspección de nuestro DataFrame original (está intacto):")
+print(df_original)
+```
+:::
+
+---
+
+::: {.callout-note}
+## La selección semántica: .query() y .filter()
+
+Para el análisis de datos sociales, donde las bases suelen tener cientos de variables (como la EPH), contar con métodos que acepten texto en lugar de coordenadas físicas es una ventaja competitiva.
+
+### 1. El poder de .query()
+El método `.query()` procesa una cadena de texto (string) que representa una condición lógica. 
+
+* **Legibilidad**: Es mucho más cercano al lenguaje natural o al SQL que la sintaxis de corchetes.
+* **Variables externas**: Permite referenciar variables de nuestro entorno de Python usando el prefijo `@` (ej. `df.query("ingreso > @umbral_pobreza")`).
+* **Eficiencia**: En bases de datos muy grandes, `.query()` suele ser ligeramente más rápido que el filtrado tradicional con máscaras booleanas.
+
+### 2. La versatilidad de .filter()
+Mientras que los corchetes `[[]]` son rígidos, `.filter()` es dinámico. No solo permite elegir columnas por nombre exacto (`items`), sino también por patrones:
+
+* **Pattern Matching**: Con el argumento `like='P21'`, podrías traer todas las columnas que contengan ese nombre (útil para traer ingresos de distintos períodos).
+* **Regex**: Permite el uso de expresiones regulares para selecciones de alta complejidad (ej. traer todas las variables que empiecen con 'CH' seguidas de un número).
+
+En definitiva, usamos estos métodos cuando priorizamos la **inteligibilidad del código** y la **mantenibilidad** de nuestros scripts de investigación a largo plazo.
+:::
+
+---
+
+### 3.4 Métodos de selección y listas
+
+Es fundamental distinguir las tres estructuras de datos de Python que utilizamos constantemente para "darle órdenes" a Pandas. Comprender sus diferencias evita errores de ejecución. Usaremos estas estructuras todo el tiempo: son legibles y transparentes.
+
+#### Listas `[ ]`
+Son colecciones ordenadas y **mutables**. En nuestro flujo de trabajo, las usamos principalmente como **contenedores de selección**. Cuando pasamos una lista a Pandas, le estamos dando una hoja de ruta de elementos a buscar o extraer.
+
+* **Uso típico:** Definir las columnas que queremos conservar o los valores para un filtro `.isin()`.
+* **Ejemplo:** `variables = ['ingreso', 'region', 'edad']`
+
+#### Tuplas `( )`
+A diferencia de las listas, las tuplas son **inmutables** (no se pueden modificar una vez creadas). Funcionan como registros fijos. Pandas las utiliza internamente para garantizar que ciertas estructuras (como las dimensiones de la tabla o los niveles de un índice complejo) no sufran alteraciones accidentales.
+
+* **Uso típico:** Representar coordenadas o pares de datos que deben permanecer unidos.
+* **Ejemplo:** `dimensiones = (100, 5)` # Representa 100 filas y 5 columnas.
+
+#### Diccionarios `{ }`
+Los diccionarios almacenan pares de **Clave-Valor**. Es la estructura más potente para la traducción de datos. En ciencias sociales, son nuestros mejores aliados para pasar de los códigos numéricos de una encuesta a etiquetas legibles.
+
+* **Uso típico:** Renombrar columnas o recodificar categorías de una variable.
+* **Ejemplo:** `sexo_map = {1: 'Varon', 2: 'Mujer'}`
+
+---
+
+En el siguiente ejemplo de selección utilizamos una lista: 
+
+
+::: {.monitor-box}
+```python
+# --- SELECCIÓN EDITABLE: PARÁMETROS BASADOS EN LISTAS ---
+import pandas as pd
+
+# 0. Preparación del DataFrame (Simulacro EPH)
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005', 'H_006'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro', 'GBA'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000, 490000],
+    'edad_jefe': [45, 32, 58, 29, 41, 36]
+}
+
+df = pd.DataFrame(data).set_index('cod_hogar')
+
+# 1. DEFINICIÓN DE PARÁMETROS (Listas editables)
+# Separar los valores de la lógica es una "Best Practice" en arquitectura de datos.
+# Permite modificar el estudio sin tocar el código operativo.
+
+regiones_de_interes = ['GBA', 'Patagonia', 'Centro']
+umbral_ingreso_min = 400000
+
+# 2. CONSTRUCCIÓN DE MÁSCARAS 
+# La máscara se alimenta directamente de nuestra lista.
+mascara_region = df['region'].isin(regiones_de_interes)
+
+mascara_ingreso = df['ingreso'] >= umbral_ingreso_min
+
+# 3. APLICACIÓN DE LA SELECCIÓN
+# Combinamos ambas dimensiones con el operador de intersección (&)
+df_resultado = df[mascara_region & mascara_ingreso]
+
+print(f"Criterios: Regiones {regiones_de_interes} e Ingresos >= {umbral_ingreso_min}")
+print("-" * 30)
+print(df_resultado)
+```
+:::
+
+---
+
+::: {.callout-note}
+## ¿A qué llamamos "máscara" y por qué?
+
+En el contexto de Pandas, una **máscara** (o *boolean mask*) es un vector de valores verdaderos (`True`) y falsos (`False`) que tiene exactamente la misma longitud que el eje que estamos intentando filtrar.
+
+### ¿Por qué se usa esta metáfora?
+El término proviene del mundo del revelado fotográfico o la pintura con aerosol. Una máscara es una plantilla que "tapa" ciertas partes de la superficie y deja "expuestas" otras:
+
+1.  **Lo que se tapa (`False`)**: Son los datos que Pandas ignorará. Permanecen en el DataFrame original pero no pasan a través del filtro.
+2.  **Lo que queda expuesto (`True`)**: Son los registros que coinciden con nuestro criterio (ej. las regiones de nuestra lista). Estos son los datos que "vemos" en el resultado final.
+
+### Funcionamiento técnico
+Cuando ejecutamos `df[mascara_region]`, no estamos borrando datos. Le estamos superponiendo una rejilla lógica al DataFrame. Pandas recorre la tabla fila por fila:
+* Si la fila 1 es `True` en la máscara, la deja pasar.
+* Si la fila 2 es `False`, la bloquea.
+
+Esta separación entre la **lógica del filtro** (la máscara) y los **datos** (el DataFrame) es lo que nos permite realizar análisis complejos sin alterar la fuente de información original, manteniendo la integridad de nuestra base de datos durante toda la sesión de trabajo.
+:::
+
+---
+
+
+::: {.callout-note}
+## El Método .isin(): La navaja suiza de la selección categórica
+
+El método `.isin()` es la herramienta optimizada para gestionar selecciones sin recurrir a estructuras lógicas engorrosas.
+
+### 1. Superación del Operador OR ( | )
+
+Tradicionalmente, para seleccionar tres regiones, deberíamos escribir:
+`(df['region'] == 'GBA') | (df['region'] == 'NOA') | (df['region'] == 'Centro')`
+
+Con `.isin()`, simplemente pasamos una lista:
+`df['region'].isin(['GBA', 'NOA', 'Centro'])`
+
+Esto no solo reduce la posibilidad de errores de sintaxis (como olvidar un paréntesis), sino que hace que el código sea significativamente más legible y elegante.
+
+### 2. Dinamismo y Externabilidad
+
+La verdadera potencia de `.isin()` aparece cuando la lista de criterios proviene de una fuente externa o de un paso previo del análisis. Por ejemplo, podríamos tener una lista de "Hogares X" generada en otro DataFrame y usarla para filtrar nuestra base principal:
+
+`base_vivienda[base_vivienda['id'].isin(lista_hogares_X)]`
+
+### 3. Negación: Lo que NO está en la lista
+
+Pandas permite invertir la lógica de `.isin()` de forma extremadamente sencilla mediante el operador tilde `~`. Si queremos seleccionar todas las regiones **excepto** las de nuestra lista, escribimos:
+
+`df[~df['region'].isin(regiones_de_interes)]`
+
+Esta "selección por exclusión" es vital y debe gestionarse con cuidado.
+
+### 4. Rendimiento Técnico
+
+A nivel computacional, `.isin()` está implementado sobre algoritmos de búsqueda altamente optimizados (similares a los *sets* de Python). Cuando la base de datos escala a cientos de miles de registros, usar `.isin()` es sustancialmente más rápido que encadenar múltiples comparaciones de igualdad con el operador `|`.
+
+:::
+
+---
+
+::: {.callout-note}
+## Didáctica de la Editabilidad: Listas vs. Hardcoding
+
+Siempre se debe elegir el uso de "listas" en el llamado a una función. Eso nos permite hacer cambios organizados y controlables: construir una lista en un Excel y traerla a nuestro script. 
+
+Se recomienda usar nombres de listas descriptivos en minúscula y con guiones bajos, ejemplo:
+"regiones_de_interes". Recordar no usar caracteres raros ni espacios en blanco; recordar que Python es sensible a mayúsculas y minúsculas: "regiones_de_interes" y "Regiones_de_interes" son dos listas diferentes.
+
+Construir funciones basadas en `listas` ofrece tres ventajas de diseño:
+
+1. **Desacoplamiento**: Separamos los **datos** (la lista de regiones) de la **lógica** (el comando `.isin()`). Si mañana el estudio debe incluir al NOA, solo modificamos la lista al inicio del script.
+2. **Legibilidad**: Al leer `df['region'].isin(regiones_de_interes)`, el propósito del código es evidente. No hay cadenas de texto extensas ni operadores repetitivos.
+3. **Escalabilidad**: Este método funciona igual de bien para 2 categorías que para 200. Es el estándar para procesar variables con múltiples etiquetas, como los códigos de rama de actividad o parentesco.
+:::
+
+---
+## 5. Selección por rangos numéricos: El método .between()
+
+Para la selección de variables cuantitativas (como ingresos, edades o años de escolaridad), contamos con un método `.between()` auto descriptivo y transparente, que simplifica la sintaxis y reduce la posibilidad de errores en los límites del intervalo.
+
+
+### 5.1 --- SELECCIÓN POR RANGOS NUMÉRICOS (MÉTODO BETWEEN) ---
+```python
+import pandas as pd
+
+# 0. Preparación del DataFrame (Simulacro EPH)
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005', 'H_006'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro', 'GBA'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000, 490000],
+    'edad_jefe': [45, 32, 58, 29, 41, 36]
+}
+
+df = pd.DataFrame(data).set_index('cod_hogar')
+
+# 1. DEFINICIÓN DE PARÁMETROS (Rango de ingresos)
+# Definimos los límites de ingresos
+ingreso_min = 350000
+ingreso_max = 500000
+
+# 2. CONSTRUCCIÓN DE MÁSCARA DE RANGO
+# El método .between() es la forma más limpia y transparente de filtrar rangos
+# Equivale a: (df['ingreso'] >= ingreso_min) & (df['ingreso'] <= ingreso_max)
+
+mascara_rango_ingreso = df['ingreso'].between(ingreso_min, ingreso_max)
+
+# 3. APLICACIÓN DE LA SELECCIÓN
+df_resultado = df[mascara_rango_ingreso]
+
+print(f"Filtrando hogares con ingresos entre ${ingreso_min} y ${ingreso_max}:")
+print("-" * 30)
+print(df_resultado)
+```
+
+
+### 5.1 Volvemos sobre la naturaleza de la instrucción de "Filtrado"
+
+Vamos a detenernos en este codigo: `df_resultado = df[mascara_rango_ingreso]` y vamos a hablar de que es lo que pasa una vez más:
+
+La línea `df_resultado = df[mascara_rango_ingreso]` es el corazón de la selección en Pandas. Aunque parece una simple operación de corchetes, lo que ocurre internamente es un proceso de **indexación booleana** que separa la lógica de los datos.
+
+
+### 1. La naturaleza de la "Máscara"
+Antes de llegar a esa línea, `mascara_rango_ingreso` no es un DataFrame, sino una **Series Booleana**.
+
+* Tiene el mismo índice que `df`.
+* Sus valores son únicamente `True` o `False`.
+* Es, literalmente, una "plantilla" que calza perfecto sobre tu tabla original.
+
+### 2. El mecanismo de alineación por Índice
+Cuando ejecutamos la instrucción, Pandas realiza una operación de **alineación**:
+1. Compara el índice de la máscara con el índice del DataFrame.
+2. Fila por fila, pregunta: "¿Cuál es el valor en la máscara para esta dirección?".
+3. Si es `True`, la fila se incluye en el nuevo objeto.
+4. Si es `False`, la fila se descarta (se "tapa").
+
+### 3. Inmutabilidad y Flujo de Datos
+Es fundamental entender que esta operación **no modifica el DataFrame original (`df`)**. 
+
+* `df_resultado` es un **nuevo objeto** que contiene una selección de los datos.
+* Esta separación garantiza la integridad de la base original, permitiéndonos realizar múltiples experimentos o recortes sin "romper" la fuente de información.
+
+
+::: {.callout-note}
+## El método .between() y la precisión en los límites
+
+Para el análisis de ingresos o edades, el método `.between()` es preferible a los operadores manuales por dos razones:
+
+1.  **Sintaxis Humana**: Es mucho más natural leer "ingreso entre X e Y" que construir una lógica de comparación doble con ampersands.
+2.  **Inclusión de límites**: Por defecto, `.between()` es **inclusivo** (incluye exactamente el valor mínimo y el máximo). 
+:::
+
+
+## 6. Selección por intervalos discretos: El uso de listas
+
+A menudo nos encontramos con variables que, aunque son numéricas, se comportan como categorías o "saltos" específicos (por ejemplo, años de escolaridad cumplidos o cantidad de hijos). Cuando el criterio de selección no es un rango continuo (del 1 al 10), sino un conjunto de valores salteados o específicos, recurrimos a la selección por intervalos discretos utilizando listas.
+
+Esta técnica nos permite "pescar" valores puntuales dentro de una distribución sin necesidad de escribir múltiples condiciones de igualdad.
+
+
+### 6.1 --- SELECCIÓN POR INTERVALOS DISCRETOS (VALORES PUNTUALES) ---
+```python
+import pandas as pd
+
+# 0. Preparación del DataFrame (Simulacro EPH)
+# Agregamos la columna 'miembros' para ilustrar valores discretos
+data = {
+    'cod_hogar': ['H_001', 'H_002', 'H_003', 'H_004', 'H_005', 'H_006'],
+    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro', 'GBA'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000, 490000],
+    'miembros': [1, 4, 2, 6, 2, 4]
+}
+
+df = pd.DataFrame(data).set_index('cod_hogar')
+
+# 1. DEFINICIÓN DEL CRITERIO DISCRETO
+# En nuestro ejemplo: necesitamos filtrar hogares de tamaño "par" (2 y 4 personas)
+
+dimension_hogares_interes = [2, 4]
+
+# 2. CONSTRUCCIÓN DE LA MÁSCARA
+# El método .isin() funciona perfectamente con números, tratándolos como etiquetas discretas
+mascara_hogares = df['miembros'].isin(dimension_hogares_interes)
+
+# 3. APLICACIÓN DE LA SELECCIÓN
+df_resultado = df[mascara_hogares]
+
+print(f"Analizando hogares con tamaño específico: {dimension_hogares_interes} miembros")
+print("-" * 30)
+print(df_resultado)
+```
+
+::: {.callout-note}
+## ¿Cuándo usar listas en lugar de rangos?
+
+La selección discreta mediante listas es la herramienta correcta cuando:
+
+1. **Los valores no son correlativos**: Por ejemplo, si necesitas analizar los años de finalización de ciclos educativos (7, 12 y 17 años de estudio) saltando los valores intermedios.
+2. **Evita el error de "arrastre"**: Si usas un rango (ej. `between(2, 4)`), incluirías hogares de 3 personas. Si tu hipótesis solo aplica a hogares de 2 y 4, la lista asegura que el valor 3 quede excluido de la muestra.
+3. **Claridad en la intención**: Al declarar `dimension_hogares_interes = [2, 4]`, cualquier otro investigador entiende inmediatamente que esos son los únicos grupos bajo observación, sin ambigüedades sobre los límites.
+:::

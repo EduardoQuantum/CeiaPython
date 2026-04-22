@@ -1,0 +1,291 @@
+---
+title: "Clase 05: Ponderación con Pandas"
+subtitle: "Metodos de expansión"
+---
+## 1. El DataFrame como Unidad de Sentido
+
+
+
+---
+
+
+### 1.1 Nuestro datataset de ejemplo:
+
+
+::: {.monitor-box}
+```python
+
+# --- Base de ejemplo que usamos desde el excel ---
+
+data = {
+    'cod_hogar': [
+      'H_001', 'H_002', 'H_003', 'H_004', 'H_005', 
+      'H_006', 'H_007', 'H_008', 'H_009', 'H_010', 
+      'H_011', 'H_012', 'H_013', 'H_014', 'H_015', 
+      'H_016', 'H_017', 'H_018', 'H_019', 'H_020'
+    ],
+  'region': [
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'
+    ],
+    'tipo_vivienda': ['Casa',  'Depto', 'Casa',  'Casa', 'Depto', 
+                      'Depto', 'Casa',  'Depto', 'Casa', 'Depto',
+                      'Casa',  'Depto', 'Casa',  'Casa', 'Depto', 
+                      'Depto', 'Casa',  'Depto', 'Casa', 'Depto'],
+
+    'ingreso': [450000, 320000, 580000, 310000, 420000, 490000, 310000, 620000, 280000, 410000,
+                460000, 335000, 590000, 315000, 425000, 500000, 325000, 630000, 295000, 415000],
+
+    'edad_jefe': [45, 32, 58, 29, 41, 36, 52, 
+                  47, 33, 40, 44, 31, 57, 30, 
+                  42, 35, 51, 46, 34, 39],
+    
+
+    # Muy importante! el separador de los términos es una coma "," 
+    # el separador decimal es punto "notación anglosajona" mucho cuidado 
+
+    'peso' : [3,0.5,0.5,0.5,0.5,
+              3,0.5,0.5,0.5,0.5,
+              3,0.5,0.5,0.5,0.5,
+              3,0.5,0.5,0.5,0.5]
+}
+
+```
+:::
+
+---
+
+### 1.2 Nuestra función que usa el detaset, ahora desde excel:
+
+
+::: {.monitor-box}
+```python
+
+import pandas as pd
+import numpy as np
+
+# Definición de ruta
+ruta_excel = r'c:\CursoPandas\data\input\base_con_ponderador.xlsx'
+
+# Carga de datos especificando el motor (engine)
+df_excel = pd.read_excel(ruta_excel, engine='openpyxl')
+
+# Inspección inicial
+print("Comando: df_excel.head()")
+print(df_excel.head())
+
+df = pd.DataFrame(df_excel).set_index('cod_hogar')
+
+
+def crear_reporte_ponderado(data, fila, columna, valor_interes, ponderador):
+    """
+    Protocolo para obtener n ponderado, % ponderado y Base de Cálculo expandida.
+    """
+    # 1. Conteo Ponderado: En lugar de 'count', usamos 'sum' sobre la columna peso
+    # Esto nos da la población expandida que representa la muestra.
+    n_ponderado = data.pivot_table(
+        index=fila, 
+        columns=columna, 
+        values=ponderador, 
+        aggfunc='sum'
+    )
+    
+    # 2. Base de Cálculo (Total expandido por columna)
+    base_expandida = n_ponderado.sum(axis=0)
+    
+    # 3. Porcentajes Ponderados
+    # Representan la distribución en la población real, no solo en la muestra.
+    pct_ponderado = (n_ponderado / base_expandida * 100).round(1)
+    
+    # 4. Construcción de la Unidad de Sentido
+    df_base = pd.DataFrame([base_expandida], columns=base_expandida.index, index=['Base Expandida (Σ pesos)'])
+    
+    return pd.concat([n_ponderado, pct_ponderado, df_base], 
+                     keys=['Casos Ponderados (n)', '% Ponderado', 'TOTAL'])
+
+# USO DEL PROTOCOLO:
+# Ahora le pasamos 'peso' como el argumento que calibra la realidad.
+df_resultado = crear_reporte_ponderado(df, 'tipo_vivienda', 'region', 'ingreso', 'peso')
+
+print(df_resultado)
+
+
+
+```
+:::
+
+---
+
+
+### 1.3 Análisis de la funcion **aggfunc='sum'**
+
+
+Normalmente, una tabla dinámica hace un count (cuenta filas). Nuestra función hace algo más sofisticado:
+
+`n_ponderado = data.pivot_table(..., values=ponderador, aggfunc='sum')`
+
+* Lo que NO hace: Contar cuántas encuestas hay de GBA (que son 4).
+* Lo que SÍ hace: Sumar el valor de la columna peso.Como cada hogar de GBA tiene un peso de 3.0 (ver base excel), la función suma **3 + 3 + 3 + 3 = 12**.Resultado: GBA ahora **pesa** 12 unidades en nuestro análisis, aunque solo tengamos 4 filas de datos para GBA.
+
+
+
+### 1.4. Creación de la "Base de Cálculo" (El Denominador)
+
+`base_expandida = n_ponderado.sum(axis=0)`
+
+
+Aquí la función calcula el Total de la Columna.
+Para GBA, el total es 12. Para NOA, el total es **2 (0.5 \times 4)**. Esta base es fundamental porque es la que garantiza que los porcentajes posteriores sean correctos sobre el nuevo universo expandido y no sobre los 20 casos originales.
+
+
+### 1.5. El Porcentaje Ponderado (La "Realidad" de la población)
+
+
+`pct_ponderado = (n_ponderado / base_expandida * 100).round(1)`
+
+
+Al dividir el N Ponderado por la Base Expandida, obtenemos cuánto representa cada categoría dentro de la región ya ajustada.
+
+
+
+::: {.callout-note}
+## En nuestros resultados:
+
+En nuestro ejemplo para GBA ahora tenemos 1 caso con "Depto" a los efectos de producir una variación en los resultados.
+
+
+:::
+
+---
+
+### 1.6. El "Armado" del reporte
+
+`return pd.concat([n_ponderado, pct_ponderado, df_base], keys=['...', '...', '...'])`
+
+Aqui usamos `concat` con `keys` para crear un objeto jerárquico (MultiIndex).
+
+* Bloque 1: Volumen (Cuánta gente representamos).
+* Bloque 2: Propocion .
+* Bloque 3: La expansión, auditoria de los datos: la suma cierra (los 12 de GBA, los 2 de NOA, etc.).
+
+
+
+
+### 1.2 Nuestra función que usa el detaset, ahora desde excel:
+
+
+::: {.monitor-box}
+```python
+
+import pandas as pd
+import numpy as np
+
+# 1. CREACIÓN DEL DATASET (Simulando la carga de datos)
+df_excel = {
+    'cod_hogar': [
+      'H_001', 'H_002', 'H_003', 'H_004', 'H_005', 
+      'H_006', 'H_007', 'H_008', 'H_009', 'H_010', 
+      'H_011', 'H_012', 'H_013', 'H_014', 'H_015', 
+      'H_016', 'H_017', 'H_018', 'H_019', 'H_020'
+    ],
+    'region': [
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'
+    ],
+    'tipo_vivienda': ['Casa',  'Depto', 'Casa',  'Casa', 'Depto', 
+                      'Depto', 'Casa',  'Depto', 'Casa', 'Depto',
+                      'Casa',  'Depto', 'Casa',  'Casa', 'Depto', 
+                      'Depto', 'Casa',  'Depto', 'Casa', 'Depto'],
+
+    'ingreso': [450000, 320000, 580000, 310000, 420000, 490000, 310000, 620000, 280000, 410000,
+                460000, 335000, 590000, 315000, 425000, 500000, 325000, 630000, 295000, 415000],
+
+    'peso' : [3, 0.5, 0.5, 0.5, 0.5,
+              3, 0.5, 0.5, 0.5, 0.5,
+              3, 0.5, 0.5, 0.5, 0.5,
+              3, 0.5, 0.5, 0.5, 0.5]
+}
+
+# Seteamos el índice (esto suele causar errores si no se entiende el reset_index después)
+df = pd.DataFrame(df_excel).set_index('cod_hogar')
+
+# 2. DEFINICIÓN DE FUNCIONES (El Protocolo)
+
+def auxiliar_pondera(data, columna_valor, columna_peso, nombre_auxiliar='masa_ponderada'):
+    """
+    PASO 1: Crea la columna de 'masa' para que el cálculo sea visible y auditable.
+    """
+    data[nombre_auxiliar] = data[columna_valor] * data[columna_peso]
+    return data
+
+
+
+def crear_reporte_ponderado_pivot(data, fila, columna, ponderador, col_auxiliar):
+    """
+    Genera un reporte donde el PONDERADOR manda en todas las métricas.
+    """
+    # 1. CASOS PONDERADOS (n expandido)
+    # Sumamos los pesos. GBA debe dar 12.0, el resto 2.0.
+    tabla_n_pond = data.pivot_table(index=fila, columns=columna, 
+                                    values=ponderador, aggfunc='sum').fillna(0)
+    
+    # 2. BASE DE CÁLCULO (Total por región)
+    # Esta es la fila que va al final y la que se usa para los %
+    base_expandida = tabla_n_pond.sum(axis=0)
+    
+    # 3. PORCENTAJES PONDERADOS
+    # (Casos Ponderados / Base Expandida) * 100
+    # Refleja la importancia real de cada categoría en el universo expandido
+    tabla_pct_pond = (tabla_n_pond / base_expandida * 100).round(1)
+    
+    # 4. PROMEDIO PONDERADO
+    # Usamos la masa (ingreso_x_peso) dividida la suma de pesos
+    tabla_masa = data.pivot_table(index=fila, columns=columna, 
+                                  values=col_auxiliar, aggfunc='sum').fillna(0)
+    tabla_prom_pond = (tabla_masa / tabla_n_pond.replace(0, np.nan))
+    
+    # 5. CONSTRUCCIÓN DEL TOTAL (Fila de auditoría)
+    df_base = pd.DataFrame([base_expandida], columns=base_expandida.index, 
+                           index=['Base Expandida (Σ pesos)'])
+    
+    return pd.concat([tabla_n_pond, tabla_pct_pond, tabla_prom_pond, df_base], 
+                     keys=['Casos Ponderados (n)', '% Ponderado', 'Promedio Ponderado', 'TOTAL'])
+
+
+
+
+# --- 3. EJECUCIÓN ---
+
+# Paso 1: Generar masa
+df = auxiliar_pondera(df, 'ingreso', 'peso', 'ingreso_x_peso')
+
+# AUDITORÍA (Visualización completa para la clase)
+print("\nREGISTRO COMPLETO DE HOGARES: MUESTRA + PONDERACIÓN")
+print("=" * 85)
+# Usamos reset_index() solo aquí para que cod_hogar sea visible de nuevo
+cols_auditoria = ['cod_hogar', 'region', 'ingreso', 'peso', 'ingreso_x_peso']
+print(df.reset_index()[cols_auditoria].to_string(index=False))
+print("=" * 85)
+
+# Paso 2: Reporte
+reporte = crear_reporte_ponderado_pivot(df, 'tipo_vivienda', 'region', 'peso', 'ingreso_x_peso')
+
+print("\nREPORTE FINAL PONDERADO")
+print(reporte)
+
+
+# 2. Salida a formato externo
+# El dataframe resumen es una nueva unidad de sentido lista para ser compartida.
+ruta_salida = r"data\output\\"
+
+# Resultado
+reporte.to_excel(ruta_salida+"resumen_ponderado_total.xlsx")
+
+```
+:::
+
+---
