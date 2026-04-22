@@ -47,8 +47,8 @@ website:
             file: clase_03.qmd
           - text: 'Clase 04: Split-Apply-Combine'
             file: clase_04.qmd
-          - text: 'Clase 05: Ponderación'
-            file: clase_05.qmd
+#          - text: 'Clase 05: Ponderación'
+#            file: clase_05.qmd
     right:
       - href: https://github.com/EduardoQuantum/CeiaFlacso
         icon: github
