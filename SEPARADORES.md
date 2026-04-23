@@ -17,7 +17,7 @@
 <br><br><br><br><br><br>
 
 <h1 align="center" style="font-size: 3.5em; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; color: #003366;">
-  Paradigma Split-Apply-Combine
+  Paradigma Split-Apply-Combine VER
 </h1>
 
 <div align="center" class="prompt-flacso">
