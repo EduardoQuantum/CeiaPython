@@ -50,8 +50,6 @@ website:
 #          - text: 'Clase 05: Ponderación'
 #            file: clase_05.qmd
     right:
-      - href: https://github.com/EduardoQuantum/CeiaFlacso
-        icon: github
-        text: Repo del Curso
-
-  
+      - icon: github
+        href: https://github.com/EduardoQuantum/CeiaPython.git
+        aria-label: GitHub  # Importante para accesibilidad, aunque no se vea el texto  
