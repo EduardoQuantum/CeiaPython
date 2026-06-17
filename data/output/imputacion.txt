@@ -1,0 +1,4 @@
+base_trabajo.loc['H_002', 'ingreso_sin_na'] = 420000
+base_trabajo.loc['H_004', 'ingreso_sin_na'] = 380000
+base_trabajo.loc['H_010', 'ingreso_sin_na'] = 410000
+base_trabajo.loc['H_013', 'ingreso_sin_na'] = 350000

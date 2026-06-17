@@ -168,18 +168,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#el-dataframe-frente-a-la-hoja-de-cálculo" id="toc-el-dataframe-frente-a-la-hoja-de-cálculo" class="nav-link" data-scroll-target="#el-dataframe-frente-a-la-hoja-de-cálculo">1.1 El DataFrame frente a la Hoja de Cálculo</a></li>
   </ul></li>
-  <li><a href="#la-pivot-table-bajo-el-paradigma-split-apply-combine" id="toc-la-pivot-table-bajo-el-paradigma-split-apply-combine" class="nav-link" data-scroll-target="#la-pivot-table-bajo-el-paradigma-split-apply-combine">2 La Pivot Table bajo el Paradigma Split-Apply-Combine</a>
+  <li><a href="#la-pivot-table-bajo-el-paradigma-split-apply-combine" id="toc-la-pivot-table-bajo-el-paradigma-split-apply-combine" class="nav-link" data-scroll-target="#la-pivot-table-bajo-el-paradigma-split-apply-combine">2. La Pivot Table bajo el Paradigma Split-Apply-Combine</a>
   <ul class="collapse">
   <li><a href="#anatomía-de-la-instrucción" id="toc-anatomía-de-la-instrucción" class="nav-link" data-scroll-target="#anatomía-de-la-instrucción">2.1 Anatomía de la instrucción</a></li>
+  <li><a href="#dos-variables-en-el-índice-la-lista-jerárquica" id="toc-dos-variables-en-el-índice-la-lista-jerárquica" class="nav-link" data-scroll-target="#dos-variables-en-el-índice-la-lista-jerárquica">2.2 Dos variables en el índice: la lista jerárquica</a></li>
   </ul></li>
   <li><a href="#agregar-títulos-y-metadatos-a-la-salida" id="toc-agregar-títulos-y-metadatos-a-la-salida" class="nav-link" data-scroll-target="#agregar-títulos-y-metadatos-a-la-salida">2.2 Agregar títulos y metadatos a la salida</a>
   <ul class="collapse">
   <li><a href="#opción-a-título-jerárquico-mediante-multiindex-dentro-del-objeto" id="toc-opción-a-título-jerárquico-mediante-multiindex-dentro-del-objeto" class="nav-link" data-scroll-target="#opción-a-título-jerárquico-mediante-multiindex-dentro-del-objeto">Opción A: Título jerárquico mediante MultiIndex (Dentro del objeto)</a></li>
   <li><a href="#opción-b-título-en-la-exportación-a-excel-presentación-técnica" id="toc-opción-b-título-en-la-exportación-a-excel-presentación-técnica" class="nav-link" data-scroll-target="#opción-b-título-en-la-exportación-a-excel-presentación-técnica">Opción B: Título en la exportación a Excel (Presentación técnica)</a></li>
-  </ul></li>
-  <li><a href="#funciones-y-protocolos-estandarizados" id="toc-funciones-y-protocolos-estandarizados" class="nav-link" data-scroll-target="#funciones-y-protocolos-estandarizados">4. Funciones y Protocolos Estandarizados</a>
-  <ul class="collapse">
-  <li><a href="#anatomía-del-protocolo" id="toc-anatomía-del-protocolo" class="nav-link" data-scroll-target="#anatomía-del-protocolo">4.1 Anatomía del Protocolo</a></li>
+  <li><a href="#split-apply-combine-ahora-con-groupby" id="toc-split-apply-combine-ahora-con-groupby" class="nav-link" data-scroll-target="#split-apply-combine-ahora-con-groupby">2.3 Split-Apply-Combine ahora con groupby()</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -213,7 +211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="el-dataframe-como-unidad-de-sentido" class="level2">
 <h2 class="anchored" data-anchor-id="el-dataframe-como-unidad-de-sentido">1. El DataFrame como Unidad de Sentido</h2>
-<p>Técnicamente un <strong>DataFrame</strong> es una <strong>colección de Series (columnas) vinculadas por un Índice común</strong>. El indice <strong>no es parte</strong> de los datos de nuestro dataframe, en la imagen podemos observarlo con claridad.</p>
+<p>Técnicamente un <strong>DataFrame</strong> es una <strong>colección de Series (columnas) vinculadas por un Índice común</strong>. El índice <strong>no es parte</strong> de los datos de nuestro dataframe, en la imagen podemos observarlo con claridad.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../imagenes/01_table_dataframe.svg" class="img-fluid figure-img"></p>
@@ -222,12 +220,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="el-dataframe-frente-a-la-hoja-de-cálculo" class="level3">
 <h3 class="anchored" data-anchor-id="el-dataframe-frente-a-la-hoja-de-cálculo">1.1 El DataFrame frente a la Hoja de Cálculo</h3>
-<p>Si el Excel es un lienzo de acceso libre donde cada celda puede funcionar como una unidad independiente (una “isla” de datos con su propia lógica o formato), el DataFrame de Pandas es una entidad de datos estructurada y programática. Esta diferencia de arquitectura es fundamental para la integridad de los procesos de analisis:</p>
+<p>Si el Excel es un lienzo de acceso libre donde cada celda puede funcionar como una unidad independiente (una “isla” de datos con su propia lógica o formato), el DataFrame de Pandas es una entidad de datos estructurada y programática. Esta diferencia de arquitectura es fundamental para la integridad de los procesos de análisis:</p>
 <ul>
 <li><p><strong>Cohesión de Fila:</strong> En una matriz de datos (DataFrame), la fila es la unidad mínima de información. Si aplicamos una operación de reordenamiento (sorting) o un filtrado, el registro se desplaza como un bloque compacto. Esto garantiza que los atributos de una observación —por ejemplo, un <code>ID</code>, un <code>Ingreso</code> y una <code>Categoría</code>— permanezcan vinculados de forma indisoluble.</p></li>
 <li><p><strong>Tipificación de Columna:</strong> A diferencia de las celdas de una hoja de cálculo, que pueden contener tipos de datos mixtos en una misma columna, las Series de un DataFrame imponen una <strong>consistencia de tipo</strong> (<code>dtype</code>). Esta restricción es la que permite realizar cálculos vectorizados de alta performance.</p></li>
 </ul>
-<p>Nuestro enfoque es <strong>Dataframe Céntrico</strong> vamos a tratar de no irnos por las ramas de los conceptos de programación para reconocernos como <strong>usuarios de programación</strong> analistas que escribimos código funcional y ahora también asistidos por IA . Si el DataFrame está bien construido y su índice es sólido, los cálculos de agregación podremos construirlos de manera <strong>natural</strong>. El DataFrame es el mapa; los métodos de agrupación son nuestra brújula.</p>
+<p>Nuestro enfoque es <strong>Dataframe Céntrico</strong> vamos a tratar de no irnos por las ramas de los conceptos de programación para reconocernos como <strong>usuarios de programación</strong> analistas que escribimos código funcional y ahora también asistidos por IA. Si el DataFrame está bien construido y su índice es sólido, los cálculos de agregación podremos construirlos de manera <strong>natural</strong>. El DataFrame es el mapa; los métodos de agrupación son nuestra brújula.</p>
 <hr>
 <div class="monitor-box">
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
@@ -304,7 +302,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 <section id="la-pivot-table-bajo-el-paradigma-split-apply-combine" class="level2">
-<h2 class="anchored" data-anchor-id="la-pivot-table-bajo-el-paradigma-split-apply-combine">2 La Pivot Table bajo el Paradigma Split-Apply-Combine</h2>
+<h2 class="anchored" data-anchor-id="la-pivot-table-bajo-el-paradigma-split-apply-combine">2. La Pivot Table bajo el Paradigma Split-Apply-Combine</h2>
 <p>Para entender realmente qué está haciendo Pandas cuando ejecutamos una <code>pivot_table</code>, debemos desglosarla a través del paradigma <strong>Split-Apply-Combine</strong>. Esta es la piedra angular del procesamiento de datos y lo que nos permite pasar de una masa de microdatos a un indicador sintético.</p>
 <p>Si el DataFrame original es nuestro “universo de datos” (donde cada fila es una observación), la <strong>Pivot Table</strong> es la herramienta que nos permite plegar ese universo sobre sí mismo para obtener información agregada. Es el equivalente programático a las “Tablas Dinámicas” de las hojas de cálculo, pero con la ventaja de ser reproducible, trazable y escalable.</p>
 <p>Cuando definimos los ejes y la función de agregación, Pandas activa una secuencia de tres pasos invisibles:</p>
@@ -315,7 +313,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <section id="anatomía-de-la-instrucción" class="level3">
 <h3 class="anchored" data-anchor-id="anatomía-de-la-instrucción">2.1 Anatomía de la instrucción</h3>
-<p>¿Cuáles se el rol de cada “pieza” dentro de la función <code>pivot_table()</code>? Aquí desglosamos la lógica de nuestra instrucción:</p>
+<p>¿Cuál es el rol de cada “pieza” dentro de la función <code>pivot_table()</code>? Aquí desglosamos la lógica de nuestra instrucción:</p>
 <p><code>df_resumen = df.pivot_table(index='tipo_vivienda', columns='region', values='ingreso', aggfunc='mean')</code></p>
 <ul>
 <li><p><strong><code>index='tipo_vivienda'</code> (El Eje Vertical):</strong> Determina qué variable queremos ver en las <strong>filas</strong>. Es nuestra categoría de agrupación principal. En este caso, le pedimos a Pandas que cree una fila por cada tipo de vivienda detectado en la matriz.</p></li>
@@ -348,84 +346,195 @@ El concepto de Pivot Table como Transformación
 </div>
 </div>
 <hr>
+</section>
+<section id="dos-variables-en-el-índice-la-lista-jerárquica" class="level3">
+<h3 class="anchored" data-anchor-id="dos-variables-en-el-índice-la-lista-jerárquica">2.2 Dos variables en el índice: la lista jerárquica</h3>
+<p>Hasta ahora usamos <code>pivot_table()</code> con <code>index</code> para las filas y <code>columns</code> para las columnas. El resultado era una matriz (tabla de doble entrada). Pero también podemos pasar <strong>una lista</strong> al parámetro <code>index</code> y obtener una lista jerárquica de indicadores. Es la misma información, presentada de otra forma.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- PIVOT TABLE CON ÍNDICE MÚLTIPLE (LISTA JERÁRQUICA) ---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>],</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>,<span class="dv">320000</span>,<span class="dv">580000</span>,<span class="dv">310000</span>,<span class="dv">420000</span>,<span class="dv">490000</span>,<span class="dv">310000</span>,<span class="dv">620000</span>,<span class="dv">280000</span>,<span class="dv">410000</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>,<span class="dv">335000</span>,<span class="dv">590000</span>,<span class="dv">315000</span>,<span class="dv">425000</span>,<span class="dv">500000</span>,<span class="dv">325000</span>,<span class="dv">630000</span>,<span class="dv">295000</span>,<span class="dv">415000</span>],</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>,<span class="dv">32</span>,<span class="dv">58</span>,<span class="dv">29</span>,<span class="dv">41</span>,<span class="dv">36</span>,<span class="dv">52</span>,<span class="dv">47</span>,<span class="dv">33</span>,<span class="dv">40</span>,<span class="dv">44</span>,<span class="dv">31</span>,<span class="dv">57</span>,<span class="dv">30</span>,<span class="dv">42</span>,<span class="dv">35</span>,<span class="dv">51</span>,<span class="dv">46</span>,<span class="dv">34</span>,<span class="dv">39</span>]</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>ruta_salida <span class="op">=</span> <span class="vs">r"data\output\\"</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Versión matriz (dos variables, una en cada eje) — la que ya conocemos</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>df_matriz <span class="op">=</span> df.pivot_table(</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'tipo_vivienda'</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">'region'</span>,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'ingreso'</span>,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span><span class="st">'mean'</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Versión matriz (tipo_vivienda x region):"</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_matriz)</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Versión lista jerárquica (ambas variables en el índice)</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>df_lista <span class="op">=</span> df.pivot_table(</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span>[<span class="st">'region'</span>, <span class="st">'tipo_vivienda'</span>],</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'ingreso'</span>,</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span><span class="st">'mean'</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>).<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Versión lista jerárquica (region + tipo_vivienda en filas):"</span>)</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_lista)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Salida a Excel</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>df_lista.to_excel(ruta_salida <span class="op">+</span> <span class="st">"resumen_jerarquico.xlsx"</span>)</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Archivo guardado en: </span><span class="sc">{</span>ruta_salida<span class="sc">}</span><span class="ss">resumen_jerarquico.xlsx"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Misma información, distinta presentación
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><strong>Versión matriz</strong> (<code>index + columns</code>): Cruzamos tipo de vivienda con región. Vemos el ingreso promedio en cada celda. Ideal para explorar relaciones entre dos variables.</li>
+<li><strong>Versión lista</strong> (<code>index=['region', 'tipo_vivienda']</code>): Ponemos ambas variables una debajo de la otra en las filas. En vez de 2 filas x 5 columnas tenemos 10 filas y una sola columna de ingreso. Cada fila es una combinación única de región y tipo de vivienda. Ideal para exportar a Excel como tabla de informe.</li>
+<li><strong>MultiIndex</strong>: La versión lista tiene un índice con dos niveles. El primer nivel es “region”; el segundo, “tipo_vivienda”. Pandas lo muestra con espacios para indicar la jerarquía.</li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mesa de Ayuda: ¿Cómo sé cuántas filas voy a obtener?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si <code>index</code> recibe una lista de 2 variables, la cantidad de filas es el producto de las categorías de cada una. En este ejemplo: 5 regiones x 2 tipos de vivienda = 10 filas. Siempre que cada combinación tenga al menos un caso.</p>
+</div>
+</div>
+<div class="gray-italic-box">
+<p><strong>Zona de Prompting:</strong> “Actúa como experto en Pandas para ciencias sociales. Tomando el mismo DataFrame del ejemplo anterior, usá <code>pivot_table()</code> con <code>index=['region', 'tipo_vivienda']</code> pero sin <code>columns</code>. Ahora agregá <code>aggfunc='sum'</code> y explicá en lenguaje sencillo qué representa cada fila del resultado.”</p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+¿Qué pasa si hay NaN en los datos?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Con nuestro ejemplo sintético todo funciona limpio porque cada combinación región + tipo de vivienda tiene al menos un caso. Con datos reales (EPH) esto no siempre es así.</p>
+<p>La función <code>aggfunc='mean'</code> excluye automáticamente los valores nulos (<code>NaN</code>) de cada grupo. Si una celda queda sin datos válidos, Pandas coloca <code>NaN</code> en esa posición.</p>
+<p><strong>Regla práctica:</strong> - <strong><code>mean</code> y <code>sum</code></strong>: ignoran <code>NaN</code> dentro de cada grupo. Si todo el grupo es <code>NaN</code>, el resultado es <code>NaN</code>. - <strong><code>count</code></strong>: cuenta filas, sin importar si el valor es nulo o no. Es el único estadístico “a prueba de NaN”. - Si querés forzar un cero donde no hay datos usá <code>fill_value=0</code> dentro de <code>pivot_table()</code>.</p>
+</div>
+</div>
+<hr>
 <p>Tomemos el mismo ejemplo y le agregamos una nueva “capa” : obtenemos tres estadísticos</p>
 <div class="monitor-box">
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ESTRUCTURA DE LA MATRIZ Y TABLAS DE DOBLE ENTRADA (II) ---</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH Ampliado)</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generamos una base con 20 casos para permitir agrupamientos significativos</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>, </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>, </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>, </span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">'region'</span>: [</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>,</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>],</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, <span class="dv">410000</span>,</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, <span class="dv">590000</span>, <span class="dv">315000</span>, <span class="dv">425000</span>, <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>, <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos la ruta de guardado de base </span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>ruta_entrada <span class="op">=</span> <span class="vs">r"data\input\\"</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Guardado de base </span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>df.to_excel(ruta_entrada<span class="op">+</span><span class="st">"base_inicial.xlsx"</span>)</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Ejecución del Pipeline: Tabla de Doble Entrada</span></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co"># El objetivo es cruzar 'tipo_vivienda' (Filas) y 'region' (Columnas) </span></span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co"># para observar la media de 'ingreso'.</span></span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 1: Creación de la pivot table</span></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Usamos una sintaxis transparente donde cada parámetro define un eje.</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df.pivot_table(</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'tipo_vivienda'</span>, </span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">'region'</span>, </span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'ingreso'</span>, </span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># le pasamos una lista de estadísticos</span></span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span>[<span class="st">'count'</span>, <span class="st">'mean'</span>,<span class="st">'sum'</span>]</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 2: Formateo de salida (Redondeo)</span></span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos el método sobre el resultado anterior para limpiar la visualización.</span></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df_resumen.<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 3:Lo apilamos con el metodo ".stack"</span></span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical <span class="op">=</span> df_resumen.stack(level<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 4: Renombrar el índice para mayor claridad</span></span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical.index.names <span class="op">=</span> [<span class="st">'Tipo de Vivienda'</span>, <span class="st">'Métrica'</span>]</span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 1: Tabla de doble entrada (Ingreso promedio por Región y Vivienda): 'count', 'mean','sum'"</span>)</span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resumen_vertical)</span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Salida a formato externo</span></span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="co"># El dataframe resumen es una nueva unidad de sentido lista para ser compartida.</span></span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>ruta_salida <span class="op">=</span> <span class="vs">r"data\output\\"</span></span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Resultado</span></span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical.to_excel(ruta_salida<span class="op">+</span><span class="st">"resumen_ingresos.xlsx"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ESTRUCTURA DE LA MATRIZ Y TABLAS DE DOBLE ENTRADA (II) ---</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH Ampliado)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generamos una base con 20 casos para permitir agrupamientos significativos</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>, </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>, </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">'region'</span>: [</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>,</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>],</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, <span class="dv">410000</span>,</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, <span class="dv">590000</span>, <span class="dv">315000</span>, <span class="dv">425000</span>, <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>, <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos la ruta de guardado de base </span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>ruta_entrada <span class="op">=</span> <span class="vs">r"data\input\\"</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Guardado de base </span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>df.to_excel(ruta_entrada<span class="op">+</span><span class="st">"base_inicial.xlsx"</span>)</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Ejecución del Pipeline: Tabla de Doble Entrada</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co"># El objetivo es cruzar 'tipo_vivienda' (Filas) y 'region' (Columnas) </span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co"># para observar la media de 'ingreso'.</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 1: Creación de la pivot table</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co"># Usamos una sintaxis transparente donde cada parámetro define un eje.</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df.pivot_table(</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'tipo_vivienda'</span>, </span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">'region'</span>, </span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'ingreso'</span>, </span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># le pasamos una lista de estadísticos</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span>[<span class="st">'count'</span>, <span class="st">'mean'</span>, <span class="st">'sum'</span>]</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 2: Formateo de salida (Redondeo)</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos el método sobre el resultado anterior para limpiar la visualización.</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df_resumen.<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 3: Lo apilamos con el metodo ".stack"</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical <span class="op">=</span> df_resumen.stack(level<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 4: Renombrar el índice para mayor claridad</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical.index.names <span class="op">=</span> [<span class="st">'Tipo de Vivienda'</span>, <span class="st">'Métrica'</span>]</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 1: Tabla de doble entrada (Ingreso promedio por Región y Vivienda): 'count', 'mean', 'sum'"</span>)</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resumen_vertical)</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Salida a formato externo</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="co"># El dataframe resumen es una nueva unidad de sentido lista para ser compartida.</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>ruta_salida <span class="op">=</span> <span class="vs">r"data\output\\"</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="co"># Resultado</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical.to_excel(ruta_salida<span class="op">+</span><span class="st">"resumen_ingresos.xlsx"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <hr>
 <p>A continuación un print de nuestros resultados:</p>
@@ -442,13 +551,13 @@ El concepto de Pivot Table como Transformación
 <p>En Pandas, existen dos formas de abordar el título de la “salida” el título “dentro” del objeto para cálculos, o “fuera” del objeto para la presentación final en Excel.</p>
 <section id="opción-a-título-jerárquico-mediante-multiindex-dentro-del-objeto" class="level3">
 <h3 class="anchored" data-anchor-id="opción-a-título-jerárquico-mediante-multiindex-dentro-del-objeto">Opción A: Título jerárquico mediante MultiIndex (Dentro del objeto)</h3>
-<p>Podemos “envolver” nuestras métricas bajo un título superior utilizando una clave en el método <code>concat</code>. Esto es útil si planeamos que nuestro reporte sea parte de un pipeline y necesitamos unir varios reportes en una sola matriz y/o para graficar .</p>
+<p>Podemos “envolver” nuestras métricas bajo un título superior utilizando una clave en el método <code>concat</code>. Esto es útil si planeamos que nuestro reporte sea parte de un pipeline y necesitamos unir varios reportes en una sola matriz y/o para graficar.</p>
 <div class="monitor-box">
-<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A. Intervenimos la clave "keys" y "la pegamos" a nustro Dataframe de salida</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df_final_con_titulo <span class="op">=</span> pd.concat([df_resumen_vertical], </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                      keys<span class="op">=</span>[<span class="st">'Reporte: Análisis de Ingresos EPH'</span>])</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># A. Intervenimos la clave "keys" y "la pegamos" a nuestro DataFrame de salida</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>df_final_con_titulo <span class="op">=</span> pd.concat([df_resumen_vertical], </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                      keys<span class="op">=</span>[<span class="st">'Reporte: Análisis de Ingresos EPH'</span>])</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <hr>
 <p>El resultado de la opción A)</p>
@@ -468,7 +577,7 @@ El uso de .concat() y keys para jerarquizar reportes
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Aunque usualmente usamos <code>pd.concat()</code> para pegar dos o más tablas, en este contexto lo utilizamos como una herramienta de <strong>metadatos</strong>. Al “concatenar” un solo DataFrame consigo mismo pero agregando una “llave” (<code>keys</code>), estamos transformando la estructura del índice. Lo interesante de este ejemplo es que nos muestra lo flexible que es Pandas: estamos haciendo “copy paste” de objetos mediante un script hecho por nosotros mismos y ademas que se va a reutilzar todas las veces que necesitemos.</p>
+<p>Aunque usualmente usamos <code>pd.concat()</code> para pegar dos o más tablas, en este contexto lo utilizamos como una herramienta de <strong>metadatos</strong>. Al “concatenar” un solo DataFrame consigo mismo pero agregando una “llave” (<code>keys</code>), estamos transformando la estructura del índice. Lo interesante de este ejemplo es que nos muestra lo flexible que es Pandas: estamos haciendo “copy paste” de objetos mediante un script hecho por nosotros mismos y ademas que se va a reutilizar todas las veces que necesitemos.</p>
 <section id="el-argumento-keys-creando-un-super-índice" class="level3">
 <h3 class="anchored" data-anchor-id="el-argumento-keys-creando-un-super-índice">1. El argumento <code>keys</code>: Creando un Super-Índice</h3>
 <p>Al pasar una lista al parámetro <code>keys</code>, Pandas crea un nivel adicional en el índice (un <strong>MultiIndex</strong>) en la parte más externa. * <strong>Antes:</strong> La tabla empezaba directamente en “Tipo de Vivienda”. * <strong>Después:</strong> La tabla tiene una “etiqueta superior” que envuelve a todos los datos.</p>
@@ -487,13 +596,13 @@ El uso de .concat() y keys para jerarquizar reportes
 <h3 class="anchored" data-anchor-id="opción-b-título-en-la-exportación-a-excel-presentación-técnica">Opción B: Título en la exportación a Excel (Presentación técnica)</h3>
 <p>Si el objetivo es que el archivo <code>.xlsx</code> sea legible para un tercero, podemos usar el motor de escritura de Pandas (<code>ExcelWriter</code>) para insertar un título en la celda A1, desplazando la tabla hacia abajo. Esto respeta la <strong>legibilidad</strong> sin ensuciar la lógica de la matriz.</p>
 <div class="monitor-box">
-<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Salida a formato externo con Título Profesional</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pd.ExcelWriter(ruta_salida <span class="op">+</span> <span class="st">"resumen_ingresos.xlsx"</span>) <span class="im">as</span> writer:</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escribimos el título en la primera fila</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame([<span class="st">"REPORTE ESTRATÉGICO: INGRESOS POR REGIÓN Y VIVIENDA"</span>]).to_excel(writer, index<span class="op">=</span><span class="va">False</span>, header<span class="op">=</span><span class="va">False</span>, startrow<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escribimos nuestra matriz de datos empezando dos filas más abajo</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    df_resumen_vertical.to_excel(writer, startrow<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Salida a formato externo con Título Profesional</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pd.ExcelWriter(ruta_salida <span class="op">+</span> <span class="st">"resumen_ingresos.xlsx"</span>) <span class="im">as</span> writer:</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escribimos el título en la primera fila</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame([<span class="st">"REPORTE ESTRATÉGICO: INGRESOS POR REGIÓN Y VIVIENDA"</span>]).to_excel(writer, index<span class="op">=</span><span class="va">False</span>, header<span class="op">=</span><span class="va">False</span>, startrow<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escribimos nuestra matriz de datos empezando dos filas más abajo</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    df_resumen_vertical.to_excel(writer, startrow<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>El resultado de la opción B)</p>
 <div class="quarto-figure quarto-figure-center">
@@ -533,254 +642,153 @@ Control Quirúrgico: Exportación con .to_excel y Metadatos
 </div>
 </div>
 <div class="monitor-box">
-<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ejemplo completo  ---</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH Ampliado)</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generamos una base con 20 casos para permitir agrupamientos significativos</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>, </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>, </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>, </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">'region'</span>: [</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>,</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>],</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, <span class="dv">410000</span>,</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, <span class="dv">590000</span>, <span class="dv">315000</span>, <span class="dv">425000</span>, <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>, <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos la ruta de guardado de base </span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>ruta_entrada <span class="op">=</span> <span class="vs">r"data\input\\"</span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Guardado de base </span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>df.to_excel(ruta_entrada<span class="op">+</span><span class="st">"base_inicial.xlsx"</span>)</span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Ejecución del Pipeline: Tabla de Doble Entrada</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="co"># El objetivo es cruzar 'tipo_vivienda' (Filas) y 'region' (Columnas) </span></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="co"># para observar la media de 'ingreso'.</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 1: Creación de la pivot table</span></span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Usamos una sintaxis transparente donde cada parámetro define un eje.</span></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df.pivot_table(</span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'tipo_vivienda'</span>, </span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">'region'</span>, </span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'ingreso'</span>, </span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># le pasamos una lista de estadísticos</span></span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span>[<span class="st">'count'</span>, <span class="st">'mean'</span>, <span class="st">'sum'</span>]</span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 2: Formateo de salida (Redondeo)</span></span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos el método sobre el resultado anterior para limpiar la visualización.</span></span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df_resumen.<span class="bu">round</span>(<span class="dv">2</span>)</span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 3:Lo apilamos con el metodo ".stack"</span></span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical <span class="op">=</span> df_resumen.stack(level<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 4: Renombrar el índice para mayor claridad</span></span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical.index.names <span class="op">=</span> [<span class="st">'Tipo de Vivienda'</span>, <span class="st">'Métrica'</span>]</span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 1: Tabla de doble entrada (Ingreso promedio por Región y Vivienda): 'count', 'mean','sum'"</span>)</span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resumen_vertical)</span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Salida a formato externo</span></span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a><span class="co"># El dataframe resumen es una nueva unidad de sentido lista para ser compartida.</span></span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>ruta_salida <span class="op">=</span> <span class="vs">r"data\output\\"</span></span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Salida a formato externo con Título Profesional</span></span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pd.ExcelWriter(ruta_salida <span class="op">+</span> <span class="st">"resumen_ingresos.xlsx"</span>) <span class="im">as</span> writer:</span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escribimos el título en la primera fila</span></span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame([<span class="st">"REPORTE ESTRATÉGICO: INGRESOS POR REGIÓN Y VIVIENDA"</span>]).to_excel(writer, </span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>                  index<span class="op">=</span><span class="va">False</span>, header<span class="op">=</span><span class="va">False</span>, startrow<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escribimos nuestra matriz de datos empezando dos filas más abajo</span></span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>    df_resumen_vertical.to_excel(writer, startrow<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="monitor-box">
-<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH Ampliado)</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="ss">f'H_</span><span class="sc">{</span>i<span class="sc">:03d}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">21</span>)],</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>] <span class="op">*</span> <span class="dv">4</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>, <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>] <span class="op">*</span> <span class="dv">2</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, <span class="dv">410000</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, <span class="dv">590000</span>, <span class="dv">315000</span>, <span class="dv">425000</span>, <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>, <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Ejecución del Pipeline: Distribución Porcentual Vertical</span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># El objetivo es saber: "Dentro de cada Región, ¿qué % representan las Casas y qué % los Deptos?"</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 1: Creación de la tabla de frecuencias (Conteo de casos)</span></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>df_conteo <span class="op">=</span> df.pivot_table(</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'tipo_vivienda'</span>, </span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">'region'</span>, </span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'ingreso'</span>, </span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span><span class="st">'count'</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 2: Transformación a Porcentajes Verticales</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Dividimos cada celda por la suma de su columna (axis=0) y multiplicamos por 100</span></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>df_porcentual <span class="op">=</span> (df_conteo <span class="op">/</span> df_conteo.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)) <span class="op">*</span> <span class="dv">100</span></span>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Ejemplo completo  ---</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH Ampliado)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Generamos una base con 20 casos para permitir agrupamientos significativos</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>, </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>, </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>, </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">'region'</span>: [</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>,</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>],</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, <span class="dv">410000</span>,</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, <span class="dv">590000</span>, <span class="dv">315000</span>, <span class="dv">425000</span>, <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>, <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 3: Formateo y Apilado</span></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>df_final <span class="op">=</span> df_porcentual.<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>df_final_vertical <span class="op">=</span> df_final.stack()</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 4: Renombrar para mayor claridad</span></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>df_final_vertical.name <span class="op">=</span> <span class="st">'Porcentaje (%)'</span></span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Reporte: Distribución porcentual de vivienda por región (Vertical)"</span>)</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_final_vertical)</span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Salida a Excel con Formato Profesional</span></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>ruta_salida <span class="op">=</span> <span class="vs">r"data\output\\"</span></span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pd.ExcelWriter(ruta_salida <span class="op">+</span> <span class="st">"distribucion_vivienda.xlsx"</span>) <span class="im">as</span> writer:</span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame([<span class="st">"ESTRUCTURA PORCENTUAL DE VIVIENDA POR REGIÓN (Base 100 por Columna)"</span>]).to_excel(</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>        writer, index<span class="op">=</span><span class="va">False</span>, header<span class="op">=</span><span class="va">False</span>, startrow<span class="op">=</span><span class="dv">0</span></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    df_final_vertical.to_excel(writer, startrow<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-El Desvío Crítico: ¿Qué estamos midiendo?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>En el análisis de datos, el cálculo de porcentajes es donde más errores de interpretación ocurren. Bajo el concepto de <strong>Analista que gobierna</strong>, debés controlar el eje del cálculo:</p>
-<ol type="1">
-<li><strong>Porcentajes Verticales (<code>axis=0</code>):</strong> Al dividir por la suma de la columna, estamos fijando que <strong>cada región sume 100%</strong>. Esto sirve para comparar la composición interna de cada región (ej. “En GBA el 60% vive en casas, mientras que en Patagonia es el 80%”).</li>
-<li><strong>Porcentajes Horizontales (<code>axis=1</code>):</strong> Si dividiéramos por la suma de la fila, estaríamos viendo la distribución de un tipo de vivienda entre las regiones (ej. “Del total de Deptos del país, ¿qué % está en GBA?”).</li>
-</ol>
-<p>La IA puede hacer la división rápidamente, pero es tu tarea asegurar que la <strong>base 100</strong> esté colocada donde el problema de investigación lo requiere. En este ejemplo, el <strong>Split-Apply-Combine</strong> se usa para normalizar los datos y hacerlos comparables entre regiones de distintos tamaños.</p>
-</div>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos la ruta de guardado de base </span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>ruta_entrada <span class="op">=</span> <span class="vs">r"data\input\\"</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Guardado de base </span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>df.to_excel(ruta_entrada<span class="op">+</span><span class="st">"base_inicial.xlsx"</span>)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Ejecución del Pipeline: Tabla de Doble Entrada</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="co"># El objetivo es cruzar 'tipo_vivienda' (Filas) y 'region' (Columnas) </span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co"># para observar la media de 'ingreso'.</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 1: Creación de la pivot table</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Usamos una sintaxis transparente donde cada parámetro define un eje.</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df.pivot_table(</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'tipo_vivienda'</span>, </span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span><span class="st">'region'</span>, </span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'ingreso'</span>, </span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># le pasamos una lista de estadísticos</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span>[<span class="st">'count'</span>, <span class="st">'mean'</span>, <span class="st">'sum'</span>]</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 2: Formateo de salida (Redondeo)</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="co"># Aplicamos el método sobre el resultado anterior para limpiar la visualización.</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df_resumen.<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 3: Lo apilamos con el metodo ".stack"</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical <span class="op">=</span> df_resumen.stack(level<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Etapa 4: Renombrar el índice para mayor claridad</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>df_resumen_vertical.index.names <span class="op">=</span> [<span class="st">'Tipo de Vivienda'</span>, <span class="st">'Métrica'</span>]</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Paso 1: Tabla de doble entrada (Ingreso promedio por Región y Vivienda): 'count', 'mean', 'sum'"</span>)</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resumen_vertical)</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Salida a formato externo</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="co"># El dataframe resumen es una nueva unidad de sentido lista para ser compartida.</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>ruta_salida <span class="op">=</span> <span class="vs">r"data\output\\"</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="co"># B. Salida a formato externo con Título Profesional</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pd.ExcelWriter(ruta_salida <span class="op">+</span> <span class="st">"resumen_ingresos.xlsx"</span>) <span class="im">as</span> writer:</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escribimos el título en la primera fila</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>    pd.DataFrame([<span class="st">"REPORTE ESTRATÉGICO: INGRESOS POR REGIÓN Y VIVIENDA"</span>]).to_excel(writer, </span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>                  index<span class="op">=</span><span class="va">False</span>, header<span class="op">=</span><span class="va">False</span>, startrow<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Escribimos nuestra matriz de datos empezando dos filas más abajo</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>    df_resumen_vertical.to_excel(writer, startrow<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-</section>
-<section id="funciones-y-protocolos-estandarizados" class="level2">
-<h2 class="anchored" data-anchor-id="funciones-y-protocolos-estandarizados">4. Funciones y Protocolos Estandarizados</h2>
-<p>En este nivel del curso, dejamos de escribir líneas de código sueltas para empezar a construir <strong>herramientas</strong>. La función <code>crear_reporte_resumen</code> es lo que llamamos un <strong>Protocolo Estandarizado</strong>: una pieza de software que encapsula una metodología de análisis (en este caso, la construcción de una tabla estadística completa) para que pueda ser reutilizada infinitas veces con total seguridad y legibilidad.</p>
-<p>Al usar funciones, aplicamos el principio de <strong>“No te repitas”</strong> (DRY: Don’t Repeat Yourself), garantizando que el cálculo del porcentaje o la suma de la base sea siempre idéntica en todos nuestros reportes.</p>
-<p>El codigo completo:</p>
+<section id="split-apply-combine-ahora-con-groupby" class="level3">
+<h3 class="anchored" data-anchor-id="split-apply-combine-ahora-con-groupby">2.3 Split-Apply-Combine ahora con groupby()</h3>
+<p>Otro método transparente del principio <strong>Split-Apply-Combine</strong> es mediante <code>.groupby()</code>. Se puede decir que agrupamos por una variable categórica y aplicamos una función de resumen sobre una columna numérica.</p>
 <div class="monitor-box">
-<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># --- CLASE 04: CÁLCULO DE ESTRUCTURAS PORCENTUALES (DISTRIBUCIÓN VERTICAL) ---</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH Ampliado)</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [<span class="ss">f'H_</span><span class="sc">{</span>i<span class="sc">:03d}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">21</span>)],</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [<span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>] <span class="op">*</span> <span class="dv">4</span>,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>, <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>] <span class="op">*</span> <span class="dv">2</span>,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, <span class="dv">410000</span>,</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, <span class="dv">590000</span>, <span class="dv">315000</span>, <span class="dv">425000</span>, <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>, <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> crear_reporte_resumen(data, fila, columna, valor):</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">    Protocolo estandarizado para obtener n, % y Base de Cálculo.</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Conteo</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    conteo_tabla <span class="op">=</span> data.pivot_table(index<span class="op">=</span>fila, columns<span class="op">=</span>columna, values<span class="op">=</span>valor, aggfunc<span class="op">=</span><span class="st">'count'</span>)</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Base de Cálculo (Total por columna)</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    base <span class="op">=</span> conteo_tabla.<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Porcentajes</span></span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    pct <span class="op">=</span> (conteo_tabla <span class="op">/</span> base <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Construcción de la Unidad de Sentido</span></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Creamos una fila de Base para que sea explícita</span></span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>    df_base <span class="op">=</span> pd.DataFrame([base], columns<span class="op">=</span>base.index, index<span class="op">=</span>[<span class="st">'Base de Cálculo (n)'</span>])</span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.concat([conteo_tabla, pct, df_base], keys<span class="op">=</span>[<span class="st">'conteo_tabla'</span>, <span class="st">'%'</span>, <span class="st">'TOTAL'</span>])</span>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- SPLIT-APPLY-COMBINE CON groupby() ---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. Preparación del DataFrame (Simulacro EPH)</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>, </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>, </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>, </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">'region'</span>: [</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Casa'</span>, <span class="st">'Depto'</span>, </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>, <span class="st">'Casa'</span>,  <span class="st">'Depto'</span>, <span class="st">'Casa'</span>, <span class="st">'Depto'</span>],</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>, <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, <span class="dv">410000</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, <span class="dv">590000</span>, <span class="dv">315000</span>, <span class="dv">425000</span>, <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>, <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. SPLIT: Agrupamos por tipo de vivienda</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. APPLY: Calculamos el ingreso promedio de cada grupo</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. COMBINE: Pandas arma una tabla con un resumen por grupo</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>df_resumen <span class="op">=</span> df.groupby(<span class="st">'tipo_vivienda'</span>)[<span class="st">'ingreso'</span>].mean()</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ingreso promedio según tipo de vivienda:"</span>)</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resumen)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">30</span>)</span>
 <span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co"># USO DEL PROTOCOLO (Súper legible):</span></span>
-<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>df_resultado <span class="op">=</span> crear_reporte_resumen(df, <span class="st">'tipo_vivienda'</span>, <span class="st">'region'</span>, <span class="st">'ingreso'</span>)</span>
-<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_resultado)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ingreso promedio en Casas: $</span><span class="sc">{</span>df_resumen[<span class="st">'Casa'</span>]<span class="sc">:,</span><span class="fl">.0</span><span class="er">f</span><span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Ingreso promedio en Deptos: $</span><span class="sc">{</span>df_resumen[<span class="st">'Depto'</span>]<span class="sc">:,</span><span class="fl">.0</span><span class="er">f</span><span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="anatomía-del-protocolo" class="level3">
-<h3 class="anchored" data-anchor-id="anatomía-del-protocolo">4.1 Anatomía del Protocolo</h3>
-<p>Vamos a desglosar cada componente de esta función bajo el lente de nuestra tarea de <strong>gobierno y auditoría</strong>:</p>
-<section id="a.-definición-de-parámetros" class="level4">
-<h4 class="anchored" data-anchor-id="a.-definición-de-parámetros">A. Definición de Parámetros</h4>
-<p><code>def crear_reporte_resumen(data, fila, columna, valor):</code> Aquí definimos las <strong>variables de entrada</strong>. Al parametrizar <code>fila</code>, <code>columna</code> y <code>valor</code>, hacemos que la función sea agnóstica: hoy puede procesar “Vivienda vs Región” y mañana “Nivel Educativo vs Sexo” sin cambiar una sola línea de lógica interna.</p>
-</section>
-<section id="b.-el-corazón-del-split-apply-combine" class="level4">
-<h4 class="anchored" data-anchor-id="b.-el-corazón-del-split-apply-combine">B. El Corazón del Split-Apply-Combine</h4>
-<p><code>conteo_tabla = data.pivot_table(index=fila, columns=columna, values=valor, aggfunc='count')</code> El primer paso es generar la <strong>frecuencia absoluta (n)</strong>. Usamos <code>'count'</code> porque para calcular porcentajes necesitamos saber cuántos casos caen en cada celda antes de cualquier otra operación.</p>
-</section>
-<section id="c.-la-base-de-cálculo-el-denominador" class="level4">
-<h4 class="anchored" data-anchor-id="c.-la-base-de-cálculo-el-denominador">C. La Base de Cálculo (El denominador)</h4>
-<p><code>base = conteo_tabla.sum(axis=0)</code> Aquí es donde el <strong>Analista gobierna</strong>. Al definir <code>axis=0</code>, estamos extrayendo el total de cada columna. Esta es la “Base 100” que utilizaremos para normalizar los datos. Es el componente más crítico para asegurar que el porcentaje sea vertical.</p>
-</section>
-<section id="d.-cálculo-de-porcentajes-vectorizados" class="level4">
-<h4 class="anchored" data-anchor-id="d.-cálculo-de-porcentajes-vectorizados">D. Cálculo de Porcentajes Vectorizados</h4>
-<p><code>pct = (conteo_tabla / base * 100).round(1)</code> Pandas realiza una operación <strong>vectorizada</strong>: divide toda la matriz <code>conteo_tabla</code> por el vector <code>base</code> de forma automática, alineando las columnas por su nombre. Es una operación de alta performance que evita el uso de bucles manuales.</p>
-</section>
-<section id="e.-transparencia-metodológica-la-fila-de-base" class="level4">
-<h4 class="anchored" data-anchor-id="e.-transparencia-metodológica-la-fila-de-base">E. Transparencia Metodológica: La Fila de Base</h4>
-<p><code>df_base = pd.DataFrame([base], columns=base.index, index=['Base de Cálculo (n)'])</code> Un desvío común en la IA es entregar porcentajes sin decir sobre cuántos casos se calcularon. En este protocolo, <strong>forzamos la transparencia</strong> creando una fila explícita que informa la “Base de Cálculo”. Esto permite que cualquier lector del reporte sepa si el 50% representa a 2 casos o a 2.000.</p>
-</section>
-<section id="f.-construcción-de-la-unidad-de-sentido-final" class="level4">
-<h4 class="anchored" data-anchor-id="f.-construcción-de-la-unidad-de-sentido-final">F. Construcción de la Unidad de Sentido Final</h4>
-<p><code>return pd.concat([conteo_tabla, pct, df_base], keys=['conteo_tabla', '%', 'TOTAL'])</code> Finalmente, usamos <code>pd.concat</code> con <code>keys</code> para “empaquetar” todo en un solo objeto jerárquico. El resultado no es una tabla suelta, sino un <strong>reporte integral</strong> que contiene: 1. Los casos reales (n). 2. El peso relativo (%). 3. El sustento estadístico (Total n).</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-¿Por qué esto es “Gobernar la IA”?
+Lo que estamos haciendo
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Pedirle a una IA “haceme un porcentaje” puede derivar en un código desordenado o difícil de replicar. Al definir este <strong>Protocolo</strong>, vos establecés las reglas de juego:</p>
-<ul>
-<li><strong>Control de Estilo:</strong> El bloque de “USO DEL PROTOCOLO” es infinitamente más legible que 20 líneas de código repetidas.</li>
-<li><strong>Seguridad:</strong> Minimizás el riesgo de que la IA elija un eje de suma equivocado en el futuro.</li>
-<li><strong>Auditoría:</strong> Al devolver siempre la “Base de Cálculo”, estás auditando la calidad de tus propios datos en cada reporte que generás.</li>
-</ul>
+<ol type="1">
+<li><strong><code>df.groupby('tipo_vivienda')</code></strong>: Le decimos a Pandas que divida (Split) el DataFrame en dos grupos: uno para “Casa” y otro para “Depto”.</li>
+<li><strong><code>['ingreso']</code></strong>: Seleccionamos la columna sobre la que queremos operar. Es la materia prima del cálculo.</li>
+<li><strong><code>.mean()</code></strong>: Aplicamos la función de agregación (Apply). Pandas calcula el promedio de ingresos dentro de cada grupo por separado.</li>
+<li><strong>Resultado</strong>: Un nuevo objeto que combina (Combine) los promedios en una tabla compacta. Un nuevo objeto (una Series) donde el índice ya no son los códigos de hogar, sino las categorías de agrupación en este ejemplo (<code>Casa</code> y <code>Depto</code>).</li>
+</ol>
 </div>
 </div>
 
 
-</section>
 </section>
 </section>
 

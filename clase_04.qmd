@@ -5,19 +5,19 @@ subtitle: "De la Microdata al Resumen"
 
 ## 1. El DataFrame como Unidad de Sentido
 
-Técnicamente un **DataFrame** es una **colección de Series (columnas) vinculadas por un Índice común**. El indice **no es parte** de los datos de nuestro dataframe, en la imagen podemos observarlo con claridad.
+Técnicamente un **DataFrame** es una **colección de Series (columnas) vinculadas por un Índice común**. El índice **no es parte** de los datos de nuestro dataframe, en la imagen podemos observarlo con claridad.
 
 ![Vista del DataFrame](../imagenes/01_table_dataframe.svg)
 
 ### 1.1 El DataFrame frente a la Hoja de Cálculo
 
-Si el Excel es un lienzo de acceso libre donde cada celda puede funcionar como una unidad independiente (una "isla" de datos con su propia lógica o formato), el DataFrame de Pandas es una entidad de datos estructurada y programática. Esta diferencia de arquitectura es fundamental para la integridad de los procesos de analisis:
+Si el Excel es un lienzo de acceso libre donde cada celda puede funcionar como una unidad independiente (una "isla" de datos con su propia lógica o formato), el DataFrame de Pandas es una entidad de datos estructurada y programática. Esta diferencia de arquitectura es fundamental para la integridad de los procesos de análisis:
 
 * **Cohesión de Fila:** En una matriz de datos (DataFrame), la fila es la unidad mínima de información. Si aplicamos una operación de reordenamiento (sorting) o un filtrado, el registro se desplaza como un bloque compacto. Esto garantiza que los atributos de una observación —por ejemplo, un `ID`, un `Ingreso` y una `Categoría`— permanezcan vinculados de forma indisoluble.
 
 * **Tipificación de Columna:** A diferencia de las celdas de una hoja de cálculo, que pueden contener tipos de datos mixtos en una misma columna, las Series de un DataFrame imponen una **consistencia de tipo** (`dtype`). Esta restricción es la que permite realizar cálculos vectorizados de alta performance.
 
-Nuestro enfoque es **Dataframe Céntrico** vamos a tratar de no irnos por las ramas de los conceptos de programación para reconocernos como **usuarios de programación** analistas que escribimos código funcional y ahora también asistidos por IA .
+Nuestro enfoque es **Dataframe Céntrico** vamos a tratar de no irnos por las ramas de los conceptos de programación para reconocernos como **usuarios de programación** analistas que escribimos código funcional y ahora también asistidos por IA.
 Si el DataFrame está bien construido y su índice es sólido, los cálculos de agregación podremos construirlos de manera **natural**. El DataFrame es el mapa; los métodos de agrupación son nuestra brújula.
 
 ---
@@ -100,7 +100,7 @@ df_resumen.to_excel(ruta_salida+"resumen_ingresos.xlsx")
 
 ---
 
-## 2 La Pivot Table bajo el Paradigma Split-Apply-Combine
+## 2. La Pivot Table bajo el Paradigma Split-Apply-Combine
 
 Para entender realmente qué está haciendo Pandas cuando ejecutamos una `pivot_table`, debemos desglosarla a través del paradigma **Split-Apply-Combine**. Esta es la piedra angular del procesamiento de datos y lo que nos permite pasar de una masa de microdatos a un indicador sintético.
 
@@ -120,7 +120,7 @@ Cuando definimos los ejes y la función de agregación, Pandas activa una secuen
 
 ### 2.1 Anatomía de la instrucción
 
-¿Cuáles se el rol de cada "pieza" dentro de la función `pivot_table()`? Aquí desglosamos la lógica de nuestra instrucción:
+¿Cuál es el rol de cada "pieza" dentro de la función `pivot_table()`? Aquí desglosamos la lógica de nuestra instrucción:
 
 `df_resumen = df.pivot_table(index='tipo_vivienda', columns='region', values='ingreso', aggfunc='mean')`
 
@@ -150,6 +150,104 @@ Observen lo que acaba de suceder con nuestra matriz de datos:
    * `columns`: Define la apertura horizontal.
    * `aggfunc`: Define la operación estadística (en este caso, la media).
 3. **Trazabilidad:** Al trabajar por etapas (Etapa 1: Crear, Etapa 2: Redondear), mantenemos el control total sobre el estado del dato antes de su exportación final a Excel.
+:::
+
+---
+
+### 2.2 Dos variables en el índice: la lista jerárquica
+
+Hasta ahora usamos `pivot_table()` con `index` para las filas y `columns` para las columnas. El resultado era una matriz (tabla de doble entrada). Pero también podemos pasar **una lista** al parámetro `index` y obtener una lista jerárquica de indicadores. Es la misma información, presentada de otra forma.
+
+::: {.monitor-box}
+```python
+# --- PIVOT TABLE CON ÍNDICE MÚLTIPLE (LISTA JERÁRQUICA) ---
+import pandas as pd
+
+# 0. Preparación del DataFrame (Simulacro EPH)
+data = {
+    'cod_hogar': [
+      'H_001', 'H_002', 'H_003', 'H_004', 'H_005',
+      'H_006', 'H_007', 'H_008', 'H_009', 'H_010',
+      'H_011', 'H_012', 'H_013', 'H_014', 'H_015',
+      'H_016', 'H_017', 'H_018', 'H_019', 'H_020'
+    ],
+    'region': [
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'
+    ],
+    'tipo_vivienda': ['Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto',
+                      'Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto'],
+    'ingreso': [450000,320000,580000,310000,420000,490000,310000,620000,280000,410000,
+                460000,335000,590000,315000,425000,500000,325000,630000,295000,415000],
+    'edad_jefe': [45,32,58,29,41,36,52,47,33,40,44,31,57,30,42,35,51,46,34,39]
+}
+
+df = pd.DataFrame(data).set_index('cod_hogar')
+
+ruta_salida = r"data\output\\"
+
+# Versión matriz (dos variables, una en cada eje) — la que ya conocemos
+df_matriz = df.pivot_table(
+    index='tipo_vivienda',
+    columns='region',
+    values='ingreso',
+    aggfunc='mean'
+).round(2)
+
+print("Versión matriz (tipo_vivienda x region):")
+print(df_matriz)
+print("-" * 30)
+
+# Versión lista jerárquica (ambas variables en el índice)
+df_lista = df.pivot_table(
+    index=['region', 'tipo_vivienda'],
+    values='ingreso',
+    aggfunc='mean'
+).round(2)
+
+print("Versión lista jerárquica (region + tipo_vivienda en filas):")
+print(df_lista)
+print("-" * 30)
+
+# Salida a Excel
+df_lista.to_excel(ruta_salida + "resumen_jerarquico.xlsx")
+print(f"Archivo guardado en: {ruta_salida}resumen_jerarquico.xlsx")
+```
+:::
+
+::: {.callout-note}
+## Misma información, distinta presentación
+
+1. **Versión matriz** (`index + columns`): Cruzamos tipo de vivienda con región. Vemos el ingreso promedio en cada celda. Ideal para explorar relaciones entre dos variables.
+2. **Versión lista** (`index=['region', 'tipo_vivienda']`): Ponemos ambas variables una debajo de la otra en las filas. En vez de 2 filas x 5 columnas tenemos 10 filas y una sola columna de ingreso. Cada fila es una combinación única de región y tipo de vivienda. Ideal para exportar a Excel como tabla de informe.
+3. **MultiIndex**: La versión lista tiene un índice con dos niveles. El primer nivel es "region"; el segundo, "tipo_vivienda". Pandas lo muestra con espacios para indicar la jerarquía.
+:::
+
+::: {.callout-tip}
+## Mesa de Ayuda: ¿Cómo sé cuántas filas voy a obtener?
+
+Si `index` recibe una lista de 2 variables, la cantidad de filas es el producto de las categorías de cada una. En este ejemplo: 5 regiones x 2 tipos de vivienda = 10 filas. Siempre que cada combinación tenga al menos un caso.
+:::
+
+::: {.gray-italic-box}
+**Zona de Prompting:** "Actúa como experto en Pandas para ciencias sociales. Tomando el mismo DataFrame del ejemplo anterior, usá `pivot_table()` con `index=['region', 'tipo_vivienda']` pero sin `columns`. Ahora agregá `aggfunc='sum'` y explicá en lenguaje sencillo qué representa cada fila del resultado."
+:::
+
+::: {.callout-important}
+## ¿Qué pasa si hay NaN en los datos?
+
+Con nuestro ejemplo sintético todo funciona limpio porque cada combinación región + tipo de vivienda tiene al menos un caso. Con datos reales (EPH) esto no siempre es así.
+
+La función `aggfunc='mean'` excluye automáticamente los valores nulos (`NaN`) de cada grupo. Si una celda queda sin datos válidos, Pandas coloca `NaN` en esa posición.
+
+**Regla práctica:**
+- **`mean` y `sum`**: ignoran `NaN` dentro de cada grupo. Si todo el grupo es `NaN`, el resultado es `NaN`.
+- **`count`**: cuenta filas, sin importar si el valor es nulo o no. Es el único estadístico "a prueba de NaN".
+- Si querés forzar un cero donde no hay datos usá `fill_value=0` dentro de `pivot_table()`.
 :::
 
 ---
@@ -209,7 +307,7 @@ df_resumen = df.pivot_table(
     columns='region', 
     values='ingreso', 
     # le pasamos una lista de estadísticos
-    aggfunc=['count', 'mean','sum']
+    aggfunc=['count', 'mean', 'sum']
     
 )
 
@@ -217,14 +315,14 @@ df_resumen = df.pivot_table(
 # Aplicamos el método sobre el resultado anterior para limpiar la visualización.
 df_resumen = df_resumen.round(2)
 
-# Etapa 3:Lo apilamos con el metodo ".stack"
+# Etapa 3: Lo apilamos con el metodo ".stack"
 df_resumen_vertical = df_resumen.stack(level=0)
 
 # Etapa 4: Renombrar el índice para mayor claridad
 df_resumen_vertical.index.names = ['Tipo de Vivienda', 'Métrica']
 
 
-print("Paso 1: Tabla de doble entrada (Ingreso promedio por Región y Vivienda): 'count', 'mean','sum'")
+print("Paso 1: Tabla de doble entrada (Ingreso promedio por Región y Vivienda): 'count', 'mean', 'sum'")
 print(df_resumen_vertical)
 print("-" * 30)
 
@@ -252,12 +350,12 @@ En Pandas, existen dos formas de abordar el título de la "salida" el título "d
 
 ### Opción A: Título jerárquico mediante MultiIndex (Dentro del objeto)
 
-Podemos "envolver" nuestras métricas bajo un título superior utilizando una clave en el método `concat`. Esto es útil si planeamos que nuestro reporte sea parte de un pipeline y necesitamos unir varios reportes en una sola matriz y/o para graficar .
+Podemos "envolver" nuestras métricas bajo un título superior utilizando una clave en el método `concat`. Esto es útil si planeamos que nuestro reporte sea parte de un pipeline y necesitamos unir varios reportes en una sola matriz y/o para graficar.
 
 ::: {.monitor-box}
 ```python
 
-# A. Intervenimos la clave "keys" y "la pegamos" a nustro Dataframe de salida
+# A. Intervenimos la clave "keys" y "la pegamos" a nuestro DataFrame de salida
 df_final_con_titulo = pd.concat([df_resumen_vertical], 
                       keys=['Reporte: Análisis de Ingresos EPH'])
 
@@ -274,7 +372,7 @@ El resultado de la opción A)
 ::: {.callout-note}
 ## El uso de .concat() y keys para jerarquizar reportes
 
-Aunque usualmente usamos `pd.concat()` para pegar dos o más tablas, en este contexto lo utilizamos como una herramienta de **metadatos**. Al "concatenar" un solo DataFrame consigo mismo pero agregando una "llave" (`keys`), estamos transformando la estructura del índice. Lo interesante de este ejemplo es que nos muestra lo flexible que es Pandas: estamos haciendo "copy paste" de objetos mediante un script hecho por nosotros mismos y ademas que se va a reutilzar todas las veces que necesitemos.
+Aunque usualmente usamos `pd.concat()` para pegar dos o más tablas, en este contexto lo utilizamos como una herramienta de **metadatos**. Al "concatenar" un solo DataFrame consigo mismo pero agregando una "llave" (`keys`), estamos transformando la estructura del índice. Lo interesante de este ejemplo es que nos muestra lo flexible que es Pandas: estamos haciendo "copy paste" de objetos mediante un script hecho por nosotros mismos y ademas que se va a reutilizar todas las veces que necesitemos.
 
 
 ### 1. El argumento `keys`: Creando un Super-Índice
@@ -397,14 +495,14 @@ df_resumen = df.pivot_table(
 # Aplicamos el método sobre el resultado anterior para limpiar la visualización.
 df_resumen = df_resumen.round(2)
 
-# Etapa 3:Lo apilamos con el metodo ".stack"
+# Etapa 3: Lo apilamos con el metodo ".stack"
 df_resumen_vertical = df_resumen.stack(level=0)
 
 # Etapa 4: Renombrar el índice para mayor claridad
 df_resumen_vertical.index.names = ['Tipo de Vivienda', 'Métrica']
 
 
-print("Paso 1: Tabla de doble entrada (Ingreso promedio por Región y Vivienda): 'count', 'mean','sum'")
+print("Paso 1: Tabla de doble entrada (Ingreso promedio por Región y Vivienda): 'count', 'mean', 'sum'")
 print(df_resumen_vertical)
 print("-" * 30)
 
@@ -425,18 +523,34 @@ with pd.ExcelWriter(ruta_salida + "resumen_ingresos.xlsx") as writer:
 ```
 :::
 
+### 2.3 Split-Apply-Combine ahora con groupby()
 
+Otro método transparente del principio **Split-Apply-Combine** es mediante `.groupby()`. Se puede decir que agrupamos por una variable categórica y aplicamos una función de resumen sobre una columna numérica.
 
 ::: {.monitor-box}
 ```python
+# --- SPLIT-APPLY-COMBINE CON groupby() ---
 import pandas as pd
 import numpy as np
 
-# 0. Preparación del DataFrame (Simulacro EPH Ampliado)
+# 0. Preparación del DataFrame (Simulacro EPH)
 data = {
-    'cod_hogar': [f'H_{i:03d}' for i in range(1, 21)],
-    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'] * 4,
-    'tipo_vivienda': ['Casa', 'Depto', 'Casa', 'Casa', 'Depto', 'Depto', 'Casa', 'Depto', 'Casa', 'Depto'] * 2,
+    'cod_hogar': [
+      'H_001', 'H_002', 'H_003', 'H_004', 'H_005', 
+      'H_006', 'H_007', 'H_008', 'H_009', 'H_010', 
+      'H_011', 'H_012', 'H_013', 'H_014', 'H_015', 
+      'H_016', 'H_017', 'H_018', 'H_019', 'H_020'
+    ],
+  'region': [
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'
+    ],
+    'tipo_vivienda': ['Casa',  'Depto', 'Casa',  'Casa', 'Depto', 
+                      'Depto', 'Casa',  'Depto', 'Casa', 'Depto',
+                      'Casa',  'Depto', 'Casa',  'Casa', 'Depto', 
+                      'Depto', 'Casa',  'Depto', 'Casa', 'Depto'],
     'ingreso': [450000, 320000, 580000, 310000, 420000, 490000, 310000, 620000, 280000, 410000,
                 460000, 335000, 590000, 315000, 425000, 500000, 325000, 630000, 295000, 415000],
     'edad_jefe': [45, 32, 58, 29, 41, 36, 52, 47, 33, 40, 44, 31, 57, 30, 42, 35, 51, 46, 34, 39]
@@ -444,157 +558,27 @@ data = {
 
 df = pd.DataFrame(data).set_index('cod_hogar')
 
-# 1. Ejecución del Pipeline: Distribución Porcentual Vertical
-# El objetivo es saber: "Dentro de cada Región, ¿qué % representan las Casas y qué % los Deptos?"
+# 1. SPLIT: Agrupamos por tipo de vivienda
+# 2. APPLY: Calculamos el ingreso promedio de cada grupo
+# 3. COMBINE: Pandas arma una tabla con un resumen por grupo
+df_resumen = df.groupby('tipo_vivienda')['ingreso'].mean()
 
-# Etapa 1: Creación de la tabla de frecuencias (Conteo de casos)
-df_conteo = df.pivot_table(
-    index='tipo_vivienda', 
-    columns='region', 
-    values='ingreso', 
-    aggfunc='count'
-)
-
-# Etapa 2: Transformación a Porcentajes Verticales
-# Dividimos cada celda por la suma de su columna (axis=0) y multiplicamos por 100
-df_porcentual = (df_conteo / df_conteo.sum(axis=0)) * 100
-
-# Etapa 3: Formateo y Apilado
-df_final = df_porcentual.round(1)
-df_final_vertical = df_final.stack()
-
-# Etapa 4: Renombrar para mayor claridad
-df_final_vertical.name = 'Porcentaje (%)'
-
-print("Reporte: Distribución porcentual de vivienda por región (Vertical)")
-print(df_final_vertical)
+print("Ingreso promedio según tipo de vivienda:")
+print(df_resumen)
 print("-" * 30)
 
-# 2. Salida a Excel con Formato Profesional
-ruta_salida = r"data\output\\"
-
-with pd.ExcelWriter(ruta_salida + "distribucion_vivienda.xlsx") as writer:
-    pd.DataFrame(["ESTRUCTURA PORCENTUAL DE VIVIENDA POR REGIÓN (Base 100 por Columna)"]).to_excel(
-        writer, index=False, header=False, startrow=0
-    )
-    df_final_vertical.to_excel(writer, startrow=2)
+print(f"Ingreso promedio en Casas: ${df_resumen['Casa']:,.0f}")
+print(f"Ingreso promedio en Deptos: ${df_resumen['Depto']:,.0f}")
 ```
 :::
 
-
-
 ::: {.callout-note}
-## El Desvío Crítico: ¿Qué estamos midiendo?
+## Lo que estamos haciendo
 
-En el análisis de datos, el cálculo de porcentajes es donde más errores de interpretación ocurren. Bajo el concepto de **Analista que gobierna**, debés controlar el eje del cálculo:
+1. **`df.groupby('tipo_vivienda')`**: Le decimos a Pandas que divida (Split) el DataFrame en dos grupos: uno para "Casa" y otro para "Depto".
+2. **`['ingreso']`**: Seleccionamos la columna sobre la que queremos operar. Es la materia prima del cálculo.
+3. **`.mean()`**: Aplicamos la función de agregación (Apply). Pandas calcula el promedio de ingresos dentro de cada grupo por separado.
+4. **Resultado**: Un nuevo objeto que combina (Combine) los promedios en una tabla compacta. Un nuevo objeto (una Series) donde el índice ya no son los códigos de hogar, sino las categorías de agrupación en este ejemplo (`Casa` y `Depto`).
 
-1. **Porcentajes Verticales (`axis=0`):** Al dividir por la suma de la columna, estamos fijando que **cada región sume 100%**. Esto sirve para comparar la composición interna de cada región (ej. "En GBA el 60% vive en casas, mientras que en Patagonia es el 80%").
-2. **Porcentajes Horizontales (`axis=1`):** Si dividiéramos por la suma de la fila, estaríamos viendo la distribución de un tipo de vivienda entre las regiones (ej. "Del total de Deptos del país, ¿qué % está en GBA?").
-
-La IA puede hacer la división rápidamente, pero es tu tarea asegurar que la **base 100** esté colocada donde el problema de investigación lo requiere. En este ejemplo, el **Split-Apply-Combine** se usa para normalizar los datos y hacerlos comparables entre regiones de distintos tamaños.
 :::
-
-
-## 4. Funciones y Protocolos Estandarizados
-
-En este nivel del curso, dejamos de escribir líneas de código sueltas para empezar a construir **herramientas**. La función `crear_reporte_resumen` es lo que llamamos un **Protocolo Estandarizado**: una pieza de software que encapsula una metodología de análisis (en este caso, la construcción de una tabla estadística completa) para que pueda ser reutilizada infinitas veces con total seguridad y legibilidad.
-
-Al usar funciones, aplicamos el principio de **"No te repitas"** (DRY: Don't Repeat Yourself), garantizando que el cálculo del porcentaje o la suma de la base sea siempre idéntica en todos nuestros reportes.
-
-El codigo completo:
-
-
-::: {.monitor-box}
-```python
-
-# --- CLASE 04: CÁLCULO DE ESTRUCTURAS PORCENTUALES (DISTRIBUCIÓN VERTICAL) ---
-
-import pandas as pd
-import numpy as np
-
-# 0. Preparación del DataFrame (Simulacro EPH Ampliado)
-data = {
-    'cod_hogar': [f'H_{i:03d}' for i in range(1, 21)],
-    'region': ['GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'] * 4,
-    'tipo_vivienda': ['Casa', 'Depto', 'Casa', 'Casa', 'Depto', 'Depto', 'Casa', 'Depto', 'Casa', 'Depto'] * 2,
-    'ingreso': [450000, 320000, 580000, 310000, 420000, 490000, 310000, 620000, 280000, 410000,
-                460000, 335000, 590000, 315000, 425000, 500000, 325000, 630000, 295000, 415000],
-    'edad_jefe': [45, 32, 58, 29, 41, 36, 52, 47, 33, 40, 44, 31, 57, 30, 42, 35, 51, 46, 34, 39]
-}
-
-df = pd.DataFrame(data).set_index('cod_hogar')
-
-
-def crear_reporte_resumen(data, fila, columna, valor):
-    """
-    Protocolo estandarizado para obtener n, % y Base de Cálculo.
-    """
-    # Conteo
-    conteo_tabla = data.pivot_table(index=fila, columns=columna, values=valor, aggfunc='count')
-    
-    # Base de Cálculo (Total por columna)
-    base = conteo_tabla.sum(axis=0)
-    
-    # Porcentajes
-    pct = (conteo_tabla / base * 100).round(1)
-    
-    # Construcción de la Unidad de Sentido
-    # Creamos una fila de Base para que sea explícita
-    df_base = pd.DataFrame([base], columns=base.index, index=['Base de Cálculo (n)'])
-    
-    return pd.concat([conteo_tabla, pct, df_base], keys=['conteo_tabla', '%', 'TOTAL'])
-
-# USO DEL PROTOCOLO (Súper legible):
-df_resultado = crear_reporte_resumen(df, 'tipo_vivienda', 'region', 'ingreso')
-
-print(df_resultado)
-
-```
-::: 
-
-
-### 4.1 Anatomía del Protocolo
-
-Vamos a desglosar cada componente de esta función bajo el lente de nuestra tarea de **gobierno y auditoría**:
-
-#### A. Definición de Parámetros
-`def crear_reporte_resumen(data, fila, columna, valor):`
-Aquí definimos las **variables de entrada**. Al parametrizar `fila`, `columna` y `valor`, hacemos que la función sea agnóstica: hoy puede procesar "Vivienda vs Región" y mañana "Nivel Educativo vs Sexo" sin cambiar una sola línea de lógica interna.
-
-#### B. El Corazón del Split-Apply-Combine
-`conteo_tabla = data.pivot_table(index=fila, columns=columna, values=valor, aggfunc='count')`
-El primer paso es generar la **frecuencia absoluta (n)**. Usamos `'count'` porque para calcular porcentajes necesitamos saber cuántos casos caen en cada celda antes de cualquier otra operación.
-
-#### C. La Base de Cálculo (El denominador)
-`base = conteo_tabla.sum(axis=0)`
-Aquí es donde el **Analista gobierna**. Al definir `axis=0`, estamos extrayendo el total de cada columna. Esta es la "Base 100" que utilizaremos para normalizar los datos. Es el componente más crítico para asegurar que el porcentaje sea vertical.
-
-
-
-#### D. Cálculo de Porcentajes Vectorizados
-`pct = (conteo_tabla / base * 100).round(1)`
-Pandas realiza una operación **vectorizada**: divide toda la matriz `conteo_tabla` por el vector `base` de forma automática, alineando las columnas por su nombre. Es una operación de alta performance que evita el uso de bucles manuales.
-
-#### E. Transparencia Metodológica: La Fila de Base
-`df_base = pd.DataFrame([base], columns=base.index, index=['Base de Cálculo (n)'])`
-Un desvío común en la IA es entregar porcentajes sin decir sobre cuántos casos se calcularon. En este protocolo, **forzamos la transparencia** creando una fila explícita que informa la "Base de Cálculo". Esto permite que cualquier lector del reporte sepa si el 50% representa a 2 casos o a 2.000.
-
-#### F. Construcción de la Unidad de Sentido Final
-`return pd.concat([conteo_tabla, pct, df_base], keys=['conteo_tabla', '%', 'TOTAL'])`
-Finalmente, usamos `pd.concat` con `keys` para "empaquetar" todo en un solo objeto jerárquico. El resultado no es una tabla suelta, sino un **reporte integral** que contiene:
-1. Los casos reales (n).
-2. El peso relativo (%).
-3. El sustento estadístico (Total n).
-
-
-::: {.callout-note}
-## ¿Por qué esto es "Gobernar la IA"?
-
-Pedirle a una IA "haceme un porcentaje" puede derivar en un código desordenado o difícil de replicar. Al definir este **Protocolo**, vos establecés las reglas de juego:
-
-* **Control de Estilo:** El bloque de "USO DEL PROTOCOLO" es infinitamente más legible que 20 líneas de código repetidas.
-* **Seguridad:** Minimizás el riesgo de que la IA elija un eje de suma equivocado en el futuro.
-* **Auditoría:** Al devolver siempre la "Base de Cálculo", estás auditando la calidad de tus propios datos en cada reporte que generás.
-:::
-
 
