@@ -182,6 +182,11 @@ Crea un archivo de texto en `C:\CursoPandas` llamado `CursoPandas.code-workspace
         }
     }
 }
+
+
+
+
+
 ```
 :::
 
