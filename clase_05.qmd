@@ -468,16 +468,6 @@ import numpy as np
 ruta_entrada = "data/output/"
 base_limpia = pd.read_excel(ruta_entrada + "base_editada.xlsx", index_col='cod_hogar')
 
-print("Columnas disponibles en la base editada:")
-print(base_limpia.columns.tolist())
-print("-" * 30)
-
-# Verificamos que no hay NaN en la columna trabajada
-if base_limpia['ingreso_sin_na'].isna().sum() > 0:
-    print("ATENCIÓN: Aún hay NaN en ingreso_sin_na")
-else:
-    print("ingreso_sin_na: sin valores ausentes. Listo para analizar.")
-
 # pivot_table con datos limpios
 resumen = base_limpia.pivot_table(
     index='tipo_vivienda',
