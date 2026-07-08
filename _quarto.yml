@@ -49,7 +49,7 @@ website:
             file: clase_04.qmd
           - text: 'Clase 05: Edición y Tratamiento de Valores Ausentes'
             file: clase_05.qmd
-          - text: 'Clase 06: Mas sobre funciones y clases'
+          - text: 'Clase 06: Habilidades y OpenCode'
             file: clase_06.qmd
 
     right:
