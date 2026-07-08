@@ -1,0 +1,761 @@
+---
+title: "Clase 06: Tu Biblioteca de Habilidades"
+subtitle: "De funciones sueltas a clases y metodos reutilizables"
+---
+
+## 1. La Biblioteca de Habilidades
+
+En las clases anteriores se construyeron herramientas puntuales: la `pivot_table` de la Clase 04, las funciones `include()` y `log()` de la Clase 05. Cada una resuelve una tarea concreta y se usa en un momento puntual del trabajo.
+
+El problema aparece cuando esas herramientas se necesitan en proyectos futuros. Si hoy se escribio una `pivot_table` prolija, mañana se vuelve a escribir. Si la funcion `log()` resulto util, se copia y pega en otro script. Asi se termina con codigo repetido, dificil de mantener y propenso a inconsistencias.
+
+La solucion es construir una **biblioteca de habilidades**: una carpeta donde se guardan las herramientas que se usan seguido, cada una en su propio archivo, listas para importar cuando se necesitan. Cada habilidad resuelve una tarea especifica (un informe, una limpieza de datos, un calculo recurrente). El analista las va llenando a medida que las descubre en su trabajo.
+
+> **Nota sobre el lenguaje**: Las "habilidades" son **clases** con sus **metodos** (igual que en cualquier curso de programacion). Las llamamos "habilidades" porque la palabra es mas natural para un analista y enfoca la atencion en lo que la herramienta **hace**, no en concepto de programción. 'Clase' y 'Metodo' son los nombres tecnicos. Para nosotros: habilidades = conjunto de clases y metodos.
+
+---
+
+## 2. Primera Habilidad: PipelineTools (PARTE 1)
+
+Se toma la pareja de funciones `include()` y `log()` de la Clase 05 y la incorporaos dentro de una **habilidad** llamada `PipelineTools`. Es la misma logica de siempre, solo que ahora agrupada bajo un nombre.
+
+### 2.1 Definicion de la habilidad
+
+La habilidad se escribe al inicio del script, donde antes estaban las funciones sueltas. El codigo es identico al de la Clase 05.
+
+::: {.monitor-box}
+```python
+# === HABILIDAD PIPELINETOOLS: INCLUDE() Y LOG() AGRUPADAS ===
+# En el fondo es una clase con dos metodos (include y log).
+# Se la llama "habilidad" porque resuelve una tarea del pipeline.
+
+import pandas as pd
+import numpy as np
+
+class PipelineTools:
+    def __init__(self, base, namespace):
+        self.base = base.copy()
+        self.namespace = namespace
+
+    # include(): inyecta codigo desde un archivo externo
+    # Es un "metodo" de la habilidad (una accion que sabe hacer)
+    def include(self, archivo):
+        with open(archivo, "r") as f:
+            codigo = f.read()
+        exec(codigo, self.namespace)
+
+    # log(): guarda contenido en un archivo de texto
+    # Otro metodo de la habilidad
+    def log(self, archivo, contenido):
+        # Abrimos el archivo en modo escritura, la "w" es la isntrucción
+        with open(archivo, "w") as f:
+            f.write(contenido)
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos haciendo
+
+1. **`class PipelineTools:`**: la palabra `class` indica que se esta definiendo una clase. La clase es el molde; el "objeto" o "instancia" es el resultado de usar ese molde. Aqui, "habilidad" = "clase".
+
+2. **`def __init__(self, base, namespace):`**: el metodo `__init__` es el **constructor**. Se ejecuta automaticamente cuando se crea una instancia de la habilidad. Recibe dos argumentos: `base` (la base de datos) y `namespace` (las globals del script). No nos detenemos con este aspecto: lo usamos.
+
+3. **`self.base` y `self.namespace`**: son **atributos** de la habilidad. Viven dentro de la instancia. Cualquier metodo puede acceder a ellos con `self`. Idem: Son definiciones de la programación orientada a objetos.
+
+4. **`def include(self, archivo):`**: es un **metodo** de la habilidad (una accion que sabe hacer). La logica es identica a la funcion `include()` de la Clase 05.
+
+5. **`def log(self, archivo, contenido):`**: otro metodo. Misma logica que en Clase 05.
+
+6. **La ventaja de agrupar**: las acciones `include` y `log` quedan bajo el nombre `PipelineTools`. Si se suman mas acciones (exportar_excel, calcular_promedio), se agregan como metodos a esta misma clase.
+:::
+
+### 2.2 Como se usa en el pipeline
+
+El uso es casi identico al de la Clase 05. Se crea la instancia de la habilidad y se llaman a sus acciones con el punto.
+
+::: {.monitor-box}
+```python
+# --- PIPELINE COMPLETO CON LA HABILIDAD PIPELINETOOLS ---
+# Mismo pipeline de la Clase 05, ahora usando la habilidad
+
+import pandas as pd
+import numpy as np
+
+class PipelineTools:
+    def __init__(self, base, namespace):
+        self.base = base.copy()
+        self.namespace = namespace
+
+    # include(): inyecta codigo desde un archivo externo
+    # Es un "metodo" de la habilidad (una accion que sabe hacer)
+    def include(self, archivo):
+        with open(archivo, "r") as f:
+            codigo = f.read()
+        exec(codigo, self.namespace)
+
+    # log(): guarda contenido en un archivo de texto
+    # Otro metodo de la habilidad
+    def log(self, archivo, contenido):
+        # Abrimos el archivo en modo escritura, la "w" es la isntrucción
+        with open(archivo, "w") as f:
+            f.write(contenido)
+
+
+# 0. DATOS CRUDOS (simulacro EPH con NaN forzados)
+data = {
+    'cod_hogar': [
+      'H_001', 'H_002', 'H_003', 'H_004', 'H_005',
+      'H_006', 'H_007', 'H_008', 'H_009', 'H_010',
+      'H_011', 'H_012', 'H_013', 'H_014', 'H_015',
+      'H_016', 'H_017', 'H_018', 'H_019', 'H_020'
+    ],
+    'region': [
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'
+    ],
+    'tipo_vivienda': ['Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto',
+                      'Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto'],
+    'ingreso': [450000, np.nan, 580000, np.nan, 420000,
+                490000, 310000, 620000, 280000, np.nan,
+                460000, 335000, np.nan, 315000, 425000,
+                500000, 325000, 630000, 295000, 415000],
+    'edad_jefe': [45, 32, 58, 29, 41, 36, 52, 47, 33, 40,
+                  44, 31, 57, 30, 42, 35, 51, 46, 34, 39]
+}
+
+# BASE CRUDA: el dato original nunca se modifica
+base_cruda = pd.DataFrame(data).set_index('cod_hogar')
+
+# COPIA DE TRABAJO: todas las ediciones van sobre esta copia
+base_trabajo = base_cruda.copy()
+
+# CREAMOS LA HABILIDAD: instancia de PipelineTools
+# Se le pasa la base y las globals del script
+pipeline = PipelineTools(base_cruda, globals())
+
+# 1. DIAGNOSTICO: contamos los NaN en ingreso
+n_nan_ingreso = base_trabajo['ingreso'].isna().sum()
+print(f"NaN en ingreso: {n_nan_ingreso}")
+
+# Filtramos los casos con NaN y extraemos los indices
+casos_con_na = base_trabajo[base_trabajo['ingreso'].isna()]
+lista_indices = list(casos_con_na.index)
+print(f"Indices afectados: {lista_indices}")
+
+# 2. LOG: guardamos los indices con la accion log() de la habilidad
+pipeline.log("data/output/log_1.txt", str(lista_indices))
+
+# 3. IMPUTACION MASIVA: reemplazamos todos los NaN con 0
+# Creamos una columna NUEVA para no perder el dato original
+base_trabajo['ingreso_sin_na'] = base_trabajo['ingreso'].fillna(0)
+
+# 4. IMPUTACION CASO POR CASO: inyectamos desde imputacion.txt
+# La accion include() de la habilidad se encarga
+pipeline.include("data/output/imputacion.txt")
+
+# 5. EXPORTACION: base editada a Excel
+base_trabajo.to_excel("data/output/base_editada.xlsx")
+print("Pipeline completado. Base exportada: base_editada.xlsx")
+```
+:::
+
+::: {.callout-note}
+## Lo que cambio y lo que no
+
+1. **`pipeline = PipelineTools(base_cruda, globals())`**: se crea la instancia de la habilidad. `PipelineTools` es la clase, `pipeline` es la instancia. El primer argumento es la base; el segundo, `globals()`, son las variables globales del script.
+
+2. **`pipeline.log(...)` en lugar de `log(...)`**: el metodo se llama con el nombre de la instancia delante. Es la misma sintaxis que se usa en Pandas todo el tiempo: `df.head()`, `df.isna()`, `df.sum()`.
+
+3. **`pipeline.include(...)` en lugar de `include(...)`**: igual que arriba. Misma accion, distinto prefijo.
+
+4. **`base_trabajo` sigue siendo una variable del script**: no se mete dentro de la habilidad. Esto es intencional: el archivo `imputacion.txt` lo referencia por su nombre (`base_trabajo.loc[...]`).
+
+5. **Lo que no cambio**: el diagnostico es el mismo, el log se escribe igual, `imputacion.txt` se inyecta igual. La habilidad no agrega ni quita funcionalidad: solo **organiza**.
+:::
+
+### 2.3 Alcances y ventajas de agrupar en una habilidad
+
+::: {.callout-tip}
+## Para que sirve agrupar acciones en una habilidad
+
+1. **Orden**: las acciones del pipeline quedan bajo un mismo nombre (`PipelineTools`). Si el script tiene `importar_excel`, `calcular_promedio`, `exportar_informe`, todas viven dentro de la habilidad. El script principal se lee de corrido.
+
+2. **Reutilizacion**: la misma habilidad se puede usar en distintos proyectos. Se copia al inicio de cada script y listo. En la Parte 2 se ve una forma aun mejor: guardarla en una biblioteca y importarla.
+
+3. **Legibilidad**: cuando se lee `pipeline.log(...)` o `pipeline.include(...)`, queda claro que es una herramienta del pipeline. No se confunde con una variable cualquiera.
+
+4. **Mantenimiento**: si hay que cambiar como funciona `log()` o `include()`, se cambia en un solo lugar: la definicion de la habilidad. No hay que buscar la accion en el medio del script.
+:::
+
+---
+
+## 3. La Biblioteca de Habilidades (PARTE 2)
+
+La habilidad `PipelineTools` definida al inicio del script funciona. Pero si se quiere usar el mismo pipeline en varios proyectos, hay que copiar y pegar la definicion cada vez. Con dos o tres scripts se aguanta; con muchos, se vuelve tedioso y propenso a errores.
+
+La solucion es la misma que se uso con `pandas`: guardar la habilidad en una **biblioteca** aparte e importarla con una sola linea. Asi, la definicion se escribe una sola vez y se reutiliza en todos los proyectos.
+
+### 3.1 Estructura de la biblioteca
+
+Se crea una carpeta llamada `habilidades` en el proyecto. Dentro van los archivos `.py` con las habilidades, uno por archivo. Cada archivo contiene una clase con sus metodos.
+
+```
+CursoPandas/
+  habilidades/
+    __init__.py        (vacio, necesario para Python)
+    pipeline.py        (habilidad PipelineTools)
+    formatos.py        (habilidad formatos_copados)
+```
+
+> **Por que `__init__.py` existe**: la biblioteca es una **carpeta de Python**, y Python necesita un archivo vacio llamado `__init__.py` para reconocerla como tal. Asi se puede escribir `from habilidades.pipeline import PipelineTools`. No hay que tocar este archivo, solo saber que tiene que estar ahi.
+
+A continuacion se muestra el contenido exacto de cada archivo de la biblioteca, tal cual tienen que quedar creados en el proyecto.
+
+::: {.monitor-box}
+```python
+# --- habilidades/__init__.py ---
+# Este archivo (vacio, salvo estos comentarios) le dice a Python que
+# la carpeta 'habilidades' es un paquete. Asi se puede hacer:
+#     from habilidades.pipeline import PipelineTools
+```
+:::
+
+::: {.monitor-box}
+```python
+# --- habilidades/pipeline.py ---
+# Habilidad: herramientas para el pipeline de datos
+# (Es la misma logica de las funciones include() y log() de la Clase 05,
+# agrupadas en una clase llamada PipelineTools.)
+#
+# En el fondo, PipelineTools es una clase con dos metodos: include() y log().
+# La llamamos "habilidad" porque resuelve una tarea concreta del pipeline
+# y se puede importar en cualquier proyecto.
+
+import pandas as pd
+import numpy as np
+
+class PipelineTools:
+
+    def __init__(self, base, namespace):
+        # Guardamos la base como atributo del objeto
+        self.base = base.copy()
+        # Guardamos las globals del script que llama.
+        # Asi, include() ve las mismas variables que ve el script principal
+        # (base_trabajo, pd, np, etc.), igual que en la Clase 05.
+        self.namespace = namespace
+
+    def include(self, archivo):
+        # Inyecta codigo desde un archivo externo.
+        # El codigo inyectado se ejecuta con las globals del script que llamo,
+        # no con las de este archivo. Asi, base_trabajo, pd, np, etc. estan
+        # disponibles exactamente como en la Clase 05.
+        with open(archivo, "r") as f:
+            codigo = f.read()
+        exec(codigo, self.namespace)
+
+    def log(self, archivo, contenido):
+        # Guarda contenido en un archivo de texto.
+        with open(archivo, "w") as f:
+            f.write(contenido)
+```
+:::
+
+::: {.monitor-box}
+```python
+# --- habilidades/formatos.py ---
+# Habilidad: herramientas para generar tablas y reportes
+# (Es la pivot_table de la Clase 04, encapsulada en una clase
+# llamada formatos_copados.)
+#
+# En el fondo, formatos_copados es una clase con un metodo: reporte_tabla().
+# La llamamos "habilidad" porque resuelve la tarea de generar tablas cruzadas
+# y se puede importar en cualquier proyecto.
+
+import pandas as pd
+import numpy as np
+
+class formatos_copados:
+
+    def __init__(self, base):
+        # Guardamos la base de trabajo
+        self.base = base.copy()
+
+    def reporte_tabla(self, fila, columna, valor, estadistico='mean'):
+        # Encapsula la pivot_table de la Clase 04.
+        # Recibe los parametros editables (fila, columna, valor, estadistico)
+        # y devuelve la tabla cruzada formateada.
+        df_resumen = self.base.pivot_table(
+            index=fila,
+            columns=columna,
+            values=valor,
+            aggfunc=estadistico
+        )
+        # Redondeo a 2 decimales para que la salida sea legible
+        df_resumen = df_resumen.round(2)
+        return df_resumen
+```
+:::
+
+> **Cada archivo vive en `habilidades/`**: estos tres bloques de codigo no van en el script principal. Cada uno se guarda como un archivo `.py` dentro de la carpeta `habilidades/` del proyecto. Despues se importan con `from habilidades.nombre_archivo import Clase`.
+
+### 3.2 Indicamos donde esta la biblioteca
+
+Por defecto, Python busca las bibliotecas solo en la carpeta del script. Si la biblioteca `habilidades` esta en otra ubicacion, hay que avisarle a Python donde encontrarla.
+
+::: {.monitor-box}
+```python
+# --- INDICAR LA RUTA DE LA BIBLIOTECA ---
+# Si la carpeta 'habilidades' esta en la misma carpeta que el script:
+#     no hace falta hacer nada.
+# Si esta en otra carpeta (por ejemplo C:\CursoPandas), hay que avisarle.
+
+import sys
+sys.path.append(r"C:\CursoPandas")
+
+# A partir de aca, Python ya sabe donde buscar la biblioteca 'habilidades'
+from habilidades.pipeline import PipelineTools
+from habilidades.formatos import formatos_copados
+
+# Verificamos que las habilidades se importaron correctamente
+print("Habilidades importadas correctamente")
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos haciendo
+
+1. **`import sys`**: importa el modulo `sys`, que es la herramienta de Python para configurar el entorno.
+
+2. **`sys.path.append(r"C:\CursoPandas")`**: agrega la carpeta `C:\CursoPandas` a la lista de rutas donde Python busca bibliotecas. La `r` antes de las comillas indica "raw string": los `\` se toman como caracteres literales.
+
+3. **`from habilidades.pipeline import PipelineTools`**: importa la habilidad `PipelineTools` que esta en el archivo `pipeline.py` dentro de la carpeta `habilidades`. La sintaxis es `from carpeta.archivo import Clase`.
+
+4. **`from habilidades.formatos import formatos_copados`**: importa la segunda habilidad de la biblioteca, desde el archivo `formatos.py`. Cada archivo se importa por separado.
+
+5. **Si la carpeta `habilidades` esta en la misma carpeta que el script**: las lineas de `sys.path` no hacen falta. Se pueden dejar igual, no molestan.
+
+6. **El pipeline completo se ve en 3.3**: aca solo importamos las habilidades; en 3.3 se muestra como usarlas con datos reales.
+:::
+
+::: {.callout-tip}
+## Mesa de Ayuda: `ModuleNotFoundError: No module named 'habilidades'`
+
+Si al ejecutar el script aparece ese error, lo mas probable es una de estas cosas:
+
+1. **Falta el archivo `__init__.py`**: la carpeta `habilidades` debe tener un archivo vacio llamado `__init__.py` para que Python la reconozca como biblioteca.
+
+2. **La biblioteca esta en otra carpeta**: hay que agregar `sys.path.append(r"ruta\completa\a\la\carpeta")` antes del import. Verificar que la ruta existe y que la carpeta `habilidades` esta ahi.
+:::
+
+### 3.3 Importar una habilidad de la biblioteca
+
+Una vez que la biblioteca `habilidades` existe y Python sabe donde encontrarla, se importa cualquier habilidad con una sola linea.
+
+::: {.monitor-box}
+```python
+# --- PIPELINE CON HABILIDAD IMPORTADA ---
+# PipelineTools viene de la biblioteca 'habilidades'
+
+import sys
+sys.path.append(r"C:\CursoPandas")
+
+from habilidades.pipeline import PipelineTools
+from habilidades.formatos import formatos_copados
+
+import pandas as pd
+import numpy as np
+
+# 0. DATOS CRUDOS (mismo dataset de siempre)
+data = {
+    'cod_hogar': [
+      'H_001', 'H_002', 'H_003', 'H_004', 'H_005',
+      'H_006', 'H_007', 'H_008', 'H_009', 'H_010',
+      'H_011', 'H_012', 'H_013', 'H_014', 'H_015',
+      'H_016', 'H_017', 'H_018', 'H_019', 'H_020'
+    ],
+    'region': [
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'
+    ],
+    'tipo_vivienda': ['Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto',
+                      'Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto'],
+    'ingreso': [450000, np.nan, 580000, np.nan, 420000,
+                490000, 310000, 620000, 280000, np.nan,
+                460000, 335000, np.nan, 315000, 425000,
+                500000, 325000, 630000, 295000, 415000],
+    'edad_jefe': [45, 32, 58, 29, 41, 36, 52, 47, 33, 40,
+                  44, 31, 57, 30, 42, 35, 51, 46, 34, 39]
+}
+
+base_cruda = pd.DataFrame(data).set_index('cod_hogar')
+base_trabajo = base_cruda.copy()
+
+# CREAMOS LA HABILIDAD: viene de la biblioteca
+pipeline = PipelineTools(base_cruda, globals())
+
+# 1. DIAGNOSTICO
+n_nan_ingreso = base_trabajo['ingreso'].isna().sum()
+print(f"NaN en ingreso: {n_nan_ingreso}")
+
+casos_con_na = base_trabajo[base_trabajo['ingreso'].isna()]
+lista_indices = list(casos_con_na.index)
+print(f"Indices afectados: {lista_indices}")
+
+# 2. LOG
+pipeline.log("data/output/log_1.txt", str(lista_indices))
+
+# 3. IMPUTACION MASIVA
+base_trabajo['ingreso_sin_na'] = base_trabajo['ingreso'].fillna(0)
+
+# 4. IMPUTACION CASO POR CASO
+# imputacion.txt sigue usando base_trabajo.loc[...] como en la Clase 05
+pipeline.include("data/output/imputacion.txt")
+
+# 5. EXPORTACION
+base_trabajo.to_excel("data/output/base_editada.xlsx")
+print("Pipeline completado. Base exportada: base_editada.xlsx")
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos haciendo
+
+1. **`from habilidades.pipeline import PipelineTools`**: importa la habilidad desde la biblioteca. La sintaxis es `from carpeta.archivo import Clase`. Python busca `pipeline.py` dentro de la carpeta `habilidades`.
+
+2. **El script principal ya no tiene la definicion de la habilidad**: no aparece `class PipelineTools:` en el script. Toda la definicion esta en `habilidades/pipeline.py`. El script principal queda dedicado a la logica del caso particular.
+
+3. **El uso es identico al de la Parte 1**: `pipeline = PipelineTools(base_cruda, globals())`, `pipeline.log(...)`, `pipeline.include(...)`. La sintaxis no cambia. Lo unico que cambia es **donde esta definida la habilidad**.
+
+4. **El archivo `imputacion.txt` no se toca**: sigue teniendo `base_trabajo.loc[...]` como en la Clase 05.
+:::
+
+### 3.4 Alcances y ventajas de la biblioteca
+
+::: {.callout-tip}
+## Por que vale la pena la biblioteca
+
+1. **Reutilizacion real**: con la Parte 1, cada vez que se inicia un proyecto nuevo hay que copiar la habilidad. Con la Parte 2, se copia la carpeta `habilidades` una vez y se importan con una linea. Es la misma diferencia que tiene `pandas`: uno no copia el codigo de Pandas en cada script, lo importa.
+
+2. **Script principal mas corto**: en la Parte 2, el script principal no tiene la definicion de la habilidad. Empieza directo con los datos y la logica del pipeline. Es mas facil de leer y de explicar a otra persona.
+
+3. **Mantenimiento centralizado**: si se quiere modificar `include()` o `log()` (por ejemplo, agregar una cabecera al log), se cambia en `habilidades/pipeline.py` y el cambio aplica a todos los scripts que la importen. No hay que ir archivo por archivo.
+
+4. **Codigo profesional**: asi se trabaja en proyectos de datos reales. La biblioteca con las herramientas va aparte, y el script principal se enfoca en el caso particular que se esta analizando.
+:::
+
+---
+
+## 4. Segunda Habilidad: formatos_copados
+
+La biblioteca puede tener tantas habilidades como se necesiten. Como ejemplo, la `pivot_table` de la Clase 04 se encapsula en su propia habilidad: `formatos_copados`.
+
+### 4.1 El archivo habilidades/formatos.py
+
+Se crea un nuevo archivo en la biblioteca con la habilidad de generar tablas.
+
+::: {.monitor-box}
+```python
+# --- habilidades/formatos.py ---
+# Habilidad: herramientas para generar tablas y reportes
+# (Es la pivot_table de la Clase 04, encapsulada en una clase.)
+
+import pandas as pd
+import numpy as np
+
+class formatos_copados:
+
+    def __init__(self, base):
+        # Guardamos la base de trabajo
+        self.base = base.copy()
+
+    def reporte_tabla(self, fila, columna, valor, estadistico='mean'):
+        # Encapsula la pivot_table de la Clase 04.
+        # Recibe los parametros editables (fila, columna, valor, estadistico)
+        # y devuelve la tabla cruzada formateada.
+        df_resumen = self.base.pivot_table(
+            index=fila,
+            columns=columna,
+            values=valor,
+            aggfunc=estadistico
+        )
+        # Redondeo a 2 decimales para que la salida sea legible
+        df_resumen = df_resumen.round(2)
+        return df_resumen
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos haciendo
+
+1. **Archivo nuevo en la biblioteca**: debajo de `pipeline.py`, se crea `formatos.py`. La biblioteca crece archivo a archivo, habilidad a habilidad.
+
+2. **`formatos_copados` resuelve una tarea distinta**: `PipelineTools` se ocupa del pipeline de datos (log, include). `formatos_copados` se ocupa de la presentacion (tablas, reportes). Cada habilidad tiene su ambito.
+
+3. **`__init__(self, base)`**: el constructor recibe solo la base. A diferencia de `PipelineTools`, esta habilidad no necesita `namespace` porque no inyecta codigo externo.
+
+4. **`reporte_tabla(fila, columna, valor, estadistico)`**: es la `pivot_table` de la Clase 04 encapsulada. Los cuatro parametros son editables y se explican con su nombre para que sea claro que va en cada lugar.
+:::
+
+### 4.2 Como se usan las dos habilidades juntas
+
+Se importan las dos habilidades desde la biblioteca. Cada una resuelve un aspecto del trabajo.
+
+::: {.monitor-box}
+```python
+# --- USO DE LAS DOS HABILIDADES JUNTAS ---
+# PipelineTools y formatos_copados vienen de la biblioteca 'habilidades'
+
+import sys
+sys.path.append(r"C:\CursoPandas")
+
+from habilidades.pipeline import PipelineTools
+from habilidades.formatos import formatos_copados
+
+import pandas as pd
+import numpy as np
+
+# 0. DATOS CRUDOS (mismo dataset de la Clase 04)
+data = {
+    'cod_hogar': [
+      'H_001', 'H_002', 'H_003', 'H_004', 'H_005',
+      'H_006', 'H_007', 'H_008', 'H_009', 'H_010',
+      'H_011', 'H_012', 'H_013', 'H_014', 'H_015',
+      'H_016', 'H_017', 'H_018', 'H_019', 'H_020'
+    ],
+    'region': [
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'
+    ],
+    'tipo_vivienda': ['Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto',
+                      'Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto'],
+    'ingreso': [450000, 320000, 580000, 310000, 420000,
+                490000, 310000, 620000, 280000, 410000,
+                460000, 335000, 590000, 315000, 425000,
+                500000, 325000, 630000, 295000, 415000]
+}
+
+base_cruda = pd.DataFrame(data).set_index('cod_hogar')
+base_trabajo = base_cruda.copy()
+
+# CREAMOS LAS HABILIDADES: cada una resuelve un aspecto del trabajo
+pipeline = PipelineTools(base_cruda, globals())
+fmt = formatos_copados(base_trabajo)
+
+# TABLA 1: ingreso promedio por tipo de vivienda y region
+# La pivot_table de la Clase 04, ahora en una sola linea
+tabla_promedio = fmt.reporte_tabla(
+    fila='tipo_vivienda',
+    columna='region',
+    valor='ingreso',
+    estadistico='mean'
+)
+
+print("Ingreso promedio por tipo de vivienda y region:")
+print(tabla_promedio)
+print("-" * 50)
+
+# TABLA 2: conteo de hogares por tipo de vivienda y region
+# Misma accion, distinto parametro
+tabla_conteo = fmt.reporte_tabla(
+    fila='tipo_vivienda',
+    columna='region',
+    valor='ingreso',
+    estadistico='count'
+)
+
+print("Cantidad de hogares por tipo de vivienda y region:")
+print(tabla_conteo)
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos haciendo
+
+1. **Dos imports en lineas separadas**: `from habilidades.pipeline import PipelineTools` y `from habilidades.formatos import formatos_copados`. Cada import trae una habilidad de la biblioteca. Tambien se puede hacer en una sola linea: `from habilidades import ...`, pero separado es mas claro.
+
+2. **`fmt = formatos_copados(base_trabajo)`**: se crea la instancia de la habilidad de formatos. El nombre `fmt` es arbitrario.
+
+3. **`fmt.reporte_tabla(fila, columna, valor, estadistico)`**: una sola linea genera la tabla cruzada. Los parametros se escriben con nombre para que sea claro que va en cada lugar.
+
+4. **Cambiar el estadistico es solo cambiar un parametro**: `'mean'` calcula promedio, `'count'` cuenta casos, `'sum'` suma valores.
+
+5. **No hay que escribir `pivot_table(...)` ni `round(2)`**: la habilidad ya encapsula esa logica. El codigo de la Clase 04 que era largo, ahora es una llamada corta.
+:::
+
+### 4.3 La biblioteca crece con el trabajo
+
+::: {.callout-tip}
+## Como se llena la biblioteca de habilidades
+
+1. **Separacion de responsabilidades**: `PipelineTools` se ocupa del pipeline (log, include). `formatos_copados` se ocupa de la presentacion (tablas). Cada habilidad tiene un ambito claro y no se mezcla con las demas.
+
+2. **Reutilizacion entre proyectos**: si en otro analisis se necesita una tabla cruzada, se importa `formatos_copados` y se usa. Si se necesita el log de ediciones, se importa `PipelineTools`. No hay que reescribir nada.
+
+3. **Modificacion aislada**: si se quiere cambiar como se formatea la tabla (por ejemplo, agregar mas decimales o cambiar la funcion de agregacion), se modifica solo `formatos_copados`. El resto no se toca.
+
+4. **Escalabilidad**: hoy son dos habilidades. Mañana pueden ser cinco, diez, las que hagan falta. Cada nueva habilidad resuelve un problema nuevo sin ensuciar las anteriores.
+
+5. **La biblioteca es personal**: a medida que se descubren tareas recurrentes en el trabajo, se van creando nuevas habilidades y se guardan en la biblioteca. Es como una caja de herramientas que se va llenando con el uso.
+:::
+
+::: {.gray-italic-box}
+**Zona de Prompting:** "Actua como experto en Python para analistas de datos. En mi proyecto tengo tres tipos de reportes que hago siempre: una tabla cruzada con promedios, un grafico de barras con la misma informacion, y un resumen de casos validos vs valores ausentes. Mostrame como organizarias eso como habilidades dentro de la biblioteca, que metodos tendria cada una, y que parametros editables le pondrias a cada metodo para que sea reutilizable en distintos analisis."
+:::
+
+---
+
+## 5. La Biblioteca Como Preparacion para Agentes
+
+La biblioteca de habilidades no solo sirve para el analista. Tambien es la forma de preparar el proyecto para que los **agentes de IA** (como Claude, ChatGPT u otros) trabajen mejor.
+
+### 5.1 Por que los agentes prefieren bibliotecas modulares
+
+Un agente de IA lee el codigo del proyecto para entender que hace y como se organiza. Cuando el codigo esta todo mezclado en un solo script, el agente tiene que adivinar donde esta cada cosa. Cuando esta dividido en archivos pequenos y con nombres claros (`pipeline.py`, `formatos.py`), el agente sabe inmediatamente:
+
+- Que hace cada archivo (por el nombre)
+- Como se usa (por el `__init__` y los parametros)
+- Como modificarlo (por la documentacion interna)
+
+::: {.callout-note}
+## Lo que ven los agentes en la biblioteca
+
+1. **Nombres claros**: `pipeline.py` y `formatos.py` dicen que hace cada archivo sin necesidad de abrirlo. Un agente que recibe la peticion "agregame un metodo para exportar a Excel" sabe inmediatamente que tiene que modificar `formatos.py`.
+
+2. **Archivos pequenos**: cada habilidad esta en su propio archivo, asi que el agente no tiene que navegar un script de 500 lineas para encontrar lo que necesita. Abre el archivo correcto, modifica la clase, y listo.
+
+3. **Parametros documentados**: las clases tienen `__init__` con argumentos nombrados. El agente ve que `PipelineTools(base, namespace)` y entiende que esos son los datos que necesita.
+
+4. **Separacion de responsabilidades**: cada archivo hace una cosa. El agente no tiene que entender todo a la vez; puede trabajar sobre una habilidad sin tocar las demas.
+
+5. **Menos ambiguedad**: cuando el codigo esta organizado, el agente puede hacer cambios sin romper otras partes del proyecto. El riesgo de "arreglar una cosa y romper otra" baja.
+:::
+
+### 5.2 Que cambia cuando se trabaja con agentes
+
+::: {.callout-tip}
+## Practica recomendada al usar agentes
+
+1. **La biblioteca es el contrato**: los nombres de las habilidades y sus parametros son la "interfaz" entre el analista, el script y el agente. Si estan claros, todo funciona mejor.
+
+2. **Documentar el proposito de cada habilidad**: un comentario al inicio del archivo `.py` que diga "esta habilidad se ocupa de X" ayuda al agente a entender el contexto.
+
+3. **Mantener las habilidades pequenas**: si una habilidad crece mucho, conviene dividirla. El agente trabaja mejor con archivos de 50-100 lineas que con uno de 500.
+
+4. **Nombrar los metodos con verbos**: `reporte_tabla`, `incluir_codigo`, `guardar_log`. Asi el agente entiende la accion sin leer la implementacion.
+
+5. **Pasar la biblioteca al agente cuando se le pida algo**: cuando se le pide a un agente "agregame un reporte X", adjuntar la carpeta `habilidades/` para que entienda el contexto del proyecto.
+:::
+
+## 6. OpenCode: Tu Agente de Codigo
+
+### 6.1 Que es OpenCode
+
+OpenCode es un agente de IA que escribe codigo en tu proyecto. Lee archivos, los modifica y crea nuevos. Esta especializado en programacion y entiende la estructura de tu proyecto.
+
+Es de **codigo abierto** (github.com/anomalyco/opencode) y tiene mas de 160.000 estrellas en GitHub. Funciona en cualquier terminal: CMD, Windows Terminal, Warp, WezTerm, Alacritty.
+
+Para descargarlo: [opencode.ai/download](https://opencode.ai/download)
+
+### 6.2 Cuatro comandos basicos
+
+OpenCode se maneja con comandos. Estos son los cuatro que mas vas a usar:
+
+1. **`/connect`**: conecta una API de IA. Elegi un proveedor (OpenAI, Anthropic, Google) y pega tu API key. OpenCode Zen incluye modelos gratuitos para empezar.
+
+2. **`/init`**: analiza la carpeta del proyecto y crea un archivo `AGENTS.md` con la estructura del proyecto. Ese archivo ayuda al agente a entender como esta organizado el codigo.
+
+3. **`Tab`**: cambia entre Modo Plan (el agente solo lee y propone, no modifica nada) y Modo Build (ejecuta los cambios). El indicador visual esta abajo a la derecha.
+
+4. **`/models`**: abre el selector de modelos. Elegi uno entre los disponibles. Recomendados para empezar: Minimax M2.1 (gratis en Zen), Claude Sonnet, GPT-5.1.
+
+### 6.3 Ejercicio practico: crear una nueva habilidad con OpenCode
+
+La biblioteca `habilidades/` esta armada para que un agente de IA la entienda: archivos pequenos, nombres claros, responsabilidades separadas. Vas a pedirle a OpenCode que cree una nueva habilidad.
+
+**Pasos:**
+
+1. Abri la terminal en la carpeta `CeiaPython/`.
+2. Ejecuta `opencode`. Si es la primera vez, usa `/connect` para configurar la API.
+3. Usa `/init` para que analice el proyecto.
+4. Escribe este pedido:
+
+```
+Lee la carpeta habilidades/ y creame una nueva habilidad llamada tablas_resumen con dos metodos: resumen_numericas() y resumen_categoricas(). Toma como referencia el estilo de formatos_copados.
+```
+
+5. Revisa la propuesta en Modo Plan. Si te parece bien, presiona **Tab** para pasar a Modo Build y decile que la cree.
+6. Proba que funciona:
+
+```python
+from habilidades.tablas_resumen import tablas_resumen
+tr = tablas_resumen(base_trabajo)
+print(tr.resumen_numericas())
+```
+
+El resultado es un archivo `habilidades/tablas_resumen.py` con una clase que tiene dos metodos: `resumen_numericas()` devuelve un cuadro estadistico (media, desvio, minimo, maximo, cuartiles) de las columnas numericas, y `resumen_categoricas()` devuelve la frecuencia de cada valor en las columnas de texto.
+
+### 6.4 El agente analista de datos
+
+OpenCode puede especializarse en un rol. El archivo `.opencode/agent/analista-datos.md` define un agente que entiende el estilo del curso: claridad sobre complejidad, comentarios utiles, metodologia paso a paso (datos crudos, copia de trabajo, pipeline).
+
+::: {.callout-note}
+**Archivo: `.opencode/agent/analista-datos.md`**
+
+```yaml
+---
+description: "Ayuda a escribir codigo Python para analisis de datos. codigo claro, legible y bien documentado. Sigue la metodologia del curso: datos crudos, copia de trabajo, pipeline."
+mode: subagent
+---
+```
+
+```
+Eres un asistente de Python especializado en analisis de datos. Tu objetivo es escribir codigo claro, legible y bien documentado.
+
+## Principios
+
+1. **Claridad**: usa nombres de variables descriptivos (ingresos_validos, no iv). Escribi funciones cortas que hagan una sola cosa.
+
+2. **Legibilidad**: el codigo se lee de arriba a abajo como una historia. Evita operaciones encadenadas de mas de 3 pasos sin separar.
+
+3. **Comentarios utiles**: comenta el proposito de cada bloque. No comentes cada linea.
+
+4. **Metodologia**: datos crudos no se modifican. Las transformaciones van sobre una copia de trabajo.
+
+5. **Si no sabes algo, decilo**: no inventes soluciones ni funciones que no conoces.
+```
+:::
+
+No es necesario configurarlo ahora. Solo saber que existe esta posibilidad: cuando el proyecto tiene un agente definido, OpenCode lo usa automaticamente para mantener la coherencia del estilo.
+
+---
+
+## Resumen de la Clase
+
+| Concepto / Metodo | Funcion Principal |
+| :--- | :--- |
+| **Habilidad (clase)** | Agrupa acciones (metodos) que resuelven una tarea concreta. Se define con `class Nombre:`. |
+| **Accion (metodo)** | Funcion dentro de una habilidad. Se define con `def nombre(self, ...)`. |
+| **`__init__(self, ...)`** | Constructor. Se ejecuta al crear la instancia de la habilidad. |
+| **`self.atributo`** | Atributo de la instancia. Dato que vive dentro de la habilidad. |
+| **Carpeta `habilidades/`** | Biblioteca donde se guardan las habilidades. Cada archivo `.py` es una habilidad. |
+| **`__init__.py` (vacio)** | Archivo necesario para que Python reconozca la carpeta como biblioteca. |
+| **`from habilidades.archivo import Clase`** | Importa una habilidad desde la biblioteca. |
+| **`sys.path.append(ruta)`** | Agrega una carpeta a la lista de rutas donde Python busca bibliotecas. |
+| **`pipeline.log(archivo, contenido)`** | Accion de la habilidad `PipelineTools`. Guarda contenido en un archivo. |
+| **`pipeline.include(archivo)`** | Accion de la habilidad `PipelineTools`. Inyecta codigo desde un archivo. |
+| **`fmt.reporte_tabla(fila, columna, valor, estadistico)`** | Accion de la habilidad `formatos_copados`. Genera una tabla cruzada. |
+| **Biblioteca para agentes** | La organizacion modular de la biblioteca prepara el proyecto para que los agentes de IA trabajen mejor. |
+
+---

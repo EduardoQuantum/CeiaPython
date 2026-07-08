@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Eduardo Lencina">
+
+<title>Python + Pandas + IA - CEIA - FLACSO - Clase 06: Tu Biblioteca de Habilidades</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Python + Pandas + IA - CEIA - FLACSO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-material-de-clases" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+      <i class="bi bi-journal-code" role="img">
+</i> 
+ <span class="menu-text">Material de Clases</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-material-de-clases">    
+        <li>
+    <a class="dropdown-item" href="./clase_01.html" rel="" target="">
+ <span class="dropdown-text">Clase 01: El Ecosistema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_02.html" rel="" target="">
+ <span class="dropdown-text">Clase 02: Python + Pandas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_03.html" rel="" target="">
+ <span class="dropdown-text">Clase 03: Selección de Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_04.html" rel="" target="">
+ <span class="dropdown-text">Clase 04: Split-Apply-Combine</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_05.html" rel="" target="">
+ <span class="dropdown-text">Clase 05: Edición y Tratamiento de Valores Ausentes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_06.html" rel="" target="">
+ <span class="dropdown-text">Clase 06: Mas sobre funciones y clases</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/EduardoQuantum/CeiaPython.git" rel="" target=""><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#la-biblioteca-de-habilidades" id="toc-la-biblioteca-de-habilidades" class="nav-link active" data-scroll-target="#la-biblioteca-de-habilidades">1. La Biblioteca de Habilidades</a></li>
+  <li><a href="#primera-habilidad-pipelinetools-parte-1" id="toc-primera-habilidad-pipelinetools-parte-1" class="nav-link" data-scroll-target="#primera-habilidad-pipelinetools-parte-1">2. Primera Habilidad: PipelineTools (PARTE 1)</a>
+  <ul class="collapse">
+  <li><a href="#definicion-de-la-habilidad" id="toc-definicion-de-la-habilidad" class="nav-link" data-scroll-target="#definicion-de-la-habilidad">2.1 Definicion de la habilidad</a></li>
+  <li><a href="#como-se-usa-en-el-pipeline" id="toc-como-se-usa-en-el-pipeline" class="nav-link" data-scroll-target="#como-se-usa-en-el-pipeline">2.2 Como se usa en el pipeline</a></li>
+  <li><a href="#alcances-y-ventajas-de-agrupar-en-una-habilidad" id="toc-alcances-y-ventajas-de-agrupar-en-una-habilidad" class="nav-link" data-scroll-target="#alcances-y-ventajas-de-agrupar-en-una-habilidad">2.3 Alcances y ventajas de agrupar en una habilidad</a></li>
+  </ul></li>
+  <li><a href="#la-biblioteca-de-habilidades-parte-2" id="toc-la-biblioteca-de-habilidades-parte-2" class="nav-link" data-scroll-target="#la-biblioteca-de-habilidades-parte-2">3. La Biblioteca de Habilidades (PARTE 2)</a>
+  <ul class="collapse">
+  <li><a href="#estructura-de-la-biblioteca" id="toc-estructura-de-la-biblioteca" class="nav-link" data-scroll-target="#estructura-de-la-biblioteca">3.1 Estructura de la biblioteca</a></li>
+  <li><a href="#indicamos-donde-esta-la-biblioteca" id="toc-indicamos-donde-esta-la-biblioteca" class="nav-link" data-scroll-target="#indicamos-donde-esta-la-biblioteca">3.2 Indicamos donde esta la biblioteca</a></li>
+  <li><a href="#importar-una-habilidad-de-la-biblioteca" id="toc-importar-una-habilidad-de-la-biblioteca" class="nav-link" data-scroll-target="#importar-una-habilidad-de-la-biblioteca">3.3 Importar una habilidad de la biblioteca</a></li>
+  <li><a href="#alcances-y-ventajas-de-la-biblioteca" id="toc-alcances-y-ventajas-de-la-biblioteca" class="nav-link" data-scroll-target="#alcances-y-ventajas-de-la-biblioteca">3.4 Alcances y ventajas de la biblioteca</a></li>
+  </ul></li>
+  <li><a href="#segunda-habilidad-formatos_copados" id="toc-segunda-habilidad-formatos_copados" class="nav-link" data-scroll-target="#segunda-habilidad-formatos_copados">4. Segunda Habilidad: formatos_copados</a>
+  <ul class="collapse">
+  <li><a href="#el-archivo-habilidadesformatos.py" id="toc-el-archivo-habilidadesformatos.py" class="nav-link" data-scroll-target="#el-archivo-habilidadesformatos.py">4.1 El archivo habilidades/formatos.py</a></li>
+  <li><a href="#como-se-usan-las-dos-habilidades-juntas" id="toc-como-se-usan-las-dos-habilidades-juntas" class="nav-link" data-scroll-target="#como-se-usan-las-dos-habilidades-juntas">4.2 Como se usan las dos habilidades juntas</a></li>
+  <li><a href="#la-biblioteca-crece-con-el-trabajo" id="toc-la-biblioteca-crece-con-el-trabajo" class="nav-link" data-scroll-target="#la-biblioteca-crece-con-el-trabajo">4.3 La biblioteca crece con el trabajo</a></li>
+  </ul></li>
+  <li><a href="#la-biblioteca-como-preparacion-para-agentes" id="toc-la-biblioteca-como-preparacion-para-agentes" class="nav-link" data-scroll-target="#la-biblioteca-como-preparacion-para-agentes">5. La Biblioteca Como Preparacion para Agentes</a>
+  <ul class="collapse">
+  <li><a href="#por-que-los-agentes-prefieren-bibliotecas-modulares" id="toc-por-que-los-agentes-prefieren-bibliotecas-modulares" class="nav-link" data-scroll-target="#por-que-los-agentes-prefieren-bibliotecas-modulares">5.1 Por que los agentes prefieren bibliotecas modulares</a></li>
+  <li><a href="#que-cambia-cuando-se-trabaja-con-agentes" id="toc-que-cambia-cuando-se-trabaja-con-agentes" class="nav-link" data-scroll-target="#que-cambia-cuando-se-trabaja-con-agentes">5.2 Que cambia cuando se trabaja con agentes</a></li>
+  </ul></li>
+  <li><a href="#opencode-tu-agente-de-codigo" id="toc-opencode-tu-agente-de-codigo" class="nav-link" data-scroll-target="#opencode-tu-agente-de-codigo">6. OpenCode: Tu Agente de Codigo</a>
+  <ul class="collapse">
+  <li><a href="#que-es-opencode" id="toc-que-es-opencode" class="nav-link" data-scroll-target="#que-es-opencode">6.1 Que es OpenCode</a></li>
+  <li><a href="#cuatro-comandos-basicos" id="toc-cuatro-comandos-basicos" class="nav-link" data-scroll-target="#cuatro-comandos-basicos">6.2 Cuatro comandos basicos</a></li>
+  <li><a href="#ejercicio-practico-crear-una-nueva-habilidad-con-opencode" id="toc-ejercicio-practico-crear-una-nueva-habilidad-con-opencode" class="nav-link" data-scroll-target="#ejercicio-practico-crear-una-nueva-habilidad-con-opencode">6.3 Ejercicio practico: crear una nueva habilidad con OpenCode</a></li>
+  <li><a href="#el-agente-analista-de-datos" id="toc-el-agente-analista-de-datos" class="nav-link" data-scroll-target="#el-agente-analista-de-datos">6.4 El agente analista de datos</a></li>
+  </ul></li>
+  <li><a href="#resumen-de-la-clase" id="toc-resumen-de-la-clase" class="nav-link" data-scroll-target="#resumen-de-la-clase">Resumen de la Clase</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 06: Tu Biblioteca de Habilidades</h1>
+<p class="subtitle lead">De funciones sueltas a clases y metodos reutilizables</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Eduardo Lencina </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="la-biblioteca-de-habilidades" class="level2">
+<h2 class="anchored" data-anchor-id="la-biblioteca-de-habilidades">1. La Biblioteca de Habilidades</h2>
+<p>En las clases anteriores se construyeron herramientas puntuales: la <code>pivot_table</code> de la Clase 04, las funciones <code>include()</code> y <code>log()</code> de la Clase 05. Cada una resuelve una tarea concreta y se usa en un momento puntual del trabajo.</p>
+<p>El problema aparece cuando esas herramientas se necesitan en proyectos futuros. Si hoy se escribio una <code>pivot_table</code> prolija, mañana se vuelve a escribir. Si la funcion <code>log()</code> resulto util, se copia y pega en otro script. Asi se termina con codigo repetido, dificil de mantener y propenso a inconsistencias.</p>
+<p>La solucion es construir una <strong>biblioteca de habilidades</strong>: una carpeta donde se guardan las herramientas que se usan seguido, cada una en su propio archivo, listas para importar cuando se necesitan. Cada habilidad resuelve una tarea especifica (un informe, una limpieza de datos, un calculo recurrente). El analista las va llenando a medida que las descubre en su trabajo.</p>
+<blockquote class="blockquote">
+<p><strong>Nota sobre el lenguaje</strong>: Las “habilidades” son <strong>clases</strong> con sus <strong>metodos</strong> (igual que en cualquier curso de programacion). Las llamamos “habilidades” porque la palabra es mas natural para un analista y enfoca la atencion en lo que la herramienta <strong>hace</strong>, no en concepto de programción. ‘Clase’ y ‘Metodo’ son los nombres tecnicos. Para nosotros: habilidades = conjunto de clases y metodos.</p>
+</blockquote>
+<hr>
+</section>
+<section id="primera-habilidad-pipelinetools-parte-1" class="level2">
+<h2 class="anchored" data-anchor-id="primera-habilidad-pipelinetools-parte-1">2. Primera Habilidad: PipelineTools (PARTE 1)</h2>
+<p>Se toma la pareja de funciones <code>include()</code> y <code>log()</code> de la Clase 05 y la incorporaos dentro de una <strong>habilidad</strong> llamada <code>PipelineTools</code>. Es la misma logica de siempre, solo que ahora agrupada bajo un nombre.</p>
+<section id="definicion-de-la-habilidad" class="level3">
+<h3 class="anchored" data-anchor-id="definicion-de-la-habilidad">2.1 Definicion de la habilidad</h3>
+<p>La habilidad se escribe al inicio del script, donde antes estaban las funciones sueltas. El codigo es identico al de la Clase 05.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># === HABILIDAD PIPELINETOOLS: INCLUDE() Y LOG() AGRUPADAS ===</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># En el fondo es una clase con dos metodos (include y log).</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Se la llama "habilidad" porque resuelve una tarea del pipeline.</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PipelineTools:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base, namespace):</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.base <span class="op">=</span> base.copy()</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.namespace <span class="op">=</span> namespace</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># include(): inyecta codigo desde un archivo externo</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Es un "metodo" de la habilidad (una accion que sabe hacer)</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> include(<span class="va">self</span>, archivo):</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(archivo, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>            codigo <span class="op">=</span> f.read()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>        <span class="bu">exec</span>(codigo, <span class="va">self</span>.namespace)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># log(): guarda contenido en un archivo de texto</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Otro metodo de la habilidad</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> log(<span class="va">self</span>, archivo, contenido):</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Abrimos el archivo en modo escritura, la "w" es la isntrucción</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(archivo, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>            f.write(contenido)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>class PipelineTools:</code></strong>: la palabra <code>class</code> indica que se esta definiendo una clase. La clase es el molde; el “objeto” o “instancia” es el resultado de usar ese molde. Aqui, “habilidad” = “clase”.</p></li>
+<li><p><strong><code>def __init__(self, base, namespace):</code></strong>: el metodo <code>__init__</code> es el <strong>constructor</strong>. Se ejecuta automaticamente cuando se crea una instancia de la habilidad. Recibe dos argumentos: <code>base</code> (la base de datos) y <code>namespace</code> (las globals del script). No nos detenemos con este aspecto: lo usamos.</p></li>
+<li><p><strong><code>self.base</code> y <code>self.namespace</code></strong>: son <strong>atributos</strong> de la habilidad. Viven dentro de la instancia. Cualquier metodo puede acceder a ellos con <code>self</code>. Idem: Son definiciones de la programación orientada a objetos.</p></li>
+<li><p><strong><code>def include(self, archivo):</code></strong>: es un <strong>metodo</strong> de la habilidad (una accion que sabe hacer). La logica es identica a la funcion <code>include()</code> de la Clase 05.</p></li>
+<li><p><strong><code>def log(self, archivo, contenido):</code></strong>: otro metodo. Misma logica que en Clase 05.</p></li>
+<li><p><strong>La ventaja de agrupar</strong>: las acciones <code>include</code> y <code>log</code> quedan bajo el nombre <code>PipelineTools</code>. Si se suman mas acciones (exportar_excel, calcular_promedio), se agregan como metodos a esta misma clase.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="como-se-usa-en-el-pipeline" class="level3">
+<h3 class="anchored" data-anchor-id="como-se-usa-en-el-pipeline">2.2 Como se usa en el pipeline</h3>
+<p>El uso es casi identico al de la Clase 05. Se crea la instancia de la habilidad y se llaman a sus acciones con el punto.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- PIPELINE COMPLETO CON LA HABILIDAD PIPELINETOOLS ---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Mismo pipeline de la Clase 05, ahora usando la habilidad</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PipelineTools:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base, namespace):</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.base <span class="op">=</span> base.copy()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.namespace <span class="op">=</span> namespace</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># include(): inyecta codigo desde un archivo externo</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Es un "metodo" de la habilidad (una accion que sabe hacer)</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> include(<span class="va">self</span>, archivo):</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(archivo, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>            codigo <span class="op">=</span> f.read()</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="bu">exec</span>(codigo, <span class="va">self</span>.namespace)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># log(): guarda contenido en un archivo de texto</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Otro metodo de la habilidad</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> log(<span class="va">self</span>, archivo, contenido):</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Abrimos el archivo en modo escritura, la "w" es la isntrucción</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(archivo, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            f.write(contenido)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. DATOS CRUDOS (simulacro EPH con NaN forzados)</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>],</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, np.nan, <span class="dv">580000</span>, np.nan, <span class="dv">420000</span>,</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>                <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, np.nan,</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, np.nan, <span class="dv">315000</span>, <span class="dv">425000</span>,</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>                <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>,</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>                  <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co"># BASE CRUDA: el dato original nunca se modifica</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>base_cruda <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co"># COPIA DE TRABAJO: todas las ediciones van sobre esta copia</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>base_trabajo <span class="op">=</span> base_cruda.copy()</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="co"># CREAMOS LA HABILIDAD: instancia de PipelineTools</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co"># Se le pasa la base y las globals del script</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> PipelineTools(base_cruda, <span class="bu">globals</span>())</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. DIAGNOSTICO: contamos los NaN en ingreso</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>n_nan_ingreso <span class="op">=</span> base_trabajo[<span class="st">'ingreso'</span>].isna().<span class="bu">sum</span>()</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"NaN en ingreso: </span><span class="sc">{</span>n_nan_ingreso<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtramos los casos con NaN y extraemos los indices</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>casos_con_na <span class="op">=</span> base_trabajo[base_trabajo[<span class="st">'ingreso'</span>].isna()]</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>lista_indices <span class="op">=</span> <span class="bu">list</span>(casos_con_na.index)</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Indices afectados: </span><span class="sc">{</span>lista_indices<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. LOG: guardamos los indices con la accion log() de la habilidad</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>pipeline.log(<span class="st">"data/output/log_1.txt"</span>, <span class="bu">str</span>(lista_indices))</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. IMPUTACION MASIVA: reemplazamos todos los NaN con 0</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="co"># Creamos una columna NUEVA para no perder el dato original</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'ingreso_sin_na'</span>] <span class="op">=</span> base_trabajo[<span class="st">'ingreso'</span>].fillna(<span class="dv">0</span>)</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. IMPUTACION CASO POR CASO: inyectamos desde imputacion.txt</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="co"># La accion include() de la habilidad se encarga</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>pipeline.include(<span class="st">"data/output/imputacion.txt"</span>)</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. EXPORTACION: base editada a Excel</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>base_trabajo.to_excel(<span class="st">"data/output/base_editada.xlsx"</span>)</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pipeline completado. Base exportada: base_editada.xlsx"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que cambio y lo que no
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>pipeline = PipelineTools(base_cruda, globals())</code></strong>: se crea la instancia de la habilidad. <code>PipelineTools</code> es la clase, <code>pipeline</code> es la instancia. El primer argumento es la base; el segundo, <code>globals()</code>, son las variables globales del script.</p></li>
+<li><p><strong><code>pipeline.log(...)</code> en lugar de <code>log(...)</code></strong>: el metodo se llama con el nombre de la instancia delante. Es la misma sintaxis que se usa en Pandas todo el tiempo: <code>df.head()</code>, <code>df.isna()</code>, <code>df.sum()</code>.</p></li>
+<li><p><strong><code>pipeline.include(...)</code> en lugar de <code>include(...)</code></strong>: igual que arriba. Misma accion, distinto prefijo.</p></li>
+<li><p><strong><code>base_trabajo</code> sigue siendo una variable del script</strong>: no se mete dentro de la habilidad. Esto es intencional: el archivo <code>imputacion.txt</code> lo referencia por su nombre (<code>base_trabajo.loc[...]</code>).</p></li>
+<li><p><strong>Lo que no cambio</strong>: el diagnostico es el mismo, el log se escribe igual, <code>imputacion.txt</code> se inyecta igual. La habilidad no agrega ni quita funcionalidad: solo <strong>organiza</strong>.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="alcances-y-ventajas-de-agrupar-en-una-habilidad" class="level3">
+<h3 class="anchored" data-anchor-id="alcances-y-ventajas-de-agrupar-en-una-habilidad">2.3 Alcances y ventajas de agrupar en una habilidad</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Para que sirve agrupar acciones en una habilidad
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Orden</strong>: las acciones del pipeline quedan bajo un mismo nombre (<code>PipelineTools</code>). Si el script tiene <code>importar_excel</code>, <code>calcular_promedio</code>, <code>exportar_informe</code>, todas viven dentro de la habilidad. El script principal se lee de corrido.</p></li>
+<li><p><strong>Reutilizacion</strong>: la misma habilidad se puede usar en distintos proyectos. Se copia al inicio de cada script y listo. En la Parte 2 se ve una forma aun mejor: guardarla en una biblioteca y importarla.</p></li>
+<li><p><strong>Legibilidad</strong>: cuando se lee <code>pipeline.log(...)</code> o <code>pipeline.include(...)</code>, queda claro que es una herramienta del pipeline. No se confunde con una variable cualquiera.</p></li>
+<li><p><strong>Mantenimiento</strong>: si hay que cambiar como funciona <code>log()</code> o <code>include()</code>, se cambia en un solo lugar: la definicion de la habilidad. No hay que buscar la accion en el medio del script.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="la-biblioteca-de-habilidades-parte-2" class="level2">
+<h2 class="anchored" data-anchor-id="la-biblioteca-de-habilidades-parte-2">3. La Biblioteca de Habilidades (PARTE 2)</h2>
+<p>La habilidad <code>PipelineTools</code> definida al inicio del script funciona. Pero si se quiere usar el mismo pipeline en varios proyectos, hay que copiar y pegar la definicion cada vez. Con dos o tres scripts se aguanta; con muchos, se vuelve tedioso y propenso a errores.</p>
+<p>La solucion es la misma que se uso con <code>pandas</code>: guardar la habilidad en una <strong>biblioteca</strong> aparte e importarla con una sola linea. Asi, la definicion se escribe una sola vez y se reutiliza en todos los proyectos.</p>
+<section id="estructura-de-la-biblioteca" class="level3">
+<h3 class="anchored" data-anchor-id="estructura-de-la-biblioteca">3.1 Estructura de la biblioteca</h3>
+<p>Se crea una carpeta llamada <code>habilidades</code> en el proyecto. Dentro van los archivos <code>.py</code> con las habilidades, uno por archivo. Cada archivo contiene una clase con sus metodos.</p>
+<pre><code>CursoPandas/
+  habilidades/
+    __init__.py        (vacio, necesario para Python)
+    pipeline.py        (habilidad PipelineTools)
+    formatos.py        (habilidad formatos_copados)</code></pre>
+<blockquote class="blockquote">
+<p><strong>Por que <code>__init__.py</code> existe</strong>: la biblioteca es una <strong>carpeta de Python</strong>, y Python necesita un archivo vacio llamado <code>__init__.py</code> para reconocerla como tal. Asi se puede escribir <code>from habilidades.pipeline import PipelineTools</code>. No hay que tocar este archivo, solo saber que tiene que estar ahi.</p>
+</blockquote>
+<p>A continuacion se muestra el contenido exacto de cada archivo de la biblioteca, tal cual tienen que quedar creados en el proyecto.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- habilidades/__init__.py ---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Este archivo (vacio, salvo estos comentarios) le dice a Python que</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># la carpeta 'habilidades' es un paquete. Asi se puede hacer:</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     from habilidades.pipeline import PipelineTools</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="monitor-box">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- habilidades/pipeline.py ---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Habilidad: herramientas para el pipeline de datos</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (Es la misma logica de las funciones include() y log() de la Clase 05,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># agrupadas en una clase llamada PipelineTools.)</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># En el fondo, PipelineTools es una clase con dos metodos: include() y log().</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># La llamamos "habilidad" porque resuelve una tarea concreta del pipeline</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># y se puede importar en cualquier proyecto.</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> PipelineTools:</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base, namespace):</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Guardamos la base como atributo del objeto</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.base <span class="op">=</span> base.copy()</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Guardamos las globals del script que llama.</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Asi, include() ve las mismas variables que ve el script principal</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># (base_trabajo, pd, np, etc.), igual que en la Clase 05.</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.namespace <span class="op">=</span> namespace</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> include(<span class="va">self</span>, archivo):</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Inyecta codigo desde un archivo externo.</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        <span class="co"># El codigo inyectado se ejecuta con las globals del script que llamo,</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        <span class="co"># no con las de este archivo. Asi, base_trabajo, pd, np, etc. estan</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        <span class="co"># disponibles exactamente como en la Clase 05.</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(archivo, <span class="st">"r"</span>) <span class="im">as</span> f:</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>            codigo <span class="op">=</span> f.read()</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">exec</span>(codigo, <span class="va">self</span>.namespace)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> log(<span class="va">self</span>, archivo, contenido):</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Guarda contenido en un archivo de texto.</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> <span class="bu">open</span>(archivo, <span class="st">"w"</span>) <span class="im">as</span> f:</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>            f.write(contenido)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="monitor-box">
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- habilidades/formatos.py ---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Habilidad: herramientas para generar tablas y reportes</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (Es la pivot_table de la Clase 04, encapsulada en una clase</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># llamada formatos_copados.)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># En el fondo, formatos_copados es una clase con un metodo: reporte_tabla().</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># La llamamos "habilidad" porque resuelve la tarea de generar tablas cruzadas</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># y se puede importar en cualquier proyecto.</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> formatos_copados:</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base):</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Guardamos la base de trabajo</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.base <span class="op">=</span> base.copy()</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> reporte_tabla(<span class="va">self</span>, fila, columna, valor, estadistico<span class="op">=</span><span class="st">'mean'</span>):</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Encapsula la pivot_table de la Clase 04.</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Recibe los parametros editables (fila, columna, valor, estadistico)</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>        <span class="co"># y devuelve la tabla cruzada formateada.</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        df_resumen <span class="op">=</span> <span class="va">self</span>.base.pivot_table(</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>            index<span class="op">=</span>fila,</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>            columns<span class="op">=</span>columna,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>            values<span class="op">=</span>valor,</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>            aggfunc<span class="op">=</span>estadistico</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Redondeo a 2 decimales para que la salida sea legible</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        df_resumen <span class="op">=</span> df_resumen.<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> df_resumen</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<blockquote class="blockquote">
+<p><strong>Cada archivo vive en <code>habilidades/</code></strong>: estos tres bloques de codigo no van en el script principal. Cada uno se guarda como un archivo <code>.py</code> dentro de la carpeta <code>habilidades/</code> del proyecto. Despues se importan con <code>from habilidades.nombre_archivo import Clase</code>.</p>
+</blockquote>
+</section>
+<section id="indicamos-donde-esta-la-biblioteca" class="level3">
+<h3 class="anchored" data-anchor-id="indicamos-donde-esta-la-biblioteca">3.2 Indicamos donde esta la biblioteca</h3>
+<p>Por defecto, Python busca las bibliotecas solo en la carpeta del script. Si la biblioteca <code>habilidades</code> esta en otra ubicacion, hay que avisarle a Python donde encontrarla.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- INDICAR LA RUTA DE LA BIBLIOTECA ---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Si la carpeta 'habilidades' esta en la misma carpeta que el script:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#     no hace falta hacer nada.</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Si esta en otra carpeta (por ejemplo C:\CursoPandas), hay que avisarle.</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>sys.path.append(<span class="vs">r"C:\CursoPandas"</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># A partir de aca, Python ya sabe donde buscar la biblioteca 'habilidades'</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> habilidades.pipeline <span class="im">import</span> PipelineTools</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> habilidades.formatos <span class="im">import</span> formatos_copados</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificamos que las habilidades se importaron correctamente</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Habilidades importadas correctamente"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>import sys</code></strong>: importa el modulo <code>sys</code>, que es la herramienta de Python para configurar el entorno.</p></li>
+<li><p><strong><code>sys.path.append(r"C:\CursoPandas")</code></strong>: agrega la carpeta <code>C:\CursoPandas</code> a la lista de rutas donde Python busca bibliotecas. La <code>r</code> antes de las comillas indica “raw string”: los <code>\</code> se toman como caracteres literales.</p></li>
+<li><p><strong><code>from habilidades.pipeline import PipelineTools</code></strong>: importa la habilidad <code>PipelineTools</code> que esta en el archivo <code>pipeline.py</code> dentro de la carpeta <code>habilidades</code>. La sintaxis es <code>from carpeta.archivo import Clase</code>.</p></li>
+<li><p><strong><code>from habilidades.formatos import formatos_copados</code></strong>: importa la segunda habilidad de la biblioteca, desde el archivo <code>formatos.py</code>. Cada archivo se importa por separado.</p></li>
+<li><p><strong>Si la carpeta <code>habilidades</code> esta en la misma carpeta que el script</strong>: las lineas de <code>sys.path</code> no hacen falta. Se pueden dejar igual, no molestan.</p></li>
+<li><p><strong>El pipeline completo se ve en 3.3</strong>: aca solo importamos las habilidades; en 3.3 se muestra como usarlas con datos reales.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mesa de Ayuda: <code>ModuleNotFoundError: No module named 'habilidades'</code>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Si al ejecutar el script aparece ese error, lo mas probable es una de estas cosas:</p>
+<ol type="1">
+<li><p><strong>Falta el archivo <code>__init__.py</code></strong>: la carpeta <code>habilidades</code> debe tener un archivo vacio llamado <code>__init__.py</code> para que Python la reconozca como biblioteca.</p></li>
+<li><p><strong>La biblioteca esta en otra carpeta</strong>: hay que agregar <code>sys.path.append(r"ruta\completa\a\la\carpeta")</code> antes del import. Verificar que la ruta existe y que la carpeta <code>habilidades</code> esta ahi.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="importar-una-habilidad-de-la-biblioteca" class="level3">
+<h3 class="anchored" data-anchor-id="importar-una-habilidad-de-la-biblioteca">3.3 Importar una habilidad de la biblioteca</h3>
+<p>Una vez que la biblioteca <code>habilidades</code> existe y Python sabe donde encontrarla, se importa cualquier habilidad con una sola linea.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- PIPELINE CON HABILIDAD IMPORTADA ---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># PipelineTools viene de la biblioteca 'habilidades'</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>sys.path.append(<span class="vs">r"C:\CursoPandas"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> habilidades.pipeline <span class="im">import</span> PipelineTools</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> habilidades.formatos <span class="im">import</span> formatos_copados</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. DATOS CRUDOS (mismo dataset de siempre)</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>],</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, np.nan, <span class="dv">580000</span>, np.nan, <span class="dv">420000</span>,</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>                <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, np.nan,</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, np.nan, <span class="dv">315000</span>, <span class="dv">425000</span>,</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>                <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>,</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>                  <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>]</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>base_cruda <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>base_trabajo <span class="op">=</span> base_cruda.copy()</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a><span class="co"># CREAMOS LA HABILIDAD: viene de la biblioteca</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> PipelineTools(base_cruda, <span class="bu">globals</span>())</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. DIAGNOSTICO</span></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>n_nan_ingreso <span class="op">=</span> base_trabajo[<span class="st">'ingreso'</span>].isna().<span class="bu">sum</span>()</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"NaN en ingreso: </span><span class="sc">{</span>n_nan_ingreso<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>casos_con_na <span class="op">=</span> base_trabajo[base_trabajo[<span class="st">'ingreso'</span>].isna()]</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>lista_indices <span class="op">=</span> <span class="bu">list</span>(casos_con_na.index)</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Indices afectados: </span><span class="sc">{</span>lista_indices<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. LOG</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>pipeline.log(<span class="st">"data/output/log_1.txt"</span>, <span class="bu">str</span>(lista_indices))</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. IMPUTACION MASIVA</span></span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'ingreso_sin_na'</span>] <span class="op">=</span> base_trabajo[<span class="st">'ingreso'</span>].fillna(<span class="dv">0</span>)</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. IMPUTACION CASO POR CASO</span></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a><span class="co"># imputacion.txt sigue usando base_trabajo.loc[...] como en la Clase 05</span></span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>pipeline.include(<span class="st">"data/output/imputacion.txt"</span>)</span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. EXPORTACION</span></span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>base_trabajo.to_excel(<span class="st">"data/output/base_editada.xlsx"</span>)</span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Pipeline completado. Base exportada: base_editada.xlsx"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>from habilidades.pipeline import PipelineTools</code></strong>: importa la habilidad desde la biblioteca. La sintaxis es <code>from carpeta.archivo import Clase</code>. Python busca <code>pipeline.py</code> dentro de la carpeta <code>habilidades</code>.</p></li>
+<li><p><strong>El script principal ya no tiene la definicion de la habilidad</strong>: no aparece <code>class PipelineTools:</code> en el script. Toda la definicion esta en <code>habilidades/pipeline.py</code>. El script principal queda dedicado a la logica del caso particular.</p></li>
+<li><p><strong>El uso es identico al de la Parte 1</strong>: <code>pipeline = PipelineTools(base_cruda, globals())</code>, <code>pipeline.log(...)</code>, <code>pipeline.include(...)</code>. La sintaxis no cambia. Lo unico que cambia es <strong>donde esta definida la habilidad</strong>.</p></li>
+<li><p><strong>El archivo <code>imputacion.txt</code> no se toca</strong>: sigue teniendo <code>base_trabajo.loc[...]</code> como en la Clase 05.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="alcances-y-ventajas-de-la-biblioteca" class="level3">
+<h3 class="anchored" data-anchor-id="alcances-y-ventajas-de-la-biblioteca">3.4 Alcances y ventajas de la biblioteca</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Por que vale la pena la biblioteca
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Reutilizacion real</strong>: con la Parte 1, cada vez que se inicia un proyecto nuevo hay que copiar la habilidad. Con la Parte 2, se copia la carpeta <code>habilidades</code> una vez y se importan con una linea. Es la misma diferencia que tiene <code>pandas</code>: uno no copia el codigo de Pandas en cada script, lo importa.</p></li>
+<li><p><strong>Script principal mas corto</strong>: en la Parte 2, el script principal no tiene la definicion de la habilidad. Empieza directo con los datos y la logica del pipeline. Es mas facil de leer y de explicar a otra persona.</p></li>
+<li><p><strong>Mantenimiento centralizado</strong>: si se quiere modificar <code>include()</code> o <code>log()</code> (por ejemplo, agregar una cabecera al log), se cambia en <code>habilidades/pipeline.py</code> y el cambio aplica a todos los scripts que la importen. No hay que ir archivo por archivo.</p></li>
+<li><p><strong>Codigo profesional</strong>: asi se trabaja en proyectos de datos reales. La biblioteca con las herramientas va aparte, y el script principal se enfoca en el caso particular que se esta analizando.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="segunda-habilidad-formatos_copados" class="level2">
+<h2 class="anchored" data-anchor-id="segunda-habilidad-formatos_copados">4. Segunda Habilidad: formatos_copados</h2>
+<p>La biblioteca puede tener tantas habilidades como se necesiten. Como ejemplo, la <code>pivot_table</code> de la Clase 04 se encapsula en su propia habilidad: <code>formatos_copados</code>.</p>
+<section id="el-archivo-habilidadesformatos.py" class="level3">
+<h3 class="anchored" data-anchor-id="el-archivo-habilidadesformatos.py">4.1 El archivo habilidades/formatos.py</h3>
+<p>Se crea un nuevo archivo en la biblioteca con la habilidad de generar tablas.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- habilidades/formatos.py ---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Habilidad: herramientas para generar tablas y reportes</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (Es la pivot_table de la Clase 04, encapsulada en una clase.)</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> formatos_copados:</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, base):</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Guardamos la base de trabajo</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.base <span class="op">=</span> base.copy()</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> reporte_tabla(<span class="va">self</span>, fila, columna, valor, estadistico<span class="op">=</span><span class="st">'mean'</span>):</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Encapsula la pivot_table de la Clase 04.</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Recibe los parametros editables (fila, columna, valor, estadistico)</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="co"># y devuelve la tabla cruzada formateada.</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        df_resumen <span class="op">=</span> <span class="va">self</span>.base.pivot_table(</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>            index<span class="op">=</span>fila,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>            columns<span class="op">=</span>columna,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>            values<span class="op">=</span>valor,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>            aggfunc<span class="op">=</span>estadistico</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Redondeo a 2 decimales para que la salida sea legible</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        df_resumen <span class="op">=</span> df_resumen.<span class="bu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> df_resumen</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Archivo nuevo en la biblioteca</strong>: debajo de <code>pipeline.py</code>, se crea <code>formatos.py</code>. La biblioteca crece archivo a archivo, habilidad a habilidad.</p></li>
+<li><p><strong><code>formatos_copados</code> resuelve una tarea distinta</strong>: <code>PipelineTools</code> se ocupa del pipeline de datos (log, include). <code>formatos_copados</code> se ocupa de la presentacion (tablas, reportes). Cada habilidad tiene su ambito.</p></li>
+<li><p><strong><code>__init__(self, base)</code></strong>: el constructor recibe solo la base. A diferencia de <code>PipelineTools</code>, esta habilidad no necesita <code>namespace</code> porque no inyecta codigo externo.</p></li>
+<li><p><strong><code>reporte_tabla(fila, columna, valor, estadistico)</code></strong>: es la <code>pivot_table</code> de la Clase 04 encapsulada. Los cuatro parametros son editables y se explican con su nombre para que sea claro que va en cada lugar.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="como-se-usan-las-dos-habilidades-juntas" class="level3">
+<h3 class="anchored" data-anchor-id="como-se-usan-las-dos-habilidades-juntas">4.2 Como se usan las dos habilidades juntas</h3>
+<p>Se importan las dos habilidades desde la biblioteca. Cada una resuelve un aspecto del trabajo.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># --- USO DE LAS DOS HABILIDADES JUNTAS ---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># PipelineTools y formatos_copados vienen de la biblioteca 'habilidades'</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>sys.path.append(<span class="vs">r"C:\CursoPandas"</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> habilidades.pipeline <span class="im">import</span> PipelineTools</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> habilidades.formatos <span class="im">import</span> formatos_copados</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 0. DATOS CRUDOS (mismo dataset de la Clase 04)</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>],</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, <span class="dv">320000</span>, <span class="dv">580000</span>, <span class="dv">310000</span>, <span class="dv">420000</span>,</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>                <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, <span class="dv">410000</span>,</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, <span class="dv">590000</span>, <span class="dv">315000</span>, <span class="dv">425000</span>,</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>                <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>]</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>base_cruda <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>base_trabajo <span class="op">=</span> base_cruda.copy()</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a><span class="co"># CREAMOS LAS HABILIDADES: cada una resuelve un aspecto del trabajo</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> PipelineTools(base_cruda, <span class="bu">globals</span>())</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>fmt <span class="op">=</span> formatos_copados(base_trabajo)</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a><span class="co"># TABLA 1: ingreso promedio por tipo de vivienda y region</span></span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a><span class="co"># La pivot_table de la Clase 04, ahora en una sola linea</span></span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>tabla_promedio <span class="op">=</span> fmt.reporte_tabla(</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    fila<span class="op">=</span><span class="st">'tipo_vivienda'</span>,</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    columna<span class="op">=</span><span class="st">'region'</span>,</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>    valor<span class="op">=</span><span class="st">'ingreso'</span>,</span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>    estadistico<span class="op">=</span><span class="st">'mean'</span></span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ingreso promedio por tipo de vivienda y region:"</span>)</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tabla_promedio)</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"-"</span> <span class="op">*</span> <span class="dv">50</span>)</span>
+<span id="cb10-56"><a href="#cb10-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-57"><a href="#cb10-57" aria-hidden="true" tabindex="-1"></a><span class="co"># TABLA 2: conteo de hogares por tipo de vivienda y region</span></span>
+<span id="cb10-58"><a href="#cb10-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Misma accion, distinto parametro</span></span>
+<span id="cb10-59"><a href="#cb10-59" aria-hidden="true" tabindex="-1"></a>tabla_conteo <span class="op">=</span> fmt.reporte_tabla(</span>
+<span id="cb10-60"><a href="#cb10-60" aria-hidden="true" tabindex="-1"></a>    fila<span class="op">=</span><span class="st">'tipo_vivienda'</span>,</span>
+<span id="cb10-61"><a href="#cb10-61" aria-hidden="true" tabindex="-1"></a>    columna<span class="op">=</span><span class="st">'region'</span>,</span>
+<span id="cb10-62"><a href="#cb10-62" aria-hidden="true" tabindex="-1"></a>    valor<span class="op">=</span><span class="st">'ingreso'</span>,</span>
+<span id="cb10-63"><a href="#cb10-63" aria-hidden="true" tabindex="-1"></a>    estadistico<span class="op">=</span><span class="st">'count'</span></span>
+<span id="cb10-64"><a href="#cb10-64" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-65"><a href="#cb10-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-66"><a href="#cb10-66" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Cantidad de hogares por tipo de vivienda y region:"</span>)</span>
+<span id="cb10-67"><a href="#cb10-67" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tabla_conteo)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Dos imports en lineas separadas</strong>: <code>from habilidades.pipeline import PipelineTools</code> y <code>from habilidades.formatos import formatos_copados</code>. Cada import trae una habilidad de la biblioteca. Tambien se puede hacer en una sola linea: <code>from habilidades import ...</code>, pero separado es mas claro.</p></li>
+<li><p><strong><code>fmt = formatos_copados(base_trabajo)</code></strong>: se crea la instancia de la habilidad de formatos. El nombre <code>fmt</code> es arbitrario.</p></li>
+<li><p><strong><code>fmt.reporte_tabla(fila, columna, valor, estadistico)</code></strong>: una sola linea genera la tabla cruzada. Los parametros se escriben con nombre para que sea claro que va en cada lugar.</p></li>
+<li><p><strong>Cambiar el estadistico es solo cambiar un parametro</strong>: <code>'mean'</code> calcula promedio, <code>'count'</code> cuenta casos, <code>'sum'</code> suma valores.</p></li>
+<li><p><strong>No hay que escribir <code>pivot_table(...)</code> ni <code>round(2)</code></strong>: la habilidad ya encapsula esa logica. El codigo de la Clase 04 que era largo, ahora es una llamada corta.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="la-biblioteca-crece-con-el-trabajo" class="level3">
+<h3 class="anchored" data-anchor-id="la-biblioteca-crece-con-el-trabajo">4.3 La biblioteca crece con el trabajo</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Como se llena la biblioteca de habilidades
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Separacion de responsabilidades</strong>: <code>PipelineTools</code> se ocupa del pipeline (log, include). <code>formatos_copados</code> se ocupa de la presentacion (tablas). Cada habilidad tiene un ambito claro y no se mezcla con las demas.</p></li>
+<li><p><strong>Reutilizacion entre proyectos</strong>: si en otro analisis se necesita una tabla cruzada, se importa <code>formatos_copados</code> y se usa. Si se necesita el log de ediciones, se importa <code>PipelineTools</code>. No hay que reescribir nada.</p></li>
+<li><p><strong>Modificacion aislada</strong>: si se quiere cambiar como se formatea la tabla (por ejemplo, agregar mas decimales o cambiar la funcion de agregacion), se modifica solo <code>formatos_copados</code>. El resto no se toca.</p></li>
+<li><p><strong>Escalabilidad</strong>: hoy son dos habilidades. Mañana pueden ser cinco, diez, las que hagan falta. Cada nueva habilidad resuelve un problema nuevo sin ensuciar las anteriores.</p></li>
+<li><p><strong>La biblioteca es personal</strong>: a medida que se descubren tareas recurrentes en el trabajo, se van creando nuevas habilidades y se guardan en la biblioteca. Es como una caja de herramientas que se va llenando con el uso.</p></li>
+</ol>
+</div>
+</div>
+<div class="gray-italic-box">
+<p><strong>Zona de Prompting:</strong> “Actua como experto en Python para analistas de datos. En mi proyecto tengo tres tipos de reportes que hago siempre: una tabla cruzada con promedios, un grafico de barras con la misma informacion, y un resumen de casos validos vs valores ausentes. Mostrame como organizarias eso como habilidades dentro de la biblioteca, que metodos tendria cada una, y que parametros editables le pondrias a cada metodo para que sea reutilizable en distintos analisis.”</p>
+</div>
+<hr>
+</section>
+</section>
+<section id="la-biblioteca-como-preparacion-para-agentes" class="level2">
+<h2 class="anchored" data-anchor-id="la-biblioteca-como-preparacion-para-agentes">5. La Biblioteca Como Preparacion para Agentes</h2>
+<p>La biblioteca de habilidades no solo sirve para el analista. Tambien es la forma de preparar el proyecto para que los <strong>agentes de IA</strong> (como Claude, ChatGPT u otros) trabajen mejor.</p>
+<section id="por-que-los-agentes-prefieren-bibliotecas-modulares" class="level3">
+<h3 class="anchored" data-anchor-id="por-que-los-agentes-prefieren-bibliotecas-modulares">5.1 Por que los agentes prefieren bibliotecas modulares</h3>
+<p>Un agente de IA lee el codigo del proyecto para entender que hace y como se organiza. Cuando el codigo esta todo mezclado en un solo script, el agente tiene que adivinar donde esta cada cosa. Cuando esta dividido en archivos pequenos y con nombres claros (<code>pipeline.py</code>, <code>formatos.py</code>), el agente sabe inmediatamente:</p>
+<ul>
+<li>Que hace cada archivo (por el nombre)</li>
+<li>Como se usa (por el <code>__init__</code> y los parametros)</li>
+<li>Como modificarlo (por la documentacion interna)</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que ven los agentes en la biblioteca
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Nombres claros</strong>: <code>pipeline.py</code> y <code>formatos.py</code> dicen que hace cada archivo sin necesidad de abrirlo. Un agente que recibe la peticion “agregame un metodo para exportar a Excel” sabe inmediatamente que tiene que modificar <code>formatos.py</code>.</p></li>
+<li><p><strong>Archivos pequenos</strong>: cada habilidad esta en su propio archivo, asi que el agente no tiene que navegar un script de 500 lineas para encontrar lo que necesita. Abre el archivo correcto, modifica la clase, y listo.</p></li>
+<li><p><strong>Parametros documentados</strong>: las clases tienen <code>__init__</code> con argumentos nombrados. El agente ve que <code>PipelineTools(base, namespace)</code> y entiende que esos son los datos que necesita.</p></li>
+<li><p><strong>Separacion de responsabilidades</strong>: cada archivo hace una cosa. El agente no tiene que entender todo a la vez; puede trabajar sobre una habilidad sin tocar las demas.</p></li>
+<li><p><strong>Menos ambiguedad</strong>: cuando el codigo esta organizado, el agente puede hacer cambios sin romper otras partes del proyecto. El riesgo de “arreglar una cosa y romper otra” baja.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="que-cambia-cuando-se-trabaja-con-agentes" class="level3">
+<h3 class="anchored" data-anchor-id="que-cambia-cuando-se-trabaja-con-agentes">5.2 Que cambia cuando se trabaja con agentes</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practica recomendada al usar agentes
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>La biblioteca es el contrato</strong>: los nombres de las habilidades y sus parametros son la “interfaz” entre el analista, el script y el agente. Si estan claros, todo funciona mejor.</p></li>
+<li><p><strong>Documentar el proposito de cada habilidad</strong>: un comentario al inicio del archivo <code>.py</code> que diga “esta habilidad se ocupa de X” ayuda al agente a entender el contexto.</p></li>
+<li><p><strong>Mantener las habilidades pequenas</strong>: si una habilidad crece mucho, conviene dividirla. El agente trabaja mejor con archivos de 50-100 lineas que con uno de 500.</p></li>
+<li><p><strong>Nombrar los metodos con verbos</strong>: <code>reporte_tabla</code>, <code>incluir_codigo</code>, <code>guardar_log</code>. Asi el agente entiende la accion sin leer la implementacion.</p></li>
+<li><p><strong>Pasar la biblioteca al agente cuando se le pida algo</strong>: cuando se le pide a un agente “agregame un reporte X”, adjuntar la carpeta <code>habilidades/</code> para que entienda el contexto del proyecto.</p></li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="opencode-tu-agente-de-codigo" class="level2">
+<h2 class="anchored" data-anchor-id="opencode-tu-agente-de-codigo">6. OpenCode: Tu Agente de Codigo</h2>
+<section id="que-es-opencode" class="level3">
+<h3 class="anchored" data-anchor-id="que-es-opencode">6.1 Que es OpenCode</h3>
+<p>OpenCode es un agente de IA que escribe codigo en tu proyecto. Lee archivos, los modifica y crea nuevos. Esta especializado en programacion y entiende la estructura de tu proyecto.</p>
+<p>Es de <strong>codigo abierto</strong> (github.com/anomalyco/opencode) y tiene mas de 160.000 estrellas en GitHub. Funciona en cualquier terminal: CMD, Windows Terminal, Warp, WezTerm, Alacritty.</p>
+<p>Para descargarlo: <a href="https://opencode.ai/download">opencode.ai/download</a></p>
+</section>
+<section id="cuatro-comandos-basicos" class="level3">
+<h3 class="anchored" data-anchor-id="cuatro-comandos-basicos">6.2 Cuatro comandos basicos</h3>
+<p>OpenCode se maneja con comandos. Estos son los cuatro que mas vas a usar:</p>
+<ol type="1">
+<li><p><strong><code>/connect</code></strong>: conecta una API de IA. Elegi un proveedor (OpenAI, Anthropic, Google) y pega tu API key. OpenCode Zen incluye modelos gratuitos para empezar.</p></li>
+<li><p><strong><code>/init</code></strong>: analiza la carpeta del proyecto y crea un archivo <code>AGENTS.md</code> con la estructura del proyecto. Ese archivo ayuda al agente a entender como esta organizado el codigo.</p></li>
+<li><p><strong><code>Tab</code></strong>: cambia entre Modo Plan (el agente solo lee y propone, no modifica nada) y Modo Build (ejecuta los cambios). El indicador visual esta abajo a la derecha.</p></li>
+<li><p><strong><code>/models</code></strong>: abre el selector de modelos. Elegi uno entre los disponibles. Recomendados para empezar: Minimax M2.1 (gratis en Zen), Claude Sonnet, GPT-5.1.</p></li>
+</ol>
+</section>
+<section id="ejercicio-practico-crear-una-nueva-habilidad-con-opencode" class="level3">
+<h3 class="anchored" data-anchor-id="ejercicio-practico-crear-una-nueva-habilidad-con-opencode">6.3 Ejercicio practico: crear una nueva habilidad con OpenCode</h3>
+<p>La biblioteca <code>habilidades/</code> esta armada para que un agente de IA la entienda: archivos pequenos, nombres claros, responsabilidades separadas. Vas a pedirle a OpenCode que cree una nueva habilidad.</p>
+<p><strong>Pasos:</strong></p>
+<ol type="1">
+<li>Abri la terminal en la carpeta <code>CeiaPython/</code>.</li>
+<li>Ejecuta <code>opencode</code>. Si es la primera vez, usa <code>/connect</code> para configurar la API.</li>
+<li>Usa <code>/init</code> para que analice el proyecto.</li>
+<li>Escribe este pedido:</li>
+</ol>
+<pre><code>Lee la carpeta habilidades/ y creame una nueva habilidad llamada tablas_resumen con dos metodos: resumen_numericas() y resumen_categoricas(). Toma como referencia el estilo de formatos_copados.</code></pre>
+<ol start="5" type="1">
+<li>Revisa la propuesta en Modo Plan. Si te parece bien, presiona <strong>Tab</strong> para pasar a Modo Build y decile que la cree.</li>
+<li>Proba que funciona:</li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> habilidades.tablas_resumen <span class="im">import</span> tablas_resumen</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>tr <span class="op">=</span> tablas_resumen(base_trabajo)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tr.resumen_numericas())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>El resultado es un archivo <code>habilidades/tablas_resumen.py</code> con una clase que tiene dos metodos: <code>resumen_numericas()</code> devuelve un cuadro estadistico (media, desvio, minimo, maximo, cuartiles) de las columnas numericas, y <code>resumen_categoricas()</code> devuelve la frecuencia de cada valor en las columnas de texto.</p>
+</section>
+<section id="el-agente-analista-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="el-agente-analista-de-datos">6.4 El agente analista de datos</h3>
+<p>OpenCode puede especializarse en un rol. El archivo <code>.opencode/agent/analista-datos.md</code> define un agente que entiende el estilo del curso: claridad sobre complejidad, comentarios utiles, metodologia paso a paso (datos crudos, copia de trabajo, pipeline).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Archivo: <code>.opencode/agent/analista-datos.md</code></strong></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">description</span><span class="kw">:</span><span class="at"> </span><span class="st">"Ayuda a escribir codigo Python para analisis de datos. codigo claro, legible y bien documentado. Sigue la metodologia del curso: datos crudos, copia de trabajo, pipeline."</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mode</span><span class="kw">:</span><span class="at"> subagent</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>Eres un asistente de Python especializado en analisis de datos. Tu objetivo es escribir codigo claro, legible y bien documentado.
+
+## Principios
+
+1. **Claridad**: usa nombres de variables descriptivos (ingresos_validos, no iv). Escribi funciones cortas que hagan una sola cosa.
+
+2. **Legibilidad**: el codigo se lee de arriba a abajo como una historia. Evita operaciones encadenadas de mas de 3 pasos sin separar.
+
+3. **Comentarios utiles**: comenta el proposito de cada bloque. No comentes cada linea.
+
+4. **Metodologia**: datos crudos no se modifican. Las transformaciones van sobre una copia de trabajo.
+
+5. **Si no sabes algo, decilo**: no inventes soluciones ni funciones que no conoces.</code></pre>
+</div>
+</div>
+<p>No es necesario configurarlo ahora. Solo saber que existe esta posibilidad: cuando el proyecto tiene un agente definido, OpenCode lo usa automaticamente para mantener la coherencia del estilo.</p>
+<hr>
+</section>
+</section>
+<section id="resumen-de-la-clase" class="level2">
+<h2 class="anchored" data-anchor-id="resumen-de-la-clase">Resumen de la Clase</h2>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Concepto / Metodo</th>
+<th style="text-align: left;">Funcion Principal</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Habilidad (clase)</strong></td>
+<td style="text-align: left;">Agrupa acciones (metodos) que resuelven una tarea concreta. Se define con <code>class Nombre:</code>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Accion (metodo)</strong></td>
+<td style="text-align: left;">Funcion dentro de una habilidad. Se define con <code>def nombre(self, ...)</code>.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>__init__(self, ...)</code></strong></td>
+<td style="text-align: left;">Constructor. Se ejecuta al crear la instancia de la habilidad.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>self.atributo</code></strong></td>
+<td style="text-align: left;">Atributo de la instancia. Dato que vive dentro de la habilidad.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Carpeta <code>habilidades/</code></strong></td>
+<td style="text-align: left;">Biblioteca donde se guardan las habilidades. Cada archivo <code>.py</code> es una habilidad.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>__init__.py</code> (vacio)</strong></td>
+<td style="text-align: left;">Archivo necesario para que Python reconozca la carpeta como biblioteca.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>from habilidades.archivo import Clase</code></strong></td>
+<td style="text-align: left;">Importa una habilidad desde la biblioteca.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>sys.path.append(ruta)</code></strong></td>
+<td style="text-align: left;">Agrega una carpeta a la lista de rutas donde Python busca bibliotecas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>pipeline.log(archivo, contenido)</code></strong></td>
+<td style="text-align: left;">Accion de la habilidad <code>PipelineTools</code>. Guarda contenido en un archivo.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>pipeline.include(archivo)</code></strong></td>
+<td style="text-align: left;">Accion de la habilidad <code>PipelineTools</code>. Inyecta codigo desde un archivo.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>fmt.reporte_tabla(fila, columna, valor, estadistico)</code></strong></td>
+<td style="text-align: left;">Accion de la habilidad <code>formatos_copados</code>. Genera una tabla cruzada.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Biblioteca para agentes</strong></td>
+<td style="text-align: left;">La organizacion modular de la biblioteca prepara el proyecto para que los agentes de IA trabajen mejor.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

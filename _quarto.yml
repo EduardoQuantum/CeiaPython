@@ -3,7 +3,7 @@ project:
   output-dir: "docs"
   resources:
     - imagenes/        # Esto fuerza a Quarto
-  render: 
+  render:
     - "*.qmd"
     - "!SEPARADORES_*.qmd"
 
@@ -30,7 +30,7 @@ format:
 # Configuración de la estructura del sitio
 website:
   title: "Python + Pandas + IA - CEIA - FLACSO"
-  
+
   navbar:
     background: "#003366"
     search: true
@@ -38,7 +38,7 @@ website:
     left:
       - text: "Material de Clases"
         icon: journal-code
-        menu: 
+        menu:
           - text: 'Clase 01: El Ecosistema'
             file: clase_01.qmd
           - text: 'Clase 02: Python + Pandas'
@@ -49,7 +49,10 @@ website:
             file: clase_04.qmd
           - text: 'Clase 05: Edición y Tratamiento de Valores Ausentes'
             file: clase_05.qmd
+          - text: 'Clase 06: Mas sobre funciones y clases'
+            file: clase_06.qmd
+
     right:
       - icon: github
         href: https://github.com/EduardoQuantum/CeiaPython.git
-        aria-label: GitHub  # Importante para accesibilidad, aunque no se vea el texto  
+        aria-label: GitHub  # Importante para accesibilidad, aunque no se vea el texto

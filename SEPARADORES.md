@@ -2,7 +2,7 @@
   .prompt-flacso {
       font-family: 'Consolas', monospace;
       font-size: 3.5em;
-      color: #ffcc00; 
+      color: #ffcc00;
       margin-top: 50px;
   }
   .cursor-parpadeante {
@@ -17,7 +17,7 @@
 <br><br><br><br><br><br>
 
 <h1 align="center" style="font-size: 3.5em; margin-bottom: 40px; text-transform: uppercase; letter-spacing: 2px; color: #003366;">
-  Edición y Tratamiento de Valores Ausentes
+  Biblioteca de Habilidades y OpenCode
 </h1>
 
 <div align="center" class="prompt-flacso">
