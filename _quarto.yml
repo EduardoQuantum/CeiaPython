@@ -51,6 +51,8 @@ website:
             file: clase_05.qmd
           - text: 'Clase 06: Habilidades y OpenCode'
             file: clase_06.qmd
+          - text: 'Clase 07: Variables categóricas y Ediciones + Normalización'
+            file: clase_07.qmd
 
     right:
       - icon: github

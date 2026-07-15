@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Eduardo Lencina">
+
+<title>Python + Pandas + IA - CEIA - FLACSO - Clase 08: Merge y Join de DataFrames</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Python + Pandas + IA - CEIA - FLACSO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-material-de-clases" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+      <i class="bi bi-journal-code" role="img">
+</i> 
+ <span class="menu-text">Material de Clases</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-material-de-clases">    
+        <li>
+    <a class="dropdown-item" href="./clase_01.html" rel="" target="">
+ <span class="dropdown-text">Clase 01: El Ecosistema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_02.html" rel="" target="">
+ <span class="dropdown-text">Clase 02: Python + Pandas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_03.html" rel="" target="">
+ <span class="dropdown-text">Clase 03: Selección de Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_04.html" rel="" target="">
+ <span class="dropdown-text">Clase 04: Split-Apply-Combine</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_05.html" rel="" target="">
+ <span class="dropdown-text">Clase 05: Edición y Tratamiento de Valores Ausentes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_06.html" rel="" target="">
+ <span class="dropdown-text">Clase 06: Habilidades y OpenCode</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_07.html" rel="" target="">
+ <span class="dropdown-text">Clase 07: Variables categóricas y Ediciones + Normalización</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/EduardoQuantum/CeiaPython.git" rel="" target=""><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#merge-y-join-de-dataframes" id="toc-merge-y-join-de-dataframes" class="nav-link active" data-scroll-target="#merge-y-join-de-dataframes">8. Merge y Join de DataFrames</a>
+  <ul class="collapse">
+  <li><a href="#por-que-combinar-datos" id="toc-por-que-combinar-datos" class="nav-link" data-scroll-target="#por-que-combinar-datos">8.1 ¿Por que combinar datos?</a></li>
+  <li><a href="#los-dos-datasets" id="toc-los-dos-datasets" class="nav-link" data-scroll-target="#los-dos-datasets">8.2 Los dos datasets</a></li>
+  <li><a href="#merge-basico-con-pd.merge" id="toc-merge-basico-con-pd.merge" class="nav-link" data-scroll-target="#merge-basico-con-pd.merge">8.3 Merge basico con <code>pd.merge()</code></a></li>
+  <li><a href="#merge-sobre-el-indice" id="toc-merge-sobre-el-indice" class="nav-link" data-scroll-target="#merge-sobre-el-indice">8.4 Merge sobre el indice</a></li>
+  <li><a href="#el-problema-del-indice-repetido" id="toc-el-problema-del-indice-repetido" class="nav-link" data-scroll-target="#el-problema-del-indice-repetido">8.5 El problema del indice repetido</a></li>
+  <li><a href="#resolver-indices-repetidos-editar-nunca-ignorar" id="toc-resolver-indices-repetidos-editar-nunca-ignorar" class="nav-link" data-scroll-target="#resolver-indices-repetidos-editar-nunca-ignorar">8.6 Resolver indices repetidos: editar, nunca ignorar</a></li>
+  <li><a href="#reset_index-siempre" id="toc-reset_index-siempre" class="nav-link" data-scroll-target="#reset_index-siempre">8.7 <code>reset_index()</code> siempre</a></li>
+  <li><a href="#buenas-practicas" id="toc-buenas-practicas" class="nav-link" data-scroll-target="#buenas-practicas">8.8 Buenas practicas</a></li>
+  <li><a href="#cerrando-el-circulo" id="toc-cerrando-el-circulo" class="nav-link" data-scroll-target="#cerrando-el-circulo">8.9 Cerrando el circulo</a></li>
+  </ul></li>
+  <li><a href="#resumen-de-la-clase" id="toc-resumen-de-la-clase" class="nav-link" data-scroll-target="#resumen-de-la-clase">Resumen de la Clase</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 08: Merge y Join de DataFrames</h1>
+<p class="subtitle lead">Combinar datos, resolver indices repetidos y no pisar claves</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Eduardo Lencina </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="merge-y-join-de-dataframes" class="level2">
+<h2 class="anchored" data-anchor-id="merge-y-join-de-dataframes">8. Merge y Join de DataFrames</h2>
+<section id="por-que-combinar-datos" class="level3">
+<h3 class="anchored" data-anchor-id="por-que-combinar-datos">8.1 ¿Por que combinar datos?</h3>
+<p>Hasta ahora trabajamos con un solo dataset: 20 hogares, todo en una tabla. En la realidad los datos nunca llegan asi. Las encuestas tienen modulos separados. Los registros administrativos vienen de distintas fuentes. La informacion complementaria hay que buscarla en otro lado.</p>
+<p>Combinar datos es tan frecuente como limpiarlos. Y tiene sus propios problemas:</p>
+<ol type="1">
+<li><p><strong>No todos los casos estan en las dos tablas</strong>. Algunos hogares responden la encuesta base pero no el seguimiento. Otros aparecen solo en el seguimiento.</p></li>
+<li><p><strong>Las claves pueden repetirse</strong>. Un mismo hogar puede tener dos registros en la tabla secundaria (dos visitas, dos entrevistados). Eso no es un error: es que la realidad es multiple.</p></li>
+<li><p><strong>El indice no siempre es confiable</strong>. Si la clave esta en el indice y el indice tiene duplicados, el comportamiento del merge cambia sin que se vea en el codigo.</p></li>
+</ol>
+<p>Esta clase muestra como enfrentar esos problemas: combinar tablas con <code>pd.merge()</code>, detectar indices repetidos, editarlos con criterio, y mantener las claves originales intactas.</p>
+<hr>
+</section>
+<section id="los-dos-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="los-dos-datasets">8.2 Los dos datasets</h3>
+<p>Usamos el mismo dataset de 20 hogares de las clases anteriores, ahora como <code>base_hogares</code>, y creamos una <strong>encuesta de seguimiento</strong> con 14 registros.</p>
+<p><strong>El dataset original:</strong></p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>data_hogares <span class="op">=</span> {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>],</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, np.nan, <span class="dv">580000</span>, np.nan, <span class="dv">420000</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, np.nan,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, np.nan, <span class="dv">315000</span>, <span class="dv">425000</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>                <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                  <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>],</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'satisfaccion'</span>: [</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">'De acuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'Totalmente de acuerdo'</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">'En desacuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'Totalmente en desacuerdo'</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">'De acuerdo'</span>, <span class="st">'De acuerdo'</span>, <span class="st">'En desacuerdo'</span>,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Totalmente de acuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'De acuerdo'</span>,</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Totalmente en desacuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'De acuerdo'</span>,</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">'De acuerdo'</span>, <span class="st">'Totalmente de acuerdo'</span>, <span class="st">'En desacuerdo'</span>,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Neutral'</span>, <span class="st">'De acuerdo'</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>base_cruda <span class="op">=</span> pd.DataFrame(data_hogares).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>base_hogares <span class="op">=</span> base_cruda.copy()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>La encuesta de seguimiento:</strong> 14 registros. Algunos hogares aparecen dos veces (indice repetido), y hay dos hogares nuevos que no estaban en la original.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data_seguimiento <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">'H_001'</span>, <span class="st">'H_004'</span>, <span class="st">'H_006'</span>, <span class="st">'H_009'</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">'H_010'</span>, <span class="st">'H_014'</span>, <span class="st">'H_016'</span>, <span class="st">'H_020'</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">'H_003'</span>, <span class="st">'H_003'</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'H_008'</span>, <span class="st">'H_008'</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'H_021'</span>, <span class="st">'H_022'</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'satisfaccion_seguimiento'</span>: [</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Neutral'</span>, <span class="st">'Totalmente en desacuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'De acuerdo'</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Totalmente de acuerdo'</span>, <span class="st">'De acuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'Totalmente de acuerdo'</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'De acuerdo'</span>, <span class="st">'Totalmente de acuerdo'</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">'En desacuerdo'</span>, <span class="st">'Neutral'</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'De acuerdo'</span>, <span class="st">'Neutral'</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso_actualizado'</span>: [</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="dv">470000</span>, np.nan, <span class="dv">510000</span>, <span class="dv">300000</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        np.nan, <span class="dv">330000</span>, <span class="dv">520000</span>, <span class="dv">440000</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="dv">600000</span>, <span class="dv">610000</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="dv">640000</span>, <span class="dv">635000</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="dv">380000</span>, <span class="dv">290000</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">'situacion_laboral'</span>: [</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Estable'</span>, <span class="st">'Estable'</span>, <span class="st">'Mejoro'</span>, <span class="st">'Empeoro'</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Estable'</span>, <span class="st">'Mejoro'</span>, <span class="st">'Estable'</span>, <span class="st">'Estable'</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Estable'</span>, <span class="st">'Mejoro'</span>,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Estable'</span>, <span class="st">'Estable'</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Estable'</span>, <span class="st">'Empeoro'</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">'fecha_visita'</span>: [</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">'2024-06-01'</span>, <span class="st">'2024-06-01'</span>, <span class="st">'2024-06-02'</span>, <span class="st">'2024-06-02'</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">'2024-06-03'</span>, <span class="st">'2024-06-03'</span>, <span class="st">'2024-06-04'</span>, <span class="st">'2024-06-04'</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">'2024-06-01'</span>, <span class="st">'2024-06-15'</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">'2024-06-02'</span>, <span class="st">'2024-06-02'</span>,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        <span class="st">'2024-06-05'</span>, <span class="st">'2024-06-05'</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>base_seguimiento_cruda <span class="op">=</span> pd.DataFrame(data_seguimiento).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>base_seguimiento <span class="op">=</span> base_seguimiento_cruda.copy()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Veamos que tenemos:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Hogares originales: </span><span class="sc">{</span><span class="bu">len</span>(base_hogares)<span class="sc">}</span><span class="ss"> filas, "</span> <span class="op">+</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"indice unico: </span><span class="sc">{</span><span class="kw">not</span> base_hogares<span class="sc">.</span>index<span class="sc">.</span>duplicated()<span class="sc">.</span><span class="bu">any</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Seguimiento: </span><span class="sc">{</span><span class="bu">len</span>(base_seguimiento)<span class="sc">}</span><span class="ss"> filas, "</span> <span class="op">+</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"indice unico: </span><span class="sc">{</span><span class="kw">not</span> base_seguimiento<span class="sc">.</span>index<span class="sc">.</span>duplicated()<span class="sc">.</span><span class="bu">any</span>()<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>base_hogares</code></strong> es el mismo dataset de la Clase 07. 20 hogares, indice unico.</p></li>
+<li><p><strong><code>base_seguimiento</code></strong> tiene 14 filas pero <strong>no todas son hogares distintos</strong>. H_003 y H_008 aparecen dos veces cada uno. Eso es exactamente lo que queremos estudiar.</p></li>
+<li><p><strong><code>cod_hogar</code> funciona como clave primaria</strong>: identifica al hogar de forma unica. En la tabla de seguimiento la clave no es unica, y eso es el problema central de la clase.</p></li>
+<li><p><strong>Los nuevos hogares</strong> (H_021, H_022) no estan en la original. Cuando hagamos merge con <code>how='left'</code> van a desaparecer. Con `how=‘outer’’ van a aparecer con NaN en las columnas de la tabla original.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+<section id="merge-basico-con-pd.merge" class="level3">
+<h3 class="anchored" data-anchor-id="merge-basico-con-pd.merge">8.3 Merge basico con <code>pd.merge()</code></h3>
+<p><code>pd.merge()</code> combina dos DataFrames a partir de una o varias columnas en comun. La columna en comun se llama <strong>clave de merge</strong>.</p>
+<p>Para mergear por columna (no por indice), primero tenemos que tener la clave como columna. Usamos <code>reset_index()</code>:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hogares_reset <span class="op">=</span> base_hogares.reset_index(names<span class="op">=</span><span class="st">'cod_hogar'</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>seguimiento_reset <span class="op">=</span> base_seguimiento.reset_index(names<span class="op">=</span><span class="st">'cod_hogar'</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>merge_left <span class="op">=</span> pd.merge(hogares_reset, seguimiento_reset, on<span class="op">=</span><span class="st">'cod_hogar'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Merge left: </span><span class="sc">{</span><span class="bu">len</span>(merge_left)<span class="sc">}</span><span class="ss"> filas"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(merge_left.head(<span class="dv">8</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>.reset_index(names='cod_hogar')</code></strong>: mueve el indice a una columna con ese nombre. Antes <code>cod_hogar</code> estaba en el indice; ahora es una columna accesible para el merge.</p></li>
+<li><p><strong><code>on='cod_hogar'</code></strong>: le dice a pandas que use esa columna para emparejar filas. Cada fila de <code>hogares_reset</code> busca su correspondiente en <code>seguimiento_reset</code> por el valor de <code>cod_hogar</code>.</p></li>
+<li><p><strong><code>how='left'</code></strong>: se quedan todas las filas de la izquierda (<code>hogares_reset</code>), y se agregan las columnas de la derecha donde hay coincidencia. Donde no hay, queda NaN. Es el tipo de merge mas usado: “dame todos mis casos y agregales la informacion del seguimiento si existe”.</p></li>
+<li><p><strong><code>how='inner'</code></strong>: solo las filas que existen en ambas tablas. Los hogares sin seguimiento desaparecen.</p></li>
+<li><p><strong><code>how='outer'</code></strong>: todas las filas de ambas tablas. Donde no hay coincidencia, NaN.</p></li>
+</ol>
+</div>
+</div>
+<p>Veamos los tres tipos lado a lado:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> tipo <span class="kw">in</span> [<span class="st">'inner'</span>, <span class="st">'left'</span>, <span class="st">'outer'</span>]:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    resultado <span class="op">=</span> pd.merge(hogares_reset, seguimiento_reset,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                         on<span class="op">=</span><span class="st">'cod_hogar'</span>, how<span class="op">=</span>tipo)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>tipo<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="bu">len</span>(resultado)<span class="sc">}</span><span class="ss"> filas, "</span> <span class="op">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"</span><span class="sc">{</span>resultado[<span class="st">'cod_hogar'</span>]<span class="sc">.</span>nunique()<span class="sc">}</span><span class="ss"> hogares distintos"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos viendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">how</th>
+<th style="text-align: left;">Filas</th>
+<th style="text-align: left;">Explicacion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>inner</code></td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">Solo los 8 hogares con seguimiento, pero H_003 y H_008 aparecen 2 veces cada uno</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>left</code></td>
+<td style="text-align: left;">22</td>
+<td style="text-align: left;">Los 20 hogares originales + 2 filas extra por duplicados en seguimiento</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>outer</code></td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">20 originales + 2 nuevos + 2 filas extra por duplicados</td>
+</tr>
+</tbody>
+</table>
+<p>El numero de filas no es el esperado. <strong>H_003 y H_008 aparecen dos veces en el resultado</strong> porque aparecen dos veces en la tabla de seguimiento. Esto no es un error de pandas: es el comportamiento correcto del merge cuando hay claves repetidas.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="merge-sobre-el-indice" class="level3">
+<h3 class="anchored" data-anchor-id="merge-sobre-el-indice">8.4 Merge sobre el indice</h3>
+<p>Otra forma de mergear es usando el indice como clave, con <code>left_index=True</code> y <code>right_index=True</code>:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>merge_por_indice <span class="op">=</span> pd.merge(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    base_hogares, base_seguimiento,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    left_index<span class="op">=</span><span class="va">True</span>, right_index<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    how<span class="op">=</span><span class="st">'left'</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Merge por indice: </span><span class="sc">{</span><span class="bu">len</span>(merge_por_indice)<span class="sc">}</span><span class="ss"> filas"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(merge_por_indice.head(<span class="dv">8</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+¿Por que no recomendamos merge sobre indice?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>El indice es implicito</strong>: la clave de merge no se ve en los datos. Si alguien resetea el indice despues, la referencia se pierde.</p></li>
+<li><p><strong>Los duplicados en el indice no saltan a la vista</strong>: en el merge por columna, <code>duplicated()</code> se aplica sobre la columna. En el merge por indice, el duplicado esta en los metadatos y es mas facil pasarlo por alto.</p></li>
+<li><p><strong><code>reset_index()</code> siempre es necesario antes o despues</strong>: si haces merge sobre indice, probablemente termines reseteando el indice despues para trabajar comodo. Mejor hacerlo al principio.</p></li>
+<li><p><strong>El indice no tiene por que ser la clave de negocio</strong>: <code>cod_hogar</code> es la clave real. Que este en el indice es una decision estructural. El merge deberia usar la clave conceptual, no la estructural.</p></li>
+</ol>
+<p><strong>Regla</strong>: merge sobre columna explicita. El indice se usa para alinear filas, no como clave de cruce.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="el-problema-del-indice-repetido" class="level3">
+<h3 class="anchored" data-anchor-id="el-problema-del-indice-repetido">8.5 El problema del indice repetido</h3>
+<p>El merge nos mostro que H_003 y H_008 aparecen dos veces en el seguimiento. Pero <code>base_hogares</code> tiene indice unico, asi que el problema esta en <code>base_seguimiento</code>.</p>
+<section id="detectar-duplicados" class="level4">
+<h4 class="anchored" data-anchor-id="detectar-duplicados">8.5.1 Detectar duplicados</h4>
+<div class="monitor-box">
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Detectar si hay duplicados</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>hay_dup <span class="op">=</span> base_seguimiento.index.duplicated()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"¿Hay indices duplicados? </span><span class="sc">{</span>hay_dup<span class="sc">.</span><span class="bu">any</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Cantidad de filas duplicadas: </span><span class="sc">{</span>hay_dup<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver todas las filas duplicadas (incluyendo la primera ocurrencia)</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>todas_las_dup <span class="op">=</span> base_seguimiento.index.duplicated(keep<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Filas involucradas en duplicados: </span><span class="sc">{</span>todas_las_dup<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>casos_duplicados <span class="op">=</span> base_seguimiento[todas_las_dup].sort_index()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(casos_duplicados)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>index.duplicated()</code></strong> devuelve un array booleano. <code>True</code> en las posiciones donde el indice ya aparecio antes (segunda ocurrencia en adelante).</p></li>
+<li><p><strong><code>keep=False</code></strong>: marca todas las ocurrencias como <code>True</code>, incluyendo la primera. Sin este parametro, la primera ocurrencia de cada duplicado no se marca.</p></li>
+<li><p><strong>El resultado</strong>: H_003 aparece dos veces (fechas distintas: 2024-06-01 y 2024-06-15). H_008 aparece dos veces (misma fecha, distinto miembro del hogar).</p></li>
+<li><p><strong>Notar que H_021 y H_022 no son duplicados</strong>: aparecen una sola vez cada uno. Son hogares nuevos, no repetidos.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="que-pasa-en-el-merge-con-duplicados" class="level4">
+<h4 class="anchored" data-anchor-id="que-pasa-en-el-merge-con-duplicados">8.5.2 ¿Que pasa en el merge con duplicados?</h4>
+<p>Cuando mergeamos y la clave tiene duplicados en la tabla derecha, cada fila de la izquierda se empareja con <strong>todas</strong> las filas de la derecha que tengan la misma clave. Es un <strong>producto cartesiano</strong> dentro de ese grupo:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver el efecto del duplicado en el merge</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>seguimiento_reset <span class="op">=</span> base_seguimiento.reset_index(names<span class="op">=</span><span class="st">'cod_hogar'</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>hogares_reset <span class="op">=</span> base_hogares.reset_index(names<span class="op">=</span><span class="st">'cod_hogar'</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>merge_con_dup <span class="op">=</span> pd.merge(hogares_reset, seguimiento_reset,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>                          on<span class="op">=</span><span class="st">'cod_hogar'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtrar solo los casos con duplicado en el merge</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>casos_con_dup_en_merge <span class="op">=</span> merge_con_dup[</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    merge_con_dup[<span class="st">'cod_hogar'</span>].isin([<span class="st">'H_003'</span>, <span class="st">'H_008'</span>])</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(casos_con_dup_en_merge[[<span class="st">'cod_hogar'</span>, <span class="st">'satisfaccion'</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                               <span class="st">'satisfaccion_seguimiento'</span>, <span class="st">'fecha_visita'</span>]])</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que paso
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>H_003 aparece una vez en <code>base_hogares</code> pero dos veces en el merge. Pandas no sabe cual elegir asi que pone las dos.</li>
+<li>H_008 igual: una fila en la izquierda, dos en la derecha, dos en el resultado.</li>
+<li>El resto de los hogares aparecen una vez porque tienen una sola fila en el seguimiento.</li>
+<li>Si la tabla derecha tuviera 3 duplicados de un mismo hogar, ese hogar apareceria 3 veces en el merge.</li>
+</ul>
+<p><strong>Esto no es un error de pandas. Es lo que pedimos.</strong> Pero muchas veces no es lo que queremos. Por eso hay que detectar y editar los duplicados <strong>antes</strong> del merge.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="resolver-indices-repetidos-editar-nunca-ignorar" class="level3">
+<h3 class="anchored" data-anchor-id="resolver-indices-repetidos-editar-nunca-ignorar">8.6 Resolver indices repetidos: editar, nunca ignorar</h3>
+<p>La regla es: <strong>diagnosticar, entender, editar</strong>. Nunca aplicar <code>keep='first'</code> sin saber que estamos sacando.</p>
+<section id="paso-1-diagnosticar" class="level4">
+<h4 class="anchored" data-anchor-id="paso-1-diagnosticar">Paso 1: Diagnosticar</h4>
+<div class="monitor-box">
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ver todos los duplicados con contexto</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>casos_dup <span class="op">=</span> base_seguimiento[base_seguimiento.index.duplicated(keep<span class="op">=</span><span class="va">False</span>)]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>casos_dup_ordenados <span class="op">=</span> casos_dup.sort_index()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(casos_dup_ordenados[[<span class="st">'satisfaccion_seguimiento'</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>                            <span class="st">'ingreso_actualizado'</span>, <span class="st">'fecha_visita'</span>]])</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="paso-2-entender-la-causa" class="level4">
+<h4 class="anchored" data-anchor-id="paso-2-entender-la-causa">Paso 2: Entender la causa</h4>
+<ul>
+<li><p><strong>H_003</strong>: dos visitas del encuestador. Las fechas son distintas (2024-06-01 y 2024-06-15). La segunda visita actualiza la informacion. Queremos quedarnos con la mas reciente.</p></li>
+<li><p><strong>H_008</strong>: dos miembros del hogar entrevistados el mismo dia. Ambas respuestas son validas. Queremos promediar el ingreso y quedarnos con una categoria representativa.</p></li>
+</ul>
+<p>Dos causas distintas requieren dos ediciones distintas. No hay una solucion unica.</p>
+</section>
+<section id="paso-3-editar-segun-corresponda" class="level4">
+<h4 class="anchored" data-anchor-id="paso-3-editar-segun-corresponda">Paso 3: Editar segun corresponda</h4>
+<p><strong>Caso H_003 — ordenar por fecha y quedarse con la ultima</strong></p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>base_seguimiento_edit <span class="op">=</span> base_seguimiento.copy()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Convertir fecha a datetime para ordenar correctamente</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>base_seguimiento_edit[<span class="st">'fecha_visita'</span>] <span class="op">=</span> pd.to_datetime(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    base_seguimiento_edit[<span class="st">'fecha_visita'</span>]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Ordenar por fecha ascendente</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>base_seguimiento_edit <span class="op">=</span> base_seguimiento_edit.sort_values(<span class="st">'fecha_visita'</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># keep='last': nos quedamos con la fila mas reciente de cada duplicado</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>base_seguimiento_ok <span class="op">=</span> base_seguimiento_edit[</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="op">~</span>base_seguimiento_edit.index.duplicated(keep<span class="op">=</span><span class="st">'last'</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>].copy()</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Filas antes: </span><span class="sc">{</span><span class="bu">len</span>(base_seguimiento)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Filas despues de editar: </span><span class="sc">{</span><span class="bu">len</span>(base_seguimiento_ok)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificar que H_003 ya no esta duplicado</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">H_003 despues de la edicion:"</span>)</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_seguimiento_ok.loc[[<span class="st">'H_003'</span>]][[<span class="st">'satisfaccion_seguimiento'</span>,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">'fecha_visita'</span>]])</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que hicimos
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>sort_values('fecha_visita')</code></strong>: ordenamos todo el DataFrame por fecha. La fila mas reciente de cada duplicado queda al final.</p></li>
+<li><p><strong><code>keep='last'</code></strong>: nos quedamos con la ultima ocurrencia de cada duplicado. Como ordenamos por fecha, la ultima es la mas reciente.</p></li>
+<li><p><strong><code>~index.duplicated(keep='last')</code></strong>: el <code>~</code> invierte el booleano. Nos quedamos con las filas que NO son duplicadas (es decir, las primeras ocurrencias de los no duplicados, y la ultima de los duplicados).</p></li>
+<li><p><strong>Resultado</strong>: H_003 ahora tiene una sola fila, con la satisfaccion y el ingreso de la segunda visita. No perdimos informacion: elegimos la mas relevante segun nuestro criterio.</p></li>
+</ol>
+</div>
+</div>
+<p><strong>Caso H_008 — si fueran dos mediciones validas, promediar</strong></p>
+<blockquote class="blockquote">
+<p>En este ejemplo elegimos <code>keep='last'</code> para ambos casos porque H_008 tambien tiene dos filas y nos quedamos con la ultima (que es la unica que existe porque la fecha es la misma). Pero si quisieramos conservar ambas mediciones como validas, usariamos <code>groupby</code>:</p>
+</blockquote>
+<div class="monitor-box">
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Alternativa: promediar donde tiene sentido</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Solo como ejemplo conceptual</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># h_008_prom = base_seguimiento.loc[['H_008']].groupby(</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     base_seguimiento.loc[['H_008']].index</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ).agg({</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     'ingreso_actualizado': 'mean',</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     'satisfaccion_seguimiento': 'first',</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     'situacion_laboral': 'first',</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     'fecha_visita': 'first'</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co"># })</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># print(h_008_prom)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="paso-4-verificar" class="level4">
+<h4 class="anchored" data-anchor-id="paso-4-verificar">Paso 4: Verificar</h4>
+<div class="monitor-box">
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificacion final</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>hay_dup_final <span class="op">=</span> base_seguimiento_ok.index.duplicated().<span class="bu">any</span>()</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"¿Quedan duplicados en el indice? </span><span class="sc">{</span>hay_dup_final<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> hay_dup_final, <span class="st">"Todavia hay duplicados. Revisar la edicion."</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Editar, nunca ignorar
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>MAL:</strong></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sin diagnosticar, sin entender, sin decidir</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>base_falsa <span class="op">=</span> base_seguimiento[<span class="op">~</span>base_seguimiento.index.duplicated(keep<span class="op">=</span><span class="st">'first'</span>)]</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Esto elimina filas sin criterio. No sabemos si nos quedamos con la visita vieja o la nueva. No sabemos si perdimos informacion valiosa.</p>
+<p><strong>BIEN:</strong> 1. Diagnosticar: <code>duplicated(keep=False)</code> y mostrar los casos. 2. Entender: ¿por que hay duplicados? ¿dos visitas? ¿dos miembros? ¿error de carga? 3. Editar: ordenar, promediar, elegir segun corresponda. 4. Verificar: <code>assert</code> de que no quedan duplicados.</p>
+<p>La diferencia es la decision del analista. En un caso descartamos datos sin saber. En el otro editamos con criterio.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="reset_index-siempre" class="level3">
+<h3 class="anchored" data-anchor-id="reset_index-siempre">8.7 <code>reset_index()</code> siempre</h3>
+<p>Una vez que tenemos el indice sin duplicados, el flujo de trabajo recomendado es:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Paso 1: reset_index para tener la clave como columna explicita</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>hogares_listo <span class="op">=</span> base_hogares.reset_index(names<span class="op">=</span><span class="st">'cod_hogar'</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>seguimiento_listo <span class="op">=</span> base_seguimiento_ok.reset_index(names<span class="op">=</span><span class="st">'cod_hogar'</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Paso 2: verificar que la clave es unica en la tabla secundaria</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>tiene_dup <span class="op">=</span> seguimiento_listo[<span class="st">'cod_hogar'</span>].duplicated().<span class="bu">any</span>()</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> tiene_dup, <span class="st">"La clave del seguimiento no es unica. Revisar."</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Paso 3: merge explicito por columna</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>merge_final <span class="op">=</span> pd.merge(</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    hogares_listo, seguimiento_listo,</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    on<span class="op">=</span><span class="st">'cod_hogar'</span>, how<span class="op">=</span><span class="st">'left'</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Merge final: </span><span class="sc">{</span><span class="bu">len</span>(merge_final)<span class="sc">}</span><span class="ss"> filas, "</span> <span class="op">+</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="ss">f"</span><span class="sc">{</span>merge_final[<span class="st">'cod_hogar'</span>]<span class="sc">.</span>nunique()<span class="sc">}</span><span class="ss"> hogares"</span>)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Paso 4: verificar que no se multiplicaron filas</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(merge_final) <span class="op">==</span> <span class="bu">len</span>(hogares_listo), (</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"El merge multiplico filas: </span><span class="sc">{</span><span class="bu">len</span>(hogares_listo)<span class="sc">}</span><span class="ss"> -&gt; </span><span class="sc">{</span><span class="bu">len</span>(merge_final)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="nunca-pisar-claves" class="level4">
+<h4 class="anchored" data-anchor-id="nunca-pisar-claves">Nunca pisar claves</h4>
+<p>La columna <code>cod_hogar</code> es la clave primaria. No se reasigna.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># MAL: pisar la clave</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>base_hogares_mal <span class="op">=</span> base_hogares.copy()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>base_hogares_mal[<span class="st">'cod_hogar'</span>] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">21</span>)  <span class="co"># PISA la columna original</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># BIEN: crear una columna nueva</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>base_hogares_bien <span class="op">=</span> base_hogares.copy()</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>base_hogares_bien[<span class="st">'orden'</span>] <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">21</span>)  <span class="co"># Columna nueva, no pisa la clave</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Clave original preservada:"</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_hogares_bien[[<span class="st">'cod_hogar'</span>, <span class="st">'orden'</span>]].head(<span class="dv">3</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+¿Por que?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong><code>cod_hogar</code> es el identificador del hogar.</strong> Si lo pisas, perdes la trazabilidad. No podes volver al dato original.</li>
+<li><strong>No importa que sea un string.</strong> Que sea mas largo que un entero no justifica borrarlo. La clave es la clave.</li>
+<li><strong>Si necesitas un identificador mas eficiente para un calculo</strong>, crea una columna aparte. No reemplaces la original.</li>
+</ul>
+<p>La regla es simple: <strong>el codigo original del hogar no se toca.</strong> Si necesitas un numero de orden, una variable derivada, cualquier cosa: va en otra columna.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+¿Por que <code>reset_index()</code> siempre?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Merge sobre indice</th>
+<th style="text-align: left;">Merge sobre columna</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">La clave esta en los metadatos</td>
+<td style="text-align: left;">La clave esta en los datos</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>duplicated()</code> chequea el indice</td>
+<td style="text-align: left;"><code>duplicated()</code> chequea la columna</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Si reseteas el indice despues, perdes la referencia</td>
+<td style="text-align: left;">La clave vive aunque resetees el indice</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">El <code>RangeIndex</code> resultante no tiene relacion con los datos</td>
+<td style="text-align: left;">El <code>RangeIndex</code> es solo un orden de filas</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Beneficio extra</strong>: al resetear el indice, pandas asigna un <code>RangeIndex</code> numerico. Ese indice es mas eficiente para filtros, ordenamientos y agrupaciones que un indice de strings. Pero ojo: el <code>RangeIndex</code> no es la clave. La clave sigue siendo <code>cod_hogar</code> como columna.</p>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="buenas-practicas" class="level3">
+<h3 class="anchored" data-anchor-id="buenas-practicas">8.8 Buenas practicas</h3>
+<p>Resumen de las reglas para trabajar con merge de DataFrames:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Diagnosticar duplicados antes del merge</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> base_seguimiento_ok.index.duplicated().<span class="bu">any</span>(), (</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No mergear con indices duplicados"</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Resetear el indice para tener la clave como columna</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> df1.reset_index(names<span class="op">=</span><span class="st">'id'</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> df2.reset_index(names<span class="op">=</span><span class="st">'id'</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Verificar unicidad de la clave en la tabla secundaria</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="kw">not</span> df2[<span class="st">'id'</span>].duplicated().<span class="bu">any</span>(), (</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"La clave en la tabla secundaria no es unica"</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Merge explicito</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> pd.merge(df1, df2, on<span class="op">=</span><span class="st">'id'</span>, how<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Verificar que el merge no multiplico filas</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> <span class="bu">len</span>(resultado) <span class="op">==</span> <span class="bu">len</span>(df1), (</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="ss">f"El merge multiplico filas: </span><span class="sc">{</span><span class="bu">len</span>(df1)<span class="sc">}</span><span class="ss"> -&gt; </span><span class="sc">{</span><span class="bu">len</span>(resultado)<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Las reglas
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Siempre verificar unicidad</strong> del indice antes de mergear. Un <code>assert</code> temprano ahorra horas de debug.</p></li>
+<li><p><strong>Diagnosticar antes de editar</strong>: mostrar los duplicados, entender la causa, decidir la edicion. Nunca <code>keep='first'</code> sin saber que estas sacando.</p></li>
+<li><p><strong><code>reset_index()</code> como estandar</strong>: la clave de merge va como columna, no en el indice. El merge sobre indice es para casos muy especificos, no para el dia a dia.</p></li>
+<li><p><strong>Nunca pisar la clave original</strong>: <code>cod_hogar</code> no se reasigna. Si necesitas un identificador numerico, crea una columna nueva.</p></li>
+<li><p><strong>Documentar la decision</strong>: si editaste duplicados con <code>keep='last'</code> porque la fecha mas reciente es la correcta, dejalo escrito en el codigo o en un comentario. Quien lea el script despues tiene que saber por que se tomo esa decision.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+<section id="cerrando-el-circulo" class="level3">
+<h3 class="anchored" data-anchor-id="cerrando-el-circulo">8.9 Cerrando el circulo</h3>
+<p>Esta clase agrega una capa que no habiamos visto antes: la informacion no viene toda en una misma tabla. Combinar datos es tan importante como limpiarlos.</p>
+<p>Los conceptos clave que quedan:</p>
+<ol type="1">
+<li><p><strong><code>pd.merge()</code></strong>: combina dos DataFrames a partir de una clave comun. El parametro <code>how</code> define que filas se conservan.</p></li>
+<li><p><strong>El indice no es solo una etiqueta</strong>: si lo usas como clave de merge, los duplicados en el indice producen un producto cartesiano. No es un error de pandas, es el comportamiento esperado. Pero hay que conocerlo para controlarlo.</p></li>
+<li><p><strong>Resolver duplicados es editar, no ignorar</strong>: diagnosticar, entender, editar, verificar. Cada duplicado tiene una causa y requiere una decision del analista.</p></li>
+<li><p><strong><code>reset_index()</code> antes de mergear</strong>: la clave va como columna explicita. El indice es estructural, no conceptual.</p></li>
+<li><p><strong>Nunca pisar claves</strong>: el identificador original del hogar no se reasigna. Es la unica referencia que conecta las tablas.</p></li>
+</ol>
+<div class="gray-italic-box">
+<p><strong>Zona de Prompting:</strong> “Actua como analista de datos con experiencia en el curso. Tengo dos DataFrames: <code>clientes</code> con 100 filas e indice ‘id_cliente’ unico, y <code>compras</code> con 250 filas e indice ‘id_cliente’ con duplicados (algunos clientes compraron varias veces). Necesito unir ambos para tener un DataFrame con un resumen por cliente que incluya: datos del cliente, cantidad de compras, gasto total. Explicame paso a paso como diagnosticar los duplicados, como editarlos (editar, no ignorar), y como hacer el merge final.”</p>
+</div>
+<hr>
+</section>
+</section>
+<section id="resumen-de-la-clase" class="level2">
+<h2 class="anchored" data-anchor-id="resumen-de-la-clase">Resumen de la Clase</h2>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Concepto</th>
+<th style="text-align: left;">Descripcion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>pd.merge(df1, df2, on=columna, how=)</code></strong></td>
+<td style="text-align: left;">Combina dos DataFrames a partir de una columna clave. <code>how</code> define el tipo de join.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>how='left'</code></strong></td>
+<td style="text-align: left;">Todas las filas de la izquierda. Las de la derecha solo si coinciden.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>how='inner'</code></strong></td>
+<td style="text-align: left;">Solo las filas que existen en ambas tablas.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>how='outer'</code></strong></td>
+<td style="text-align: left;">Todas las filas de ambas tablas. NaN donde no hay coincidencia.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>left_index=True, right_index=True</code></strong></td>
+<td style="text-align: left;">Merge usando el indice como clave. <strong>No recomendado</strong> como practica habitual.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Indice repetido</strong></td>
+<td style="text-align: left;">Cuando el mismo valor de indice aparece en mas de una fila. En el merge produce producto cartesiano.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>index.duplicated()</code></strong></td>
+<td style="text-align: left;">Detecta filas con indice repetido. <code>keep=False</code> marca todas las ocurrencias.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Resolver duplicados</strong></td>
+<td style="text-align: left;">Diagnosticar, entender la causa, editar con criterio (sort + keep, groupby, etc.). Nunca <code>keep='first'</code> sin entender.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>reset_index(names=...)</code></strong></td>
+<td style="text-align: left;">Mueve el indice a una columna explicita. El estandar antes de mergear.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Nunca pisar claves</strong></td>
+<td style="text-align: left;">La columna identificadora (cod_hogar, id_cliente, etc.) no se reasigna. Es la unica referencia entre tablas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>RangeIndex</code></strong></td>
+<td style="text-align: left;">El indice por defecto despues de reset_index. Numerico, eficiente, sin relacion con los datos.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>assert</code></strong></td>
+<td style="text-align: left;">Verificacion de unicidad antes del merge. Previene multiplicacion silenciosa de filas.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

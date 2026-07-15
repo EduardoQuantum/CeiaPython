@@ -1,0 +1,586 @@
+---
+title: "Clase 08: Merge y Join de DataFrames"
+subtitle: "Combinar datos, resolver indices repetidos y no pisar claves"
+---
+
+## 8. Merge y Join de DataFrames
+
+### 8.1 ¿Por que combinar datos?
+
+Hasta ahora trabajamos con un solo dataset: 20 hogares, todo en una tabla. En la realidad los datos nunca llegan asi. Las encuestas tienen modulos separados. Los registros administrativos vienen de distintas fuentes. La informacion complementaria hay que buscarla en otro lado.
+
+Combinar datos es tan frecuente como limpiarlos. Y tiene sus propios problemas:
+
+1. **No todos los casos estan en las dos tablas**. Algunos hogares responden la encuesta base pero no el seguimiento. Otros aparecen solo en el seguimiento.
+
+2. **Las claves pueden repetirse**. Un mismo hogar puede tener dos registros en la tabla secundaria (dos visitas, dos entrevistados). Eso no es un error: es que la realidad es multiple.
+
+3. **El indice no siempre es confiable**. Si la clave esta en el indice y el indice tiene duplicados, el comportamiento del merge cambia sin que se vea en el codigo.
+
+Esta clase muestra como enfrentar esos problemas: combinar tablas con `pd.merge()`, detectar indices repetidos, editarlos con criterio, y mantener las claves originales intactas.
+
+---
+
+### 8.2 Los dos datasets
+
+Usamos el mismo dataset de 20 hogares de las clases anteriores, ahora como `base_hogares`, y creamos una **encuesta de seguimiento** con 14 registros.
+
+**El dataset original:**
+
+::: {.monitor-box}
+```python
+import pandas as pd
+import numpy as np
+
+data_hogares = {
+    'cod_hogar': [
+      'H_001', 'H_002', 'H_003', 'H_004', 'H_005',
+      'H_006', 'H_007', 'H_008', 'H_009', 'H_010',
+      'H_011', 'H_012', 'H_013', 'H_014', 'H_015',
+      'H_016', 'H_017', 'H_018', 'H_019', 'H_020'
+    ],
+    'region': [
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro',
+      'GBA', 'NOA', 'Patagonia', 'Cuyo', 'Centro'
+    ],
+    'tipo_vivienda': ['Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto',
+                      'Casa','Depto','Casa','Casa','Depto',
+                      'Depto','Casa','Depto','Casa','Depto'],
+    'ingreso': [450000, np.nan, 580000, np.nan, 420000,
+                490000, 310000, 620000, 280000, np.nan,
+                460000, 335000, np.nan, 315000, 425000,
+                500000, 325000, 630000, 295000, 415000],
+    'edad_jefe': [45, 32, 58, 29, 41, 36, 52, 47, 33, 40,
+                  44, 31, 57, 30, 42, 35, 51, 46, 34, 39],
+    'satisfaccion': [
+        'De acuerdo', 'Neutral', 'Totalmente de acuerdo',
+        'En desacuerdo', 'Neutral', 'Totalmente en desacuerdo',
+        'De acuerdo', 'De acuerdo', 'En desacuerdo',
+        'Totalmente de acuerdo', 'Neutral', 'De acuerdo',
+        'Totalmente en desacuerdo', 'Neutral', 'De acuerdo',
+        'De acuerdo', 'Totalmente de acuerdo', 'En desacuerdo',
+        'Neutral', 'De acuerdo'
+    ]
+}
+
+base_cruda = pd.DataFrame(data_hogares).set_index('cod_hogar')
+base_hogares = base_cruda.copy()
+```
+:::
+
+**La encuesta de seguimiento:** 14 registros. Algunos hogares aparecen dos veces (indice repetido), y hay dos hogares nuevos que no estaban en la original.
+
+::: {.monitor-box}
+```python
+data_seguimiento = {
+    'cod_hogar': [
+        'H_001', 'H_004', 'H_006', 'H_009',
+        'H_010', 'H_014', 'H_016', 'H_020',
+        'H_003', 'H_003',
+        'H_008', 'H_008',
+        'H_021', 'H_022'
+    ],
+    'satisfaccion_seguimiento': [
+        'Neutral', 'Totalmente en desacuerdo', 'Neutral', 'De acuerdo',
+        'Totalmente de acuerdo', 'De acuerdo', 'Neutral', 'Totalmente de acuerdo',
+        'De acuerdo', 'Totalmente de acuerdo',
+        'En desacuerdo', 'Neutral',
+        'De acuerdo', 'Neutral'
+    ],
+    'ingreso_actualizado': [
+        470000, np.nan, 510000, 300000,
+        np.nan, 330000, 520000, 440000,
+        600000, 610000,
+        640000, 635000,
+        380000, 290000
+    ],
+    'situacion_laboral': [
+        'Estable', 'Estable', 'Mejoro', 'Empeoro',
+        'Estable', 'Mejoro', 'Estable', 'Estable',
+        'Estable', 'Mejoro',
+        'Estable', 'Estable',
+        'Estable', 'Empeoro'
+    ],
+    'fecha_visita': [
+        '2024-06-01', '2024-06-01', '2024-06-02', '2024-06-02',
+        '2024-06-03', '2024-06-03', '2024-06-04', '2024-06-04',
+        '2024-06-01', '2024-06-15',
+        '2024-06-02', '2024-06-02',
+        '2024-06-05', '2024-06-05'
+    ]
+}
+
+base_seguimiento_cruda = pd.DataFrame(data_seguimiento).set_index('cod_hogar')
+base_seguimiento = base_seguimiento_cruda.copy()
+```
+:::
+
+Veamos que tenemos:
+
+::: {.monitor-box}
+```python
+print(f"Hogares originales: {len(base_hogares)} filas, " +
+      f"indice unico: {not base_hogares.index.duplicated().any()}")
+
+print(f"Seguimiento: {len(base_seguimiento)} filas, " +
+      f"indice unico: {not base_seguimiento.index.duplicated().any()}")
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos haciendo
+
+1. **`base_hogares`** es el mismo dataset de la Clase 07. 20 hogares, indice unico.
+
+2. **`base_seguimiento`** tiene 14 filas pero **no todas son hogares distintos**. H_003 y H_008 aparecen dos veces cada uno. Eso es exactamente lo que queremos estudiar.
+
+3. **`cod_hogar` funciona como clave primaria**: identifica al hogar de forma unica. En la tabla de seguimiento la clave no es unica, y eso es el problema central de la clase.
+
+4. **Los nuevos hogares** (H_021, H_022) no estan en la original. Cuando hagamos merge con `how='left'` van a desaparecer. Con `how='outer'' van a aparecer con NaN en las columnas de la tabla original.
+:::
+
+---
+
+### 8.3 Merge basico con `pd.merge()`
+
+`pd.merge()` combina dos DataFrames a partir de una o varias columnas en comun. La columna en comun se llama **clave de merge**.
+
+Para mergear por columna (no por indice), primero tenemos que tener la clave como columna. Usamos `reset_index()`:
+
+::: {.monitor-box}
+```python
+hogares_reset = base_hogares.reset_index(names='cod_hogar')
+seguimiento_reset = base_seguimiento.reset_index(names='cod_hogar')
+
+merge_left = pd.merge(hogares_reset, seguimiento_reset, on='cod_hogar', how='left')
+
+print(f"Merge left: {len(merge_left)} filas")
+print(merge_left.head(8))
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos haciendo
+
+1. **`.reset_index(names='cod_hogar')`**: mueve el indice a una columna con ese nombre. Antes `cod_hogar` estaba en el indice; ahora es una columna accesible para el merge.
+
+2. **`on='cod_hogar'`**: le dice a pandas que use esa columna para emparejar filas. Cada fila de `hogares_reset` busca su correspondiente en `seguimiento_reset` por el valor de `cod_hogar`.
+
+3. **`how='left'`**: se quedan todas las filas de la izquierda (`hogares_reset`), y se agregan las columnas de la derecha donde hay coincidencia. Donde no hay, queda NaN. Es el tipo de merge mas usado: "dame todos mis casos y agregales la informacion del seguimiento si existe".
+
+4. **`how='inner'`**: solo las filas que existen en ambas tablas. Los hogares sin seguimiento desaparecen.
+
+5. **`how='outer'`**: todas las filas de ambas tablas. Donde no hay coincidencia, NaN.
+:::
+
+Veamos los tres tipos lado a lado:
+
+::: {.monitor-box}
+```python
+for tipo in ['inner', 'left', 'outer']:
+    resultado = pd.merge(hogares_reset, seguimiento_reset,
+                         on='cod_hogar', how=tipo)
+    print(f"{tipo}: {len(resultado)} filas, " +
+          f"{resultado['cod_hogar'].nunique()} hogares distintos")
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos viendo
+
+| how | Filas | Explicacion |
+| :--- | :--- | :--- |
+| `inner` | 10 | Solo los 8 hogares con seguimiento, pero H_003 y H_008 aparecen 2 veces cada uno |
+| `left` | 22 | Los 20 hogares originales + 2 filas extra por duplicados en seguimiento |
+| `outer` | 24 | 20 originales + 2 nuevos + 2 filas extra por duplicados |
+
+El numero de filas no es el esperado. **H_003 y H_008 aparecen dos veces en el resultado** porque aparecen dos veces en la tabla de seguimiento. Esto no es un error de pandas: es el comportamiento correcto del merge cuando hay claves repetidas.
+:::
+
+---
+
+### 8.4 Merge sobre el indice
+
+Otra forma de mergear es usando el indice como clave, con `left_index=True` y `right_index=True`:
+
+::: {.monitor-box}
+```python
+merge_por_indice = pd.merge(
+    base_hogares, base_seguimiento,
+    left_index=True, right_index=True,
+    how='left'
+)
+
+print(f"Merge por indice: {len(merge_por_indice)} filas")
+print(merge_por_indice.head(8))
+```
+:::
+
+::: {.callout-important}
+## ¿Por que no recomendamos merge sobre indice?
+
+1. **El indice es implicito**: la clave de merge no se ve en los datos. Si alguien resetea el indice despues, la referencia se pierde.
+
+2. **Los duplicados en el indice no saltan a la vista**: en el merge por columna, `duplicated()` se aplica sobre la columna. En el merge por indice, el duplicado esta en los metadatos y es mas facil pasarlo por alto.
+
+3. **`reset_index()` siempre es necesario antes o despues**: si haces merge sobre indice, probablemente termines reseteando el indice despues para trabajar comodo. Mejor hacerlo al principio.
+
+4. **El indice no tiene por que ser la clave de negocio**: `cod_hogar` es la clave real. Que este en el indice es una decision estructural. El merge deberia usar la clave conceptual, no la estructural.
+
+**Regla**: merge sobre columna explicita. El indice se usa para alinear filas, no como clave de cruce.
+:::
+
+---
+
+### 8.5 El problema del indice repetido
+
+El merge nos mostro que H_003 y H_008 aparecen dos veces en el seguimiento. Pero `base_hogares` tiene indice unico, asi que el problema esta en `base_seguimiento`.
+
+#### 8.5.1 Detectar duplicados
+
+::: {.monitor-box}
+```python
+# Detectar si hay duplicados
+hay_dup = base_seguimiento.index.duplicated()
+print(f"¿Hay indices duplicados? {hay_dup.any()}")
+print(f"Cantidad de filas duplicadas: {hay_dup.sum()}")
+
+# Ver todas las filas duplicadas (incluyendo la primera ocurrencia)
+todas_las_dup = base_seguimiento.index.duplicated(keep=False)
+print(f"\nFilas involucradas en duplicados: {todas_las_dup.sum()}")
+
+casos_duplicados = base_seguimiento[todas_las_dup].sort_index()
+print(casos_duplicados)
+```
+:::
+
+::: {.callout-note}
+## Lo que estamos haciendo
+
+1. **`index.duplicated()`** devuelve un array booleano. `True` en las posiciones donde el indice ya aparecio antes (segunda ocurrencia en adelante).
+
+2. **`keep=False`**: marca todas las ocurrencias como `True`, incluyendo la primera. Sin este parametro, la primera ocurrencia de cada duplicado no se marca.
+
+3. **El resultado**: H_003 aparece dos veces (fechas distintas: 2024-06-01 y 2024-06-15). H_008 aparece dos veces (misma fecha, distinto miembro del hogar).
+
+4. **Notar que H_021 y H_022 no son duplicados**: aparecen una sola vez cada uno. Son hogares nuevos, no repetidos.
+:::
+
+#### 8.5.2 ¿Que pasa en el merge con duplicados?
+
+Cuando mergeamos y la clave tiene duplicados en la tabla derecha, cada fila de la izquierda se empareja con **todas** las filas de la derecha que tengan la misma clave. Es un **producto cartesiano** dentro de ese grupo:
+
+::: {.monitor-box}
+```python
+# Ver el efecto del duplicado en el merge
+seguimiento_reset = base_seguimiento.reset_index(names='cod_hogar')
+hogares_reset = base_hogares.reset_index(names='cod_hogar')
+
+merge_con_dup = pd.merge(hogares_reset, seguimiento_reset,
+                          on='cod_hogar', how='left')
+
+# Filtrar solo los casos con duplicado en el merge
+casos_con_dup_en_merge = merge_con_dup[
+    merge_con_dup['cod_hogar'].isin(['H_003', 'H_008'])
+]
+print(casos_con_dup_en_merge[['cod_hogar', 'satisfaccion',
+                               'satisfaccion_seguimiento', 'fecha_visita']])
+```
+:::
+
+::: {.callout-note}
+## Lo que paso
+
+- H_003 aparece una vez en `base_hogares` pero dos veces en el merge. Pandas no sabe cual elegir asi que pone las dos.
+- H_008 igual: una fila en la izquierda, dos en la derecha, dos en el resultado.
+- El resto de los hogares aparecen una vez porque tienen una sola fila en el seguimiento.
+- Si la tabla derecha tuviera 3 duplicados de un mismo hogar, ese hogar apareceria 3 veces en el merge.
+
+**Esto no es un error de pandas. Es lo que pedimos.** Pero muchas veces no es lo que queremos. Por eso hay que detectar y editar los duplicados **antes** del merge.
+:::
+
+---
+
+### 8.6 Resolver indices repetidos: editar, nunca ignorar
+
+La regla es: **diagnosticar, entender, editar**. Nunca aplicar `keep='first'` sin saber que estamos sacando.
+
+#### Paso 1: Diagnosticar
+
+::: {.monitor-box}
+```python
+# Ver todos los duplicados con contexto
+casos_dup = base_seguimiento[base_seguimiento.index.duplicated(keep=False)]
+casos_dup_ordenados = casos_dup.sort_index()
+print(casos_dup_ordenados[['satisfaccion_seguimiento',
+                            'ingreso_actualizado', 'fecha_visita']])
+```
+:::
+
+#### Paso 2: Entender la causa
+
+- **H_003**: dos visitas del encuestador. Las fechas son distintas (2024-06-01 y 2024-06-15). La segunda visita actualiza la informacion. Queremos quedarnos con la mas reciente.
+
+- **H_008**: dos miembros del hogar entrevistados el mismo dia. Ambas respuestas son validas. Queremos promediar el ingreso y quedarnos con una categoria representativa.
+
+Dos causas distintas requieren dos ediciones distintas. No hay una solucion unica.
+
+#### Paso 3: Editar segun corresponda
+
+**Caso H_003 — ordenar por fecha y quedarse con la ultima**
+
+::: {.monitor-box}
+```python
+base_seguimiento_edit = base_seguimiento.copy()
+
+# Convertir fecha a datetime para ordenar correctamente
+base_seguimiento_edit['fecha_visita'] = pd.to_datetime(
+    base_seguimiento_edit['fecha_visita']
+)
+
+# Ordenar por fecha ascendente
+base_seguimiento_edit = base_seguimiento_edit.sort_values('fecha_visita')
+
+# keep='last': nos quedamos con la fila mas reciente de cada duplicado
+base_seguimiento_ok = base_seguimiento_edit[
+    ~base_seguimiento_edit.index.duplicated(keep='last')
+].copy()
+
+print(f"Filas antes: {len(base_seguimiento)}")
+print(f"Filas despues de editar: {len(base_seguimiento_ok)}")
+
+# Verificar que H_003 ya no esta duplicado
+print("\nH_003 despues de la edicion:")
+print(base_seguimiento_ok.loc[['H_003']][['satisfaccion_seguimiento',
+                                           'fecha_visita']])
+```
+:::
+
+::: {.callout-note}
+## Lo que hicimos
+
+1. **`sort_values('fecha_visita')`**: ordenamos todo el DataFrame por fecha. La fila mas reciente de cada duplicado queda al final.
+
+2. **`keep='last'`**: nos quedamos con la ultima ocurrencia de cada duplicado. Como ordenamos por fecha, la ultima es la mas reciente.
+
+3. **`~index.duplicated(keep='last')`**: el `~` invierte el booleano. Nos quedamos con las filas que NO son duplicadas (es decir, las primeras ocurrencias de los no duplicados, y la ultima de los duplicados).
+
+4. **Resultado**: H_003 ahora tiene una sola fila, con la satisfaccion y el ingreso de la segunda visita. No perdimos informacion: elegimos la mas relevante segun nuestro criterio.
+:::
+
+**Caso H_008 — si fueran dos mediciones validas, promediar**
+
+> En este ejemplo elegimos `keep='last'` para ambos casos porque H_008 tambien tiene dos filas y nos quedamos con la ultima (que es la unica que existe porque la fecha es la misma). Pero si quisieramos conservar ambas mediciones como validas, usariamos `groupby`:
+
+::: {.monitor-box}
+```python
+# Alternativa: promediar donde tiene sentido
+# Solo como ejemplo conceptual
+# h_008_prom = base_seguimiento.loc[['H_008']].groupby(
+#     base_seguimiento.loc[['H_008']].index
+# ).agg({
+#     'ingreso_actualizado': 'mean',
+#     'satisfaccion_seguimiento': 'first',
+#     'situacion_laboral': 'first',
+#     'fecha_visita': 'first'
+# })
+# print(h_008_prom)
+```
+:::
+
+#### Paso 4: Verificar
+
+::: {.monitor-box}
+```python
+# Verificacion final
+hay_dup_final = base_seguimiento_ok.index.duplicated().any()
+print(f"¿Quedan duplicados en el indice? {hay_dup_final}")
+assert not hay_dup_final, "Todavia hay duplicados. Revisar la edicion."
+```
+:::
+
+::: {.callout-important}
+## Editar, nunca ignorar
+
+**MAL:**
+```python
+# Sin diagnosticar, sin entender, sin decidir
+base_falsa = base_seguimiento[~base_seguimiento.index.duplicated(keep='first')]
+```
+
+Esto elimina filas sin criterio. No sabemos si nos quedamos con la visita vieja o la nueva. No sabemos si perdimos informacion valiosa.
+
+**BIEN:**
+1. Diagnosticar: `duplicated(keep=False)` y mostrar los casos.
+2. Entender: ¿por que hay duplicados? ¿dos visitas? ¿dos miembros? ¿error de carga?
+3. Editar: ordenar, promediar, elegir segun corresponda.
+4. Verificar: `assert` de que no quedan duplicados.
+
+La diferencia es la decision del analista. En un caso descartamos datos sin saber. En el otro editamos con criterio.
+:::
+
+---
+
+### 8.7 `reset_index()` siempre
+
+Una vez que tenemos el indice sin duplicados, el flujo de trabajo recomendado es:
+
+::: {.monitor-box}
+```python
+# Paso 1: reset_index para tener la clave como columna explicita
+hogares_listo = base_hogares.reset_index(names='cod_hogar')
+seguimiento_listo = base_seguimiento_ok.reset_index(names='cod_hogar')
+
+# Paso 2: verificar que la clave es unica en la tabla secundaria
+tiene_dup = seguimiento_listo['cod_hogar'].duplicated().any()
+assert not tiene_dup, "La clave del seguimiento no es unica. Revisar."
+
+# Paso 3: merge explicito por columna
+merge_final = pd.merge(
+    hogares_listo, seguimiento_listo,
+    on='cod_hogar', how='left'
+)
+
+print(f"Merge final: {len(merge_final)} filas, " +
+      f"{merge_final['cod_hogar'].nunique()} hogares")
+
+# Paso 4: verificar que no se multiplicaron filas
+assert len(merge_final) == len(hogares_listo), (
+    f"El merge multiplico filas: {len(hogares_listo)} -> {len(merge_final)}"
+)
+```
+:::
+
+#### Nunca pisar claves
+
+La columna `cod_hogar` es la clave primaria. No se reasigna.
+
+::: {.monitor-box}
+```python
+# MAL: pisar la clave
+base_hogares_mal = base_hogares.copy()
+base_hogares_mal['cod_hogar'] = range(1, 21)  # PISA la columna original
+
+# BIEN: crear una columna nueva
+base_hogares_bien = base_hogares.copy()
+base_hogares_bien['orden'] = range(1, 21)  # Columna nueva, no pisa la clave
+
+print("Clave original preservada:")
+print(base_hogares_bien[['cod_hogar', 'orden']].head(3))
+```
+:::
+
+::: {.callout-important}
+## ¿Por que?
+
+- **`cod_hogar` es el identificador del hogar.** Si lo pisas, perdes la trazabilidad. No podes volver al dato original.
+- **No importa que sea un string.** Que sea mas largo que un entero no justifica borrarlo. La clave es la clave.
+- **Si necesitas un identificador mas eficiente para un calculo**, crea una columna aparte. No reemplaces la original.
+
+La regla es simple: **el codigo original del hogar no se toca.** Si necesitas un numero de orden, una variable derivada, cualquier cosa: va en otra columna.
+:::
+
+::: {.callout-note}
+## ¿Por que `reset_index()` siempre?
+
+| Merge sobre indice | Merge sobre columna |
+| :--- | :--- |
+| La clave esta en los metadatos | La clave esta en los datos |
+| `duplicated()` chequea el indice | `duplicated()` chequea la columna |
+| Si reseteas el indice despues, perdes la referencia | La clave vive aunque resetees el indice |
+| El `RangeIndex` resultante no tiene relacion con los datos | El `RangeIndex` es solo un orden de filas |
+
+**Beneficio extra**: al resetear el indice, pandas asigna un `RangeIndex` numerico. Ese indice es mas eficiente para filtros, ordenamientos y agrupaciones que un indice de strings. Pero ojo: el `RangeIndex` no es la clave. La clave sigue siendo `cod_hogar` como columna.
+:::
+
+---
+
+### 8.8 Buenas practicas
+
+Resumen de las reglas para trabajar con merge de DataFrames:
+
+::: {.monitor-box}
+```python
+# 1. Diagnosticar duplicados antes del merge
+assert not base_seguimiento_ok.index.duplicated().any(), (
+    "No mergear con indices duplicados"
+)
+
+# 2. Resetear el indice para tener la clave como columna
+df1 = df1.reset_index(names='id')
+df2 = df2.reset_index(names='id')
+
+# 3. Verificar unicidad de la clave en la tabla secundaria
+assert not df2['id'].duplicated().any(), (
+    "La clave en la tabla secundaria no es unica"
+)
+
+# 4. Merge explicito
+resultado = pd.merge(df1, df2, on='id', how='left')
+
+# 5. Verificar que el merge no multiplico filas
+assert len(resultado) == len(df1), (
+    f"El merge multiplico filas: {len(df1)} -> {len(resultado)}"
+)
+```
+:::
+
+::: {.callout-note}
+## Las reglas
+
+1. **Siempre verificar unicidad** del indice antes de mergear. Un `assert` temprano ahorra horas de debug.
+
+2. **Diagnosticar antes de editar**: mostrar los duplicados, entender la causa, decidir la edicion. Nunca `keep='first'` sin saber que estas sacando.
+
+3. **`reset_index()` como estandar**: la clave de merge va como columna, no en el indice. El merge sobre indice es para casos muy especificos, no para el dia a dia.
+
+4. **Nunca pisar la clave original**: `cod_hogar` no se reasigna. Si necesitas un identificador numerico, crea una columna nueva.
+
+5. **Documentar la decision**: si editaste duplicados con `keep='last'` porque la fecha mas reciente es la correcta, dejalo escrito en el codigo o en un comentario. Quien lea el script despues tiene que saber por que se tomo esa decision.
+:::
+
+---
+
+### 8.9 Cerrando el circulo
+
+Esta clase agrega una capa que no habiamos visto antes: la informacion no viene toda en una misma tabla. Combinar datos es tan importante como limpiarlos.
+
+Los conceptos clave que quedan:
+
+1. **`pd.merge()`**: combina dos DataFrames a partir de una clave comun. El parametro `how` define que filas se conservan.
+
+2. **El indice no es solo una etiqueta**: si lo usas como clave de merge, los duplicados en el indice producen un producto cartesiano. No es un error de pandas, es el comportamiento esperado. Pero hay que conocerlo para controlarlo.
+
+3. **Resolver duplicados es editar, no ignorar**: diagnosticar, entender, editar, verificar. Cada duplicado tiene una causa y requiere una decision del analista.
+
+4. **`reset_index()` antes de mergear**: la clave va como columna explicita. El indice es estructural, no conceptual.
+
+5. **Nunca pisar claves**: el identificador original del hogar no se reasigna. Es la unica referencia que conecta las tablas.
+
+::: {.gray-italic-box}
+**Zona de Prompting:** "Actua como analista de datos con experiencia en el curso. Tengo dos DataFrames: `clientes` con 100 filas e indice 'id_cliente' unico, y `compras` con 250 filas e indice 'id_cliente' con duplicados (algunos clientes compraron varias veces). Necesito unir ambos para tener un DataFrame con un resumen por cliente que incluya: datos del cliente, cantidad de compras, gasto total. Explicame paso a paso como diagnosticar los duplicados, como editarlos (editar, no ignorar), y como hacer el merge final."
+:::
+
+---
+
+## Resumen de la Clase
+
+| Concepto | Descripcion |
+| :--- | :--- |
+| **`pd.merge(df1, df2, on=columna, how=)`** | Combina dos DataFrames a partir de una columna clave. `how` define el tipo de join. |
+| **`how='left'`** | Todas las filas de la izquierda. Las de la derecha solo si coinciden. |
+| **`how='inner'`** | Solo las filas que existen en ambas tablas. |
+| **`how='outer'`** | Todas las filas de ambas tablas. NaN donde no hay coincidencia. |
+| **`left_index=True, right_index=True`** | Merge usando el indice como clave. **No recomendado** como practica habitual. |
+| **Indice repetido** | Cuando el mismo valor de indice aparece en mas de una fila. En el merge produce producto cartesiano. |
+| **`index.duplicated()`** | Detecta filas con indice repetido. `keep=False` marca todas las ocurrencias. |
+| **Resolver duplicados** | Diagnosticar, entender la causa, editar con criterio (sort + keep, groupby, etc.). Nunca `keep='first'` sin entender. |
+| **`reset_index(names=...)`** | Mueve el indice a una columna explicita. El estandar antes de mergear. |
+| **Nunca pisar claves** | La columna identificadora (cod_hogar, id_cliente, etc.) no se reasigna. Es la unica referencia entre tablas. |
+| **`RangeIndex`** | El indice por defecto despues de reset_index. Numerico, eficiente, sin relacion con los datos. |
+| **`assert`** | Verificacion de unicidad antes del merge. Previene multiplicacion silenciosa de filas. |
+
+---

@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Eduardo Lencina">
+
+<title>Python + Pandas + IA - CEIA - FLACSO - Clase 07: Variables Categoricas y Escalas Likert</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Python + Pandas + IA - CEIA - FLACSO</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-material-de-clases" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+      <i class="bi bi-journal-code" role="img">
+</i> 
+ <span class="menu-text">Material de Clases</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-material-de-clases">    
+        <li>
+    <a class="dropdown-item" href="./clase_01.html" rel="" target="">
+ <span class="dropdown-text">Clase 01: El Ecosistema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_02.html" rel="" target="">
+ <span class="dropdown-text">Clase 02: Python + Pandas</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_03.html" rel="" target="">
+ <span class="dropdown-text">Clase 03: Selección de Datos</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_04.html" rel="" target="">
+ <span class="dropdown-text">Clase 04: Split-Apply-Combine</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_05.html" rel="" target="">
+ <span class="dropdown-text">Clase 05: Edición y Tratamiento de Valores Ausentes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_06.html" rel="" target="">
+ <span class="dropdown-text">Clase 06: Habilidades y OpenCode</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clase_07.html" rel="" target="">
+ <span class="dropdown-text">Clase 07: Variables categóricas y Ediciones + Normalización</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/EduardoQuantum/CeiaPython.git" rel="" target=""><i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#variables-categoricas-y-escalas-likert" id="toc-variables-categoricas-y-escalas-likert" class="nav-link active" data-scroll-target="#variables-categoricas-y-escalas-likert">7. Variables Categoricas y Escalas Likert</a>
+  <ul class="collapse">
+  <li><a href="#que-vamos-a-hacer" id="toc-que-vamos-a-hacer" class="nav-link" data-scroll-target="#que-vamos-a-hacer">7.1 ¿Que vamos a hacer?</a></li>
+  <li><a href="#el-dataset" id="toc-el-dataset" class="nav-link" data-scroll-target="#el-dataset">7.2 El dataset</a></li>
+  <li><a href="#el-orden-no-existe-hasta-que-lo-definis" id="toc-el-orden-no-existe-hasta-que-lo-definis" class="nav-link" data-scroll-target="#el-orden-no-existe-hasta-que-lo-definis">7.3 El orden no existe hasta que lo definis</a></li>
+  <li><a href="#map-de-texto-a-numero" id="toc-map-de-texto-a-numero" class="nav-link" data-scroll-target="#map-de-texto-a-numero">7.4 .map(): de texto a numero</a></li>
+  <li><a href="#dos-caras-del-mismo-dato" id="toc-dos-caras-del-mismo-dato" class="nav-link" data-scroll-target="#dos-caras-del-mismo-dato">7.5 Dos caras del mismo dato</a></li>
+  <li><a href="#recodificacion" id="toc-recodificacion" class="nav-link" data-scroll-target="#recodificacion">7.6 Recodificacion</a></li>
+  <li><a href="#tabla-resumen-con-pivot_table" id="toc-tabla-resumen-con-pivot_table" class="nav-link" data-scroll-target="#tabla-resumen-con-pivot_table">7.7 Tabla resumen con pivot_table</a></li>
+  <li><a href="#edicion-y-normalizacion" id="toc-edicion-y-normalizacion" class="nav-link" data-scroll-target="#edicion-y-normalizacion">7.8 Edicion y normalizacion</a></li>
+  <li><a href="#de-continua-a-categorica-con-pd.cut" id="toc-de-continua-a-categorica-con-pd.cut" class="nav-link" data-scroll-target="#de-continua-a-categorica-con-pd.cut">7.9 De continua a categorica con pd.cut()</a></li>
+  <li><a href="#crear-una-columna-nueva-con-.assign" id="toc-crear-una-columna-nueva-con-.assign" class="nav-link" data-scroll-target="#crear-una-columna-nueva-con-.assign">7.10 Crear una columna nueva con .assign()</a></li>
+  <li><a href="#cerrando-el-circulo" id="toc-cerrando-el-circulo" class="nav-link" data-scroll-target="#cerrando-el-circulo">7.11 Cerrando el circulo</a></li>
+  </ul></li>
+  <li><a href="#resumen-de-la-clase" id="toc-resumen-de-la-clase" class="nav-link" data-scroll-target="#resumen-de-la-clase">Resumen de la Clase</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 07: Variables Categoricas y Escalas Likert</h1>
+<p class="subtitle lead">Del texto al numero: codificar y ponderar al mismo tiempo</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Eduardo Lencina </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="variables-categoricas-y-escalas-likert" class="level2">
+<h2 class="anchored" data-anchor-id="variables-categoricas-y-escalas-likert">7. Variables Categoricas y Escalas Likert</h2>
+<section id="que-vamos-a-hacer" class="level3">
+<h3 class="anchored" data-anchor-id="que-vamos-a-hacer">7.1 ¿Que vamos a hacer?</h3>
+<p>Esta clase es sobre un movimiento que hacemos siempre con datos de encuesta: tomar una variable que llego como texto y convertirla en algo que se pueda calcular.</p>
+<p>Pero atencion: no es solo “pasar texto a numero”. En una linea de codigo estamos haciendo <strong>dos cosas a la vez</strong> que conviene tener separadas en la cabeza:</p>
+<ol type="1">
+<li><p><strong>Codificar (ordenar)</strong> — definir que <code>'Totalmente en desacuerdo'</code> va antes que <code>'En desacuerdo'</code>, y <code>'Neutral'</code> en el medio. Eso se llama codificacion ordinal. La categoria deja de ser texto suelto y pasa a tener una direccion: de negativo a positivo, de menor a mayor.</p></li>
+<li><p><strong>Ponderar (pesar)</strong> — asignar un numero a cada categoria. Pero no cualquier numero. Decidimos que <code>'De acuerdo'</code> vale 7 y no 4. Esa decision afecta el promedio final. No es lo mismo un promedio con pesos 1-2-3-4-5 que con 1-3-5-7-9. La ponderacion dice cuanto pesa cada respuesta en el indicador.</p></li>
+</ol>
+<p>Son dos decisiones distintas que se ejecutan juntas. La codificacion pone orden. La ponderacion decide el impacto. Ninguna de las dos viene en los datos. Las tenemos que tomar nosotros.</p>
+<p>A esto se suma algo que suele quedar medio al pasar pero es central: <strong>con <code>.map()</code> estamos creando una variable numerica nueva que antes no existia</strong>. No estamos “convirtiendo” texto en numero, estamos generando un dato nuevo a partir del original. La columna de texto sigue ahi. La columna numerica es nuestra construccion.</p>
+<p><strong>¿Hay otras formas de hacerlo?</strong></p>
+<p>Si. Existen herramientas como <code>pd.get_dummies()</code> (crea una columna por categoria), <code>LabelEncoder</code> de sklearn (asigna 0, 1, 2… en orden alfabetico), y otras. Pero todas comparten el mismo paso ineludible: <strong>en algun lado hay que definir el orden de las categorias</strong>. No importa el metodo. Si no se lo decis, el programa no sabe cual va primero. No hay atajo. El dato no dice “yo soy ordinal”. Lo dice el analista.</p>
+<p><strong>¿Que nos conviene hacer como analistas?</strong></p>
+<p>Nos conviene ser explicitos. Escribir el diccionario a mano con <code>.map()</code>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pesos <span class="op">=</span> {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Totalmente en desacuerdo'</span>: <span class="dv">1</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'En desacuerdo'</span>: <span class="dv">3</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Neutral'</span>: <span class="dv">5</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'De acuerdo'</span>: <span class="dv">7</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Totalmente de acuerdo'</span>: <span class="dv">9</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>base[<span class="st">'satisfaccion_int'</span>] <span class="op">=</span> base[<span class="st">'satisfaccion'</span>].<span class="bu">map</span>(pesos)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ul>
+<li>La decision queda visible en el script. Cualquier persona que lea el codigo sabe que numero le asignamos a cada categoria.</li>
+<li>Si nos equivocamos, se ve y se corrige en el diccionario. No hay que adivinar que hizo el programa.</li>
+<li>Podemos explicar por que elegimos esos pesos y no otros. Porque esta escrito.</li>
+</ul>
+<p>Ademas, mas adelante en la clase vamos a ver que el mismo <code>.map()</code> nos sirve para <strong>limpiar texto, unificar categorias y corregir errores</strong>. Es una herramienta unica para trabajar con variables categoricas.</p>
+<hr>
+</section>
+<section id="el-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="el-dataset">7.2 El dataset</h3>
+<p>Agregamos la columna <code>satisfaccion</code> al dataset de 20 hogares que venimos usando desde la Clase 04.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cod_hogar'</span>: [</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_001'</span>, <span class="st">'H_002'</span>, <span class="st">'H_003'</span>, <span class="st">'H_004'</span>, <span class="st">'H_005'</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_006'</span>, <span class="st">'H_007'</span>, <span class="st">'H_008'</span>, <span class="st">'H_009'</span>, <span class="st">'H_010'</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_011'</span>, <span class="st">'H_012'</span>, <span class="st">'H_013'</span>, <span class="st">'H_014'</span>, <span class="st">'H_015'</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">'H_016'</span>, <span class="st">'H_017'</span>, <span class="st">'H_018'</span>, <span class="st">'H_019'</span>, <span class="st">'H_020'</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'region'</span>: [</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">'GBA'</span>, <span class="st">'NOA'</span>, <span class="st">'Patagonia'</span>, <span class="st">'Cuyo'</span>, <span class="st">'Centro'</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'tipo_vivienda'</span>: [<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>,<span class="st">'Casa'</span>,<span class="st">'Depto'</span>],</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'ingreso'</span>: [<span class="dv">450000</span>, np.nan, <span class="dv">580000</span>, np.nan, <span class="dv">420000</span>,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>                <span class="dv">490000</span>, <span class="dv">310000</span>, <span class="dv">620000</span>, <span class="dv">280000</span>, np.nan,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                <span class="dv">460000</span>, <span class="dv">335000</span>, np.nan, <span class="dv">315000</span>, <span class="dv">425000</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>                <span class="dv">500000</span>, <span class="dv">325000</span>, <span class="dv">630000</span>, <span class="dv">295000</span>, <span class="dv">415000</span>],</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">'edad_jefe'</span>: [<span class="dv">45</span>, <span class="dv">32</span>, <span class="dv">58</span>, <span class="dv">29</span>, <span class="dv">41</span>, <span class="dv">36</span>, <span class="dv">52</span>, <span class="dv">47</span>, <span class="dv">33</span>, <span class="dv">40</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>                  <span class="dv">44</span>, <span class="dv">31</span>, <span class="dv">57</span>, <span class="dv">30</span>, <span class="dv">42</span>, <span class="dv">35</span>, <span class="dv">51</span>, <span class="dv">46</span>, <span class="dv">34</span>, <span class="dv">39</span>],</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">'satisfaccion'</span>: [</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">'De acuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'Totalmente de acuerdo'</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">'En desacuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'Totalmente en desacuerdo'</span>,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="st">'De acuerdo'</span>, <span class="st">'De acuerdo'</span>, <span class="st">'En desacuerdo'</span>,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Totalmente de acuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'De acuerdo'</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Totalmente en desacuerdo'</span>, <span class="st">'Neutral'</span>, <span class="st">'De acuerdo'</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="st">'De acuerdo'</span>, <span class="st">'Totalmente de acuerdo'</span>, <span class="st">'En desacuerdo'</span>,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="st">'Neutral'</span>, <span class="st">'De acuerdo'</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>base_cruda <span class="op">=</span> pd.DataFrame(data).set_index(<span class="st">'cod_hogar'</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>base_trabajo <span class="op">=</span> base_cruda.copy()</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>La columna <code>satisfaccion</code></strong> tiene 20 respuestas de una encuesta tipica. Son cinco categorias: desde <code>'Totalmente en desacuerdo'</code> hasta <code>'Totalmente de acuerdo'</code>.</p></li>
+<li><p><strong><code>base_cruda</code></strong>: el dato original. No se toca. <code>base_trabajo</code>: la copia donde hacemos las transformaciones. El mismo esquema de siempre.</p></li>
+<li><p><strong>El resto de las columnas</strong> (region, tipo_vivienda, ingreso, edad_jefe) son las de siempre. No las usamos en esta clase, pero estan para mantener el dataset completo.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+<section id="el-orden-no-existe-hasta-que-lo-definis" class="level3">
+<h3 class="anchored" data-anchor-id="el-orden-no-existe-hasta-que-lo-definis">7.3 El orden no existe hasta que lo definis</h3>
+<p>Miremos la columna <code>satisfaccion</code>:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[<span class="st">'satisfaccion'</span>].value_counts())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>value_counts()</code> muestra las categorias ordenadas por frecuencia (de la mas comun a la menos comun). Ese orden no tiene nada que ver con la escala. Python no sabe que <code>'De acuerdo'</code> va antes que <code>'Neutral'</code> o despues. Para Python, son strings. Punto.</p>
+<p>Si queremos calcular algo con estas categorias, tenemos que decirle a Python cual es el orden. Y esa decision es nuestra.</p>
+<p><strong>Definimos los pesos:</strong></p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pesos <span class="op">=</span> {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Totalmente en desacuerdo'</span>: <span class="dv">1</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'En desacuerdo'</span>: <span class="dv">3</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Neutral'</span>: <span class="dv">5</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'De acuerdo'</span>: <span class="dv">7</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Totalmente de acuerdo'</span>: <span class="dv">9</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Las claves del diccionario</strong> son las etiquetas exactas que aparecen en la columna <code>satisfaccion</code>. Tienen que coincidir caracter por caracter: mayusculas, tildes, espacios.</p></li>
+<li><p><strong>Los valores son los pesos</strong>: 1, 3, 5, 7, 9. Son impares y no consecutivos. No usamos 1, 2, 3, 4, 5 a proposito: asi queda claro que el numero no es automatico, es una decision nuestra.</p></li>
+<li><p><strong>Codificar y ponderar juntos</strong>: cuando escribimos 1, 3, 5, 7, 9 estamos haciendo dos cosas al mismo tiempo. Por un lado decimos que <code>'Totalmente en desacuerdo'</code> &lt; <code>'En desacuerdo'</code> &lt; … (codificacion ordinal). Por el otro, decimos que la distancia entre <code>'Neutral'</code> y <code>'De acuerdo'</code> es de 2 puntos (de 5 a 7), y entre <code>'Totalmente en desacuerdo'</code> y <code>'En desacuerdo'</code> tambien es de 2 puntos (de 1 a 3). El peso es la combinacion de orden y distancia.</p></li>
+<li><p><strong>El diccionario es la decision del analista</strong>: si otra persona usa otro diccionario (por ejemplo 1, 2, 3, 4, 5), el resultado del indicador cambia. Por eso es importante que quede escrito y visible.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mesa de Ayuda: ¿Por que no usar 1, 2, 3, 4, 5?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Podriamos. Pero 1, 2, 3, 4, 5 parece “natural”, como si el orden fuera obvio y los pesos cayeran del cielo. Con 1, 3, 5, 7, 9 queda claro que <strong>lo armamos nosotros</strong>. Vemos los saltos y sabemos que hay una decision atras.</p>
+<p>Ademas, usar pesos no secuenciales deja espacios libres. Si aparece una categoria nueva entre <code>'Neutral'</code> y <code>'De acuerdo'</code>, podemos asignarle 6 sin renumerar todo. El peso no es la posicion.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="map-de-texto-a-numero" class="level3">
+<h3 class="anchored" data-anchor-id="map-de-texto-a-numero">7.4 .map(): de texto a numero</h3>
+<p>Aplicamos el diccionario a la columna con <code>.map()</code>:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'satisfaccion_int'</span>] <span class="op">=</span> base_trabajo[<span class="st">'satisfaccion'</span>].<span class="bu">map</span>(pesos)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>.map(pesos)</code></strong> recorre cada fila de la columna <code>satisfaccion</code>, busca la etiqueta en el diccionario <code>pesos</code>, y reemplaza el texto por el numero correspondiente. Donde dice <code>'De acuerdo'</code> pone 7. Donde dice <code>'Neutral'</code> pone 5.</p></li>
+<li><p><strong>Estamos creando una variable numerica nueva que antes no existia</strong>. No estamos “convirtiendo” la columna original. La columna <code>satisfaccion</code> sigue siendo texto. Lo que hicimos fue <strong>generar un dato nuevo</strong> a partir del original. Eso es distinto de transformar: creamos algo que no estaba.</p></li>
+<li><p><strong>La variable nueva es una construccion del analista</strong>. La persona encuestada nunca respondio un 7. Respondio <code>'De acuerdo'</code>. El 7 es el peso que nosotros decidimos asignarle con el diccionario. Si alguien mas usa otro diccionario, el numero cambia. La variable es nuestra.</p></li>
+<li><p><strong>Guardamos el resultado en <code>satisfaccion_int</code></strong>. La columna nueva termina en <code>_int</code> para indicar que es la version numerica de <code>satisfaccion</code>.</p></li>
+<li><p><strong>Si una etiqueta no esta en el diccionario</strong>, <code>.map()</code> devuelve <code>NaN</code>. Por eso es importante que las claves coincidan exactamente con los valores de la columna.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+<section id="dos-caras-del-mismo-dato" class="level3">
+<h3 class="anchored" data-anchor-id="dos-caras-del-mismo-dato">7.5 Dos caras del mismo dato</h3>
+<p>Veamos las dos columnas juntas:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[[<span class="st">'satisfaccion'</span>, <span class="st">'satisfaccion_int'</span>]].head(<span class="dv">10</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>La columna <code>satisfaccion</code></strong> tiene el texto original. Es lo que respondio la persona. Es lo que se ve en un informe.</p></li>
+<li><p><strong>La columna <code>satisfaccion_int</code></strong> tiene el peso numerico. Es lo que se calcula. Es lo que se promedia para obtener un indicador.</p></li>
+<li><p><strong>Las dos viajan juntas</strong>. La persona H_001 dijo <code>'De acuerdo'</code> y pesa 7. La H_003 dijo <code>'Totalmente de acuerdo'</code> y pesa 9. Nunca perdemos de vista cual era la etiqueta original porque la tenemos al lado.</p></li>
+<li><p><strong>El vinculo es el indice</strong>: <code>cod_hogar</code> conecta las dos columnas. La misma persona, dos representaciones de lo mismo: una para reportar, otra para calcular.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+<section id="recodificacion" class="level3">
+<h3 class="anchored" data-anchor-id="recodificacion">7.6 Recodificacion</h3>
+<p>La variable <code>satisfaccion_int</code> que creamos vale lo que nosotros decidimos. Si cambiamos de opinion, podemos recodificarla. Eso es lo que la distingue de una variable medida: el peso no es un dato, es una decision.</p>
+<p><strong>Probamos otra codificacion:</strong></p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recodificacion: pesos secuenciales</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pesos_v2 <span class="op">=</span> {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Totalmente en desacuerdo'</span>: <span class="dv">1</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'En desacuerdo'</span>: <span class="dv">2</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Neutral'</span>: <span class="dv">3</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'De acuerdo'</span>: <span class="dv">4</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Totalmente de acuerdo'</span>: <span class="dv">5</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'satisfaccion_int_v2'</span>] <span class="op">=</span> base_trabajo[<span class="st">'satisfaccion'</span>].<span class="bu">map</span>(pesos_v2)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Comparamos las dos versiones:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[[<span class="st">'satisfaccion'</span>, <span class="st">'satisfaccion_int'</span>, <span class="st">'satisfaccion_int_v2'</span>]].head(<span class="dv">10</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>pesos_v2</code></strong> tiene los mismos valores de siempre (cinco categorias de una escala Likert), pero los pesos son 1, 2, 3, 4, 5 en lugar de 1, 3, 5, 7, 9. Es la misma encuesta, las mismas respuestas, distinta decision del analista.</p></li>
+<li><p><strong><code>satisfaccion_int_v2</code></strong> es la version 2 de la variable numerica. La llamamos distinto para no pisar la anterior y poder comparar.</p></li>
+<li><p><strong>El mismo texto produce numeros distintos segun el diccionario</strong>. H_001 dice <code>'De acuerdo'</code>: en la version 1 pesa 7, en la version 2 pesa 4. La persona respondio lo mismo. El peso lo cambiamos nosotros.</p></li>
+<li><p><strong>La variable numerica no es fija</strong>. Podemos recodificarla cuando querramos. Eso es la ponderacion: el analista decide el peso, no el dato.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mesa de Ayuda: ¿No es trampa cambiar los pesos?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>No.&nbsp;El peso es una decision del analista. Lo que importa es que la decision quede documentada y se pueda justificar. Si usamos 1, 3, 5, 7, 9, lo explicamos. Si usamos 1, 2, 3, 4, 5, tambien. Lo que no se puede es cambiar los pesos sin decirlo o sin saber que eso afecta el resultado. La transparencia esta en el diccionario.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="tabla-resumen-con-pivot_table" class="level3">
+<h3 class="anchored" data-anchor-id="tabla-resumen-con-pivot_table">7.7 Tabla resumen con pivot_table</h3>
+<p>Con la columna numerica ya podemos calcular indicadores. Armamos una tabla que muestre cuantas personas eligieron cada categoria y que porcentaje representan. La media general de la escala la mostramos aparte. Usamos <code>pivot_table</code>, la misma herramienta que vimos en la Clase 04.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tabla <span class="op">=</span> base_trabajo.pivot_table(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'satisfaccion'</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'satisfaccion_int'</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span><span class="st">'count'</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>tabla.columns <span class="op">=</span> [<span class="st">'n'</span>]</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>tabla[<span class="st">'%'</span>] <span class="op">=</span> (tabla[<span class="st">'n'</span>] <span class="op">/</span> tabla[<span class="st">'n'</span>].<span class="bu">sum</span>() <span class="op">*</span> <span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>media_general <span class="op">=</span> base_trabajo[<span class="st">'satisfaccion_int'</span>].mean()</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>tabla.loc[<span class="st">'Total'</span>] <span class="op">=</span> [tabla[<span class="st">'n'</span>].<span class="bu">sum</span>(), <span class="fl">100.0</span>]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tabla)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Media general de satisfaccion: </span><span class="sc">{</span>media_general<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mapa conceptual: cómo se construye la tabla
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<pre><code>  ┌─────────────────────────────────────────────────────────────┐
+  │                                                             │
+  │   satisfaccion              satisfaccion_int                │
+  │   (texto, agrupa filas)     (numero, se promedia)           │
+  │         │                           │                       │
+  │    index='satisfaccion'       values='satisfaccion_int'    │
+  │         │                           │                       │
+  │         └───────────┬───────────────┘                       │
+  │                     ↓                                       │
+   │      pivot_table(aggfunc='count')                           │
+   │                     ↓                                       │
+   │       ┌──────────────────────────────┐                      │
+   │       │                     n      %  │                     │
+   │       │ Totalmente en desacuerdo  2  10.0                  │
+   │       │ En desacuerdo             3  15.0                  │
+   │       │ Neutral                   5  25.0                  │
+   │       │ De acuerdo                7  35.0                  │
+   │       │ Totalmente de acuerdo     3  15.0                  │
+   │       │ Total                    20 100.0                  │
+   │       └──────────────────────────────┘                      │
+  │                                                             │
+  │   index = quien aparece como fila                           │
+  │   values = que se mide                                      │
+  └─────────────────────────────────────────────────────────────┘</code></pre>
+</div>
+</div>
+</div>
+<ol type="1">
+<li><p><strong><code>index='satisfaccion'</code> — ¿que esta pasando aca?</strong></p>
+<p><code>pivot_table</code> va a tomar <strong>cada valor unico</strong> de la columna <code>satisfaccion</code> y lo va a convertir en una <strong>fila</strong> de la tabla resultado.</p>
+<p>Pensalo asi: la columna original tiene 20 filas, una por hogar. Pero el reporte no quiere 20 filas, quiere <strong>un resumen por categoria</strong>. <code>index</code> le dice a pandas “agrupa todas las filas que tengan el mismo valor en esta columna y converti cada grupo en una sola fila”.</p>
+<p>Los valores unicos de <code>satisfaccion</code> son 5: <code>'Totalmente en desacuerdo'</code>, <code>'En desacuerdo'</code>, <code>'Neutral'</code>, <code>'De acuerdo'</code>, <code>'Totalmente de acuerdo'</code>. La tabla final va a tener exactamente esas 5 filas (mas la fila Total que agregamos despues). Cada fila representa a todas las personas que dieron esa respuesta.</p>
+<p>Sin <code>index</code>, <code>pivot_table</code> no sabe como armar las filas. <code>index</code> define la <strong>estructura vertical</strong> de la tabla: quien aparece como fila. Es el equivalente a la columna por la que hariamos <code>groupby</code> si usaramos esa funcion.</p>
+<p><strong><code>index</code> no tiene que ser numerico.</strong> Puede ser texto, categorica, fechas, lo que sea. Lo unico que necesita es que los valores se puedan agrupar. La columna de texto <code>satisfaccion</code> funciona perfecto porque lo unico que hace es nombrar los grupos.</p>
+<p><strong>Ejemplo de la importancia de <code>index</code></strong> — si en lugar de <code>satisfaccion</code> usamos <code>region</code>:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tabla_region <span class="op">=</span> base_trabajo.pivot_table(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'region'</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'satisfaccion_int'</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span>[<span class="st">'count'</span>, <span class="st">'mean'</span>]</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tabla_region)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>La tabla ahora muestra cuantas personas hay por region y su satisfaccion promedio. Misma columna numerica (<code>satisfaccion_int</code>), misma funcion (<code>mean</code>), pero el <code>index</code> cambio completamente la lectura del reporte. <code>index</code> decide <strong>quien aparece en las filas</strong>, y eso cambia la pregunta que responde la tabla.</p>
+<p><strong>Error comun</strong>: si usamos <code>index=satisfaccion_int</code> (la version numerica), la tabla tendria 20 filas (una por cada valor distinto de <code>satisfaccion_int</code>). No es un error de Python, pero el reporte no sirve porque cada fila tendria un solo caso. <code>index</code> tiene que ser la variable por la que tiene sentido agrupar.</p></li>
+<li><p><strong><code>values='satisfaccion_int'</code> — ¿por que esta columna y no otra?</strong></p>
+<p><code>values</code> le dice a pandas <strong>sobre que columna aplicar los calculos</strong>. Es la materia prima de los numeros que van a aparecer en la tabla.</p>
+<p>Y aca viene la clave: <code>values</code> <strong>tiene que ser numerica</strong> cuando usamos <code>mean</code>. No podemos promediar texto. <code>count</code> cuenta filas (funciona con cualquier tipo de dato), pero <code>mean</code> necesita sumar y dividir, y eso solo funciona con numeros.</p>
+<p>Por eso hicimos todo el trabajo de <code>.map()</code> antes: para tener <code>satisfaccion_int</code>, una columna numerica lista para promediar. Sin esa transformacion, <code>pivot_table</code> no podria calcular el peso promedio de cada grupo. La columna original <code>satisfaccion</code> tiene las etiquetas lindas para leer, pero <code>satisfaccion_int</code> tiene los numeros para calcular.</p>
+<p><strong><code>values</code> puede recibir una lista</strong> de varias columnas. En este caso es una sola porque solo tenemos <code>satisfaccion_int</code>, pero si tuvieramos mas variables numericas podriamos pedir el promedio de todas al mismo tiempo pasando <code>values=['satisfaccion_int', 'ingreso']</code>.</p>
+<p><strong>Ejemplo de la importancia de <code>values</code></strong> — si usamos <code>values='ingreso'</code> en lugar de <code>values='satisfaccion_int'</code>:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tabla_ingreso <span class="op">=</span> base_trabajo.pivot_table(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    index<span class="op">=</span><span class="st">'satisfaccion'</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    values<span class="op">=</span><span class="st">'ingreso'</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    aggfunc<span class="op">=</span>[<span class="st">'count'</span>, <span class="st">'mean'</span>]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tabla_ingreso)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mismas filas (categorias de satisfaccion), pero ahora medimos ingreso promedio en lugar de peso de la escala. <code>values</code> cambio <strong>que se mide</strong>. La tabla ahora responde “las personas que respondieron X, ¿cuanto ganan en promedio?”.</p>
+<p><strong>Error comun</strong>: si usamos <code>values='satisfaccion'</code> (la columna de texto), <code>mean</code> falla porque no puede promediar texto. Python tira un error del tipo “cannot concatenate…”. No es opinable: <code>values</code> <strong>tiene que ser numerica</strong> cuando usamos <code>mean</code>.</p></li>
+<li><p><strong><code>aggfunc='count'</code></strong>: una sola funcion de agregacion. <code>count</code> cuenta cuantos casos hay en cada grupo. No usamos <code>mean</code> porque el promedio de un grupo donde todos tienen el mismo valor es ese valor (no aporta informacion nueva).</p></li>
+<li><p><strong><code>tabla.columns = ['n']</code></strong>: renombramos la columna. <code>n</code> es cuantos casos hay en cada categoria.</p></li>
+<li><p><strong><code>tabla['%']</code></strong>: el porcentaje que representa cada categoria sobre el total. Se calcula dividiendo <code>n</code> de cada grupo por la suma total de <code>n</code>.</p></li>
+<li><p><strong><code>media_general = base_trabajo['satisfaccion_int'].mean()</code></strong>: calculamos la media general de toda la muestra. Este es el numero que buscabamos desde el principio. Va en un <code>print()</code> aparte, debajo de la tabla, porque no es parte del desglose por categoria.</p></li>
+<li><p><strong><code>tabla.loc['Total'] = [n_total, 100.0]</code></strong>: agregamos una fila al final con <code>n=20</code> (total de casos) y <code>%=100.0</code>. El nombre “Total” indica que esta fila suma todos los casos.</p></li>
+</ol>
+<p><strong>Nota</strong>: la media general (5.2 si usamos los pesos 1, 3, 5, 7, 9) depende de los pesos que elegimos en el diccionario. Con 1, 2, 3, 4, 5 en lugar de 1, 3, 5, 7, 9 el numero seria otro. La media general es el resultado de nuestras decisiones como analistas.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="edicion-y-normalizacion" class="level3">
+<h3 class="anchored" data-anchor-id="edicion-y-normalizacion">7.8 Edicion y normalizacion</h3>
+<p>Hasta ahora trabajamos con datos limpios. Las etiquetas llegaron sin errores, sin espacios, sin mayusculas inconsistentes. En la realidad no es asi. Las variables categoricas llegan con problemas tipicos:</p>
+<ul>
+<li>Espacios al inicio o final (<code>'De acuerdo '</code>)</li>
+<li>Mayusculas inconsistentes (<code>'de acuerdo'</code>, <code>'DE ACUERDO'</code>, <code>'De Acuerdo'</code>)</li>
+<li>Errores de tipeo (<code>'De acuersdo'</code>)</li>
+<li>Categorias que conviene recodificar (agrupar niveles de la escala)</li>
+</ul>
+<p>Esta seccion muestra como enfrentar esos problemas con las herramientas de pandas.</p>
+<section id="limpiar-y-corregir-texto" class="level4">
+<h4 class="anchored" data-anchor-id="limpiar-y-corregir-texto">7.8.1 Limpiar y corregir texto</h4>
+<p>Los datos reales no llegan como los de nuestro dataset. Tienen espacios, mayusculas inconsistentes, errores de tipeo. Aca creamos una version sucia para mostrar como enfrentar esos problemas.</p>
+<p><strong>Creamos una columna con datos sucios:</strong></p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'satisfaccion_sucio'</span>] <span class="op">=</span> base_trabajo[<span class="st">'satisfaccion'</span>].copy()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>base_trabajo.loc[<span class="st">'H_002'</span>, <span class="st">'satisfaccion_sucio'</span>] <span class="op">=</span> <span class="st">'  Neutral  '</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>base_trabajo.loc[<span class="st">'H_007'</span>, <span class="st">'satisfaccion_sucio'</span>] <span class="op">=</span> <span class="st">'de acuerdo'</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>base_trabajo.loc[<span class="st">'H_012'</span>, <span class="st">'satisfaccion_sucio'</span>] <span class="op">=</span> <span class="st">'DE ACUERDO'</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>base_trabajo.loc[<span class="st">'H_015'</span>, <span class="st">'satisfaccion_sucio'</span>] <span class="op">=</span> <span class="st">'De acuerdo '</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>base_trabajo.loc[<span class="st">'H_019'</span>, <span class="st">'satisfaccion_sucio'</span>] <span class="op">=</span> <span class="st">'NEUTRAL'</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[<span class="st">'satisfaccion_sucio'</span>].value_counts())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Partimos de datos limpios</strong> en <code>satisfaccion</code> y los ensuciamos a proposito para tener con que practicar. En la vida real los datos ya vienen sucios.</p></li>
+<li><p><strong>Los problemas tipicos</strong>: espacios al inicio/final (<code>'  Neutral  '</code>, <code>'De acuerdo '</code>), mayusculas inconsistentes (<code>'de acuerdo'</code>, <code>'DE ACUERDO'</code>, <code>'NEUTRAL'</code>). Todo en una misma columna.</p></li>
+<li><p><strong><code>value_counts()</code> muestra 7 valores distintos</strong> cuando deberia haber solo 5. <code>'Neutral'</code> aparece como <code>'  Neutral  '</code>, <code>'NEUTRAL'</code> y <code>'Neutral'</code>. Python los trata como valores diferentes aunque sean la misma categoria.</p></li>
+</ol>
+</div>
+</div>
+<p><strong>Primera pasada: limpiar con .str</strong></p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># .str.strip(): saca espacios al inicio y final</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[<span class="st">'satisfaccion_sucio'</span>].<span class="bu">str</span>.strip().value_counts())</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># .str.lower(): todo a minuscula</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[<span class="st">'satisfaccion_sucio'</span>].<span class="bu">str</span>.strip().<span class="bu">str</span>.lower().value_counts())</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># .str.title(): primera letra en mayuscula</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>limpio_str <span class="op">=</span> base_trabajo[<span class="st">'satisfaccion_sucio'</span>].<span class="bu">str</span>.strip().<span class="bu">str</span>.lower().<span class="bu">str</span>.title()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(limpio_str.value_counts())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>.str.strip()</code></strong>: saca espacios al inicio y final de cada celda. Es el primer paso obligado cuando los datos vienen de formularios web o Excel.</p></li>
+<li><p><strong><code>.str.lower()</code></strong>: pasa todo a minuscula para que <code>'DE ACUERDO'</code> y <code>'de acuerdo'</code> sean iguales.</p></li>
+<li><p><strong><code>.str.title()</code></strong>: pone la primera letra de cada palabra en mayuscula. Vuelve a dejar el texto presentable.</p></li>
+<li><p><strong>Encadenamos los tres metodos</strong>: <code>base.str.strip().str.lower().str.title()</code>. Se lee de izquierda a derecha: saca espacios, minuscula, titulo. La columna sucia quedo limpia.</p></li>
+<li><p><strong>Aun asi, <code>value_counts()</code> muestra <code>'De Acuerdo'</code> (con <code>A</code> mayuscula en <code>Acuerdo</code>) mientras que nuestros datos originales tienen <code>'De acuerdo'</code> (con <code>a</code> minuscula)</strong>. La limpieza con .str no es perfecta para todo.</p></li>
+</ol>
+</div>
+</div>
+<p><strong>Segunda pasada: corregir con .map()</strong></p>
+<p>Lo que .str no puede resolver (casos particulares, errores de tipeo), lo resuelve <code>.map()</code> con un diccionario:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>correcciones <span class="op">=</span> {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Neutral'</span>: <span class="st">'Neutral'</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'De Acuerdo'</span>: <span class="st">'De acuerdo'</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'De acuerdo'</span>: <span class="st">'De acuerdo'</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Totalmente De Acuerdo'</span>: <span class="st">'Totalmente de acuerdo'</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Totalmente En Desacuerdo'</span>: <span class="st">'Totalmente en desacuerdo'</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'En Desacuerdo'</span>: <span class="st">'En desacuerdo'</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>limpio_map <span class="op">=</span> limpio_str.<span class="bu">map</span>(correcciones)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(limpio_map.value_counts())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>El diccionario <code>correcciones</code></strong> mapea cada valor que .str dejo mal a su forma correcta. <code>'De Acuerdo'</code> → <code>'De acuerdo'</code>, <code>'Totalmente De Acuerdo'</code> → <code>'Totalmente de acuerdo'</code>, etc.</p></li>
+<li><p><strong><code>.map(correcciones)</code></strong> reemplaza los valores que .str no pudo normalizar del todo. Las claves que no estan en el diccionario se convierten en NaN, por eso incluimos <strong>todas</strong> las variantes que quedaron despues de la limpieza con .str.</p></li>
+<li><p><strong>La logica es la misma que cuando asignamos pesos en 7.4</strong>: claves son los valores actuales, valores son los valores deseados. Solo que aca no asignamos numeros, sino etiquetas corregidas.</p></li>
+</ol>
+</div>
+</div>
+<p><strong>El flujo completo en tres pasos:</strong></p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1) Limpiar lo estructural con .str (espacios, mayusculas)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>paso_1 <span class="op">=</span> base_trabajo[<span class="st">'satisfaccion_sucio'</span>].<span class="bu">str</span>.strip().<span class="bu">str</span>.lower().<span class="bu">str</span>.title()</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2) Corregir lo puntual con .map (errores residuales)</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>paso_2 <span class="op">=</span> paso_1.<span class="bu">map</span>(correcciones)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3) Guardar el resultado</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'satisfaccion_limpio'</span>] <span class="op">=</span> paso_2</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Verificar: deberia tener las mismas 5 categorias que el original</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[<span class="st">'satisfaccion_limpio'</span>].value_counts())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong>Paso 1 (<code>.str.</code>)</strong>: ataca los problemas estructurales: espacios, mayusculas. Es un barrido general que normaliza todo.</p></li>
+<li><p><strong>Paso 2 (<code>.map()</code>)</strong>: ataca los problemas puntuales: valores que .str no dejo perfectos. Es una cirugia con diccionario.</p></li>
+<li><p><strong>Paso 3</strong>: guardamos el resultado en <code>satisfaccion_limpio</code>. La columna original sucia no se toca, la de referencia (<code>satisfaccion</code>) tampoco.</p></li>
+<li><p><strong><code>value_counts()</code> ahora muestra las 5 categorias correctas</strong> sin duplicados, sin espacios, sin mayusculas raras.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mesa de Ayuda: .map() para codificar, recodificar y corregir
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>.map()</code> con un diccionario es una herramienta unica para trabajar con variables categoricas:</p>
+<ul>
+<li><strong>Codificar</strong>: asigna pesos numericos a las etiquetas (7.4)</li>
+<li><strong>Corregir</strong>: reemplaza valores sucios por el correcto (7.8.1)</li>
+<li><strong>Recodificar</strong>: agrupa pesos de la variable numerica para reducir niveles (7.8.2)</li>
+</ul>
+<p>En los tres casos la logica es la misma: las claves del diccionario son los valores actuales, los valores del diccionario son los valores nuevos.</p>
+</div>
+</div>
+</section>
+<section id="recodificar-la-escala-de-5-niveles-a-3" class="level4">
+<h4 class="anchored" data-anchor-id="recodificar-la-escala-de-5-niveles-a-3">7.8.2 Recodificar la escala: de 5 niveles a 3</h4>
+<p>La escala completa de satisfaccion tiene 5 niveles: Totalmente en desacuerdo (1), En desacuerdo (3), Neutral (5), De acuerdo (7), Totalmente de acuerdo (9). A veces conviene reducirla a 3 niveles agrupando los polos. La recodificacion se hace directo sobre la variable numerica, sin pasar por strings:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recodificacion directo sobre la variable numerica</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Los pesos 1 y 3 (en desacuerdo) se fusionan en 1</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># El peso 5 (neutral) pasa a 3</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Los pesos 7 y 9 (de acuerdo) se fusionan en 5</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>recod_3 <span class="op">=</span> {<span class="dv">1</span>: <span class="dv">1</span>, <span class="dv">3</span>: <span class="dv">1</span>, <span class="dv">5</span>: <span class="dv">3</span>, <span class="dv">7</span>: <span class="dv">5</span>, <span class="dv">9</span>: <span class="dv">5</span>}</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'satisfaccion_3_int'</span>] <span class="op">=</span> base_trabajo[<span class="st">'satisfaccion_int'</span>].<span class="bu">map</span>(recod_3)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Media de la escala reducida</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[<span class="st">'satisfaccion_3_int'</span>].mean())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>recod_3 = {1: 1, 3: 1, 5: 3, 7: 5, 9: 5}</code></strong>: las claves son los pesos actuales (5 niveles), los valores son los pesos nuevos (3 niveles). <code>'Totalmente en desacuerdo'</code> (1) y <code>'En desacuerdo'</code> (3) pasan a pesar 1. <code>'Neutral'</code> (5) pasa a 3. <code>'De acuerdo'</code> (7) y <code>'Totalmente de acuerdo'</code> (9) pasan a 5.</p></li>
+<li><p><strong><code>.map(recod_3)</code></strong> sobre <code>satisfaccion_int</code>: no hay columna de texto intermedia. La recodificacion es directa de numeros a numeros.</p></li>
+<li><p><strong>Las etiquetas originales no se pierden</strong>: <code>satisfaccion</code> sigue intacta. La recodificacion esta en una columna nueva.</p></li>
+<li><p><strong>La media de <code>satisfaccion_3_int</code></strong> es un indicador distinto al de la escala completa de 5 niveles. Es mas grueso, pero mas estable si hay pocos casos en los extremos.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="de-continua-a-categorica-con-pd.cut" class="level3">
+<h3 class="anchored" data-anchor-id="de-continua-a-categorica-con-pd.cut">7.9 De continua a categorica con pd.cut()</h3>
+<p>Hasta ahora fuimos de texto a numero. Tambien se puede ir al reves: tomar una variable continua (como <code>ingreso</code>) y convertirla en categorica dividiendola en tramos.</p>
+<p>El problema: los datos continuos tienen decimales, los cortes no son obvios, y si delegamos los cortes a pandas con <code>bins=3</code> perdemos el control. Aca vamos a definir los limites nosotros y explorar que pasa con los bordes.</p>
+<section id="cortes-explicitos" class="level4">
+<h4 class="anchored" data-anchor-id="cortes-explicitos">Cortes explicitos</h4>
+<p>Primero preparamos los datos con valores decimales, que son los que aparecen en la realidad:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'ingreso_dec'</span>] <span class="op">=</span> base_trabajo[<span class="st">'ingreso'</span>].copy()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>base_trabajo.loc[<span class="st">'H_001'</span>, <span class="st">'ingreso_dec'</span>] <span class="op">=</span> <span class="fl">450000.78</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>base_trabajo.loc[<span class="st">'H_005'</span>, <span class="st">'ingreso_dec'</span>] <span class="op">=</span> <span class="fl">420500.25</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>base_trabajo.loc[<span class="st">'H_010'</span>, <span class="st">'ingreso_dec'</span>] <span class="op">=</span> <span class="fl">410250.33</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Definimos los cortes nosotros, sin delegar:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>cortes <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">350000</span>, <span class="dv">500000</span>, <span class="dv">1000000</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [<span class="st">'Bajo'</span>, <span class="st">'Medio'</span>, <span class="st">'Alto'</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>base_trabajo[<span class="st">'ingreso_tramo'</span>] <span class="op">=</span> pd.cut(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    base_trabajo[<span class="st">'ingreso_dec'</span>],</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    bins<span class="op">=</span>cortes,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    labels<span class="op">=</span>labels</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[[<span class="st">'ingreso_dec'</span>, <span class="st">'ingreso_tramo'</span>]].head(<span class="dv">10</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>cortes = [0, 350000, 500000, 1000000]</code></strong>: definimos 3 intervalos con 4 puntos de corte. El primer tramo va de 0 a 350000, el segundo de 350000 a 500000, el tercero de 500000 a 1000000.</p></li>
+<li><p><strong><code>labels=['Bajo', 'Medio', 'Alto']</code></strong>: las etiquetas de cada tramo. Siempre tiene que haber uno menos que la cantidad de puntos de corte (4 puntos = 3 tramos).</p></li>
+<li><p><strong><code>bins=cortes</code> en lugar de <code>bins=3</code></strong>: aca controlamos los limites. Sabemos exactamente donde corta cada tramo. Con <code>bins=3</code> pandas decide por nosotros.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="ver-los-intervalos-sin-labels" class="level4">
+<h4 class="anchored" data-anchor-id="ver-los-intervalos-sin-labels">Ver los intervalos sin labels</h4>
+<p>Sin etiquetas, <code>pd.cut()</code> muestra el intervalo exacto que le toco a cada valor:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.cut(base_trabajo[<span class="st">'ingreso_dec'</span>], bins<span class="op">=</span>cortes).head(<span class="dv">10</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>(280000, 350000]</code></strong>: el parentesis <code>(</code> significa que el extremo izquierdo (280000) esta <strong>excluido</strong> del intervalo. El corchete <code>]</code> significa que el extremo derecho (350000) esta <strong>incluido</strong>.</p></li>
+<li><p><strong>Por defecto <code>right=True</code></strong>: el extremo derecho de cada intervalo esta incluido. El izquierdo esta excluido.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="el-peligro-de-los-extremos" class="level4">
+<h4 class="anchored" data-anchor-id="el-peligro-de-los-extremos">El peligro de los extremos</h4>
+<p>Los valores que caen exactamente en un borde cambian de categoria segun un parametro que pasa facil desapercibido: <code>right</code>.</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Probamos valores exactamente en los bordes</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>prueba <span class="op">=</span> pd.Series([<span class="dv">0</span>, <span class="dv">349999</span>, <span class="dv">350000</span>, <span class="dv">350001</span>, <span class="dv">499999</span>, <span class="dv">500000</span>, <span class="dv">500001</span>])</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Por defecto (right=True): el extremo derecho incluido"</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.cut(prueba, bins<span class="op">=</span>cortes, labels<span class="op">=</span>labels))</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Con right=False: el extremo izquierdo incluido"</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.cut(prueba, bins<span class="op">=</span>cortes, labels<span class="op">=</span>labels, right<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>right=True</code> (default)</strong>: el intervalo se lee como <code>(0, 350000]</code>. El 350000 esta <strong>incluido</strong> en <code>'Bajo'</code>. El 350001 esta en <code>'Medio'</code>.</p></li>
+<li><p><strong><code>right=False</code></strong>: el intervalo se lee como <code>[0, 350000)</code>. El 350000 esta <strong>excluido</strong> de <code>'Bajo'</code> y pasa a <code>'Medio'</code>. El 0 esta incluido en <code>'Bajo'</code>.</p></li>
+<li><p><strong>El mismo numero, distinta categoria segun <code>right</code></strong>: 350000 puede ser <code>'Bajo'</code> o <code>'Medio'</code> dependiendo de este parametro. Con datos reales (precios, edades, puntajes de corte) esto cambia el resultado del analisis. No es un detalle tecnico menor: <strong>es una decision del analista</strong> que hay que tomar explicitamente y documentar.</p></li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Mesa de Ayuda: ¿right=True o right=False?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Depende de como se definieron los tramos en la realidad. Si la consigna dice “de 0 a 350000”, usamos <code>right=True</code> (el 350000 incluido en Bajo). Si dice “de 0 a 349999”, usamos <code>right=False</code> (el 350000 en el tramo siguiente). No hay respuesta correcta universal: hay que conocer los datos y la definicion de los cortes.</p>
+</div>
+</div>
+</section>
+<section id="valores-fuera-de-rango-y-nan" class="level4">
+<h4 class="anchored" data-anchor-id="valores-fuera-de-rango-y-nan">Valores fuera de rango y NaN</h4>
+<div class="monitor-box">
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Los NaN originales se propagan como NaN en la categoria</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Si un valor esta por fuera de los cortes, tambien da NaN</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[<span class="st">'ingreso_tramo'</span>].value_counts())</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Para ver los NaN:</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_trabajo[<span class="st">'ingreso_tramo'</span>].value_counts(dropna<span class="op">=</span><span class="va">False</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>value_counts()</code></strong>: por defecto no cuenta los NaN. Solo muestra las categorias validas.</p></li>
+<li><p><strong><code>value_counts(dropna=False)</code></strong>: incluye los NaN en el conteo. Util para diagnosticar cuantos casos quedaron sin clasificar.</p></li>
+<li><p><strong>Los NaN de la variable original se propagan</strong>: si <code>ingreso_dec</code> tiene NaN, <code>ingreso_tramo</code> tambien. No se puede categorizar lo que no existe.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="crear-una-columna-nueva-con-.assign" class="level3">
+<h3 class="anchored" data-anchor-id="crear-una-columna-nueva-con-.assign">7.10 Crear una columna nueva con .assign()</h3>
+<p>Hay una forma alternativa de crear la misma columna sin modificar el DataFrame original:</p>
+<div class="monitor-box">
+<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>base_con_tramo <span class="op">=</span> base_trabajo.assign(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    ingreso_tramo<span class="op">=</span>pd.cut(base_trabajo[<span class="st">'ingreso_dec'</span>], bins<span class="op">=</span>cortes, labels<span class="op">=</span>labels)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(base_con_tramo[[<span class="st">'ingreso_dec'</span>, <span class="st">'ingreso_tramo'</span>]].head())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lo que estamos haciendo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p><strong><code>.assign(ingreso_tramo=...)</code></strong>: crea la columna <code>ingreso_tramo</code> dentro de una copia nueva de <code>base_trabajo</code>. El nombre del argumento es el nombre de la columna, el valor es como se calcula.</p></li>
+<li><p><strong>Devuelve una copia</strong>: <code>base_trabajo</code> no se modifica. <code>base_con_tramo</code> tiene la columna extra. La original sigue intacta.</p></li>
+<li><p><strong>Equivalente a <code>base_trabajo['ingreso_tramo'] = ...</code></strong>: hace lo mismo, pero sin pisar el original. Sirve para mantener el dato intacto y tener la columna calculada aparte.</p></li>
+</ol>
+</div>
+</div>
+<hr>
+</section>
+<section id="cerrando-el-circulo" class="level3">
+<h3 class="anchored" data-anchor-id="cerrando-el-circulo">7.11 Cerrando el circulo</h3>
+<p>Volvemos a la pregunta del inicio: <strong>¿que estamos haciendo cuando trabajamos con variables categoricas?</strong></p>
+<p>Vimos varias cosas que parecen distintas pero comparten una misma logica:</p>
+<ol type="1">
+<li><strong>Asignar pesos a una escala</strong>: <code>.map()</code> con un diccionario, creando una variable numerica nueva.</li>
+<li><strong>Recodificar</strong>: cambiar los pesos de esa variable porque el peso es una decision del analista.</li>
+<li><strong>Limpiar y corregir texto</strong>: <code>.str.strip()</code>, <code>.str.lower()</code>, <code>.str.title()</code> para normalizar, <code>.map()</code> para errores residuales.</li>
+<li><strong>Recodificar</strong>: <code>.map()</code> sobre la variable numerica para reducir niveles de la escala.</li>
+<li><strong>Crear categorias desde numeros</strong>: <code>pd.cut()</code> para dividir ingresos en tramos, controlando los cortes y los bordes.</li>
+</ol>
+<p>En todos los casos hay un denominador comun: <strong>las categorias no vienen dadas</strong>. Nosotros las definimos, las ajustamos, las recodificamos y las normalizamos. El dato no dice “yo soy ordinal”, ni “yo soy Bajo/Medio/Alto”, ni “este es el borde correcto”. Lo dice el analista.</p>
+<p><strong>¿Habia otra forma de hacerlo?</strong> Si. Pero todas requieren definir el orden, las categorias o las correcciones en algun momento. No hay atajo. La unica pregunta es si lo decis vos o lo decide el programa. Como analistas, preferimos la primera: la decision es nuestra, queda escrita y se puede explicar.</p>
+<div class="gray-italic-box">
+<p><strong>Zona de Prompting:</strong> “Actua como analista de datos con experiencia en el curso. Tengo un dataset con una columna ‘frecuencia’ que tiene estos valores: ‘Nunca’, ‘nunca’, ’ A veces’, ‘Casi Siempre’, ‘Casi siempre’, ‘siempre’, ‘siemre’. Necesito: 1) normalizar el texto (sin espacios, todo minuscula, corregir ‘siemre’), 2) asignar pesos (1 a 5), 3) agrupar en tres tramos (Bajo/Medio/Alto). Decime los cortes que usarias, si usas right=True o right=False, y mostra el resultado.”</p>
+</div>
+<hr>
+</section>
+</section>
+<section id="resumen-de-la-clase" class="level2">
+<h2 class="anchored" data-anchor-id="resumen-de-la-clase">Resumen de la Clase</h2>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Concepto</th>
+<th style="text-align: left;">Descripcion</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Codificacion ordinal</strong></td>
+<td style="text-align: left;">Asignar un orden a las categorias de una variable de texto. Sin esto no se puede calcular un promedio.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Ponderacion</strong></td>
+<td style="text-align: left;">Asignar un peso a cada categoria. El peso determina el impacto de la respuesta en el indicador.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Peso vs posicion</strong></td>
+<td style="text-align: left;">El peso no es la posicion en la lista. 1, 3, 5, 7, 9 no es “primero, segundo, tercero…”. Es una decision del analista.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>.map(diccionario)</code></strong></td>
+<td style="text-align: left;">Reemplaza cada valor por su correspondiente segun un diccionario. Sirve para codificar, recodificar y corregir.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Creacion de variable numerica</strong></td>
+<td style="text-align: left;"><code>.map()</code> no “convierte” texto, <strong>crea una variable numerica nueva</strong> que antes no existia.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Dos columnas</strong></td>
+<td style="text-align: left;">La etiqueta (<code>satisfaccion</code>) se conserva. El peso va en una columna aparte (<code>satisfaccion_int</code>). Ambas viajan juntas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Recodificacion</strong></td>
+<td style="text-align: left;">Cambiar los pesos de la variable numerica. El mismo texto puede producir numeros distintos segun la decision del analista.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>pivot_table</code></strong></td>
+<td style="text-align: left;">Tabla resumen con n (cuantos eligieron cada opcion) y % (proporcion). La media general se muestra aparte.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>.str.*</code></strong></td>
+<td style="text-align: left;">Herramientas para limpiar texto: <code>.strip()</code>, <code>.lower()</code>, <code>.title()</code>. Se encadenan para normalizar. Lo estructural con <code>.str</code>, lo puntual con <code>.map()</code>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong><code>pd.cut()</code></strong></td>
+<td style="text-align: left;">Divide una variable continua en tramos. <strong>Los cortes los definis vos</strong> con <code>bins</code>. El parametro <code>right</code> controla que extremo del intervalo esta incluido. <strong>Peligro: el mismo numero cambia de categoria segun <code>right</code>.</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong><code>.assign()</code></strong></td>
+<td style="text-align: left;">Crea una columna nueva en una copia del DataFrame, sin modificar el original.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Paso ineludible</strong></td>
+<td style="text-align: left;">No importa el metodo. El orden de las categorias hay que definirlo en algun lado. No hay atajo.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copiado");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copiado");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
