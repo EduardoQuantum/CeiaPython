@@ -562,9 +562,7 @@ print(base_trabajo['satisfaccion_3_int'].mean())
 
 Hasta ahora fuimos de texto a numero. Tambien se puede ir al reves: tomar una variable continua (como `ingreso`) y convertirla en categorica dividiendola en tramos.
 
-El problema: los datos continuos tienen decimales, los cortes no son obvios, y si delegamos los cortes a pandas con `bins=3` perdemos el control. Aca vamos a definir los limites nosotros y explorar que pasa con los bordes.
-
-#### Cortes explicitos
+El problema: los datos continuos tienen decimales, los cortes no son obvios, y si delegamos los cortes a pandas con `bins=3` perdemos el control. Aca definimos los limites nosotros y trabajamos con el comportamiento default de `pd.cut()`.
 
 Primero preparamos los datos con valores decimales, que son los que aparecen en la realidad:
 
@@ -597,85 +595,130 @@ print(base_trabajo[['ingreso_dec', 'ingreso_tramo']].head(10))
 ::: {.callout-note}
 ## Lo que estamos haciendo
 
-1. **`cortes = [0, 350000, 500000, 1000000]`**: definimos 3 intervalos con 4 puntos de corte. El primer tramo va de 0 a 350000, el segundo de 350000 a 500000, el tercero de 500000 a 1000000.
+#### 1. Los cortes y el comportamiento default
 
-2. **`labels=['Bajo', 'Medio', 'Alto']`**: las etiquetas de cada tramo. Siempre tiene que haber uno menos que la cantidad de puntos de corte (4 puntos = 3 tramos).
+`cortes = [0, 350000, 500000, 1000000]` define 3 intervalos con 4 puntos de corte. La cantidad de intervalos siempre es `len(cortes) - 1`.
 
-3. **`bins=cortes` en lugar de `bins=3`**: aca controlamos los limites. Sabemos exactamente donde corta cada tramo. Con `bins=3` pandas decide por nosotros.
-:::
+`pd.cut()` por defecto usa `right=True`: el limite superior de cada tramo queda incluido, el limite inferior queda excluido. **En este curso no cambiamos ese comportamiento.** Usamos siempre el default.
 
-#### Ver los intervalos sin labels
+¿Que significa esto para cada valor?
 
-Sin etiquetas, `pd.cut()` muestra el intervalo exacto que le toco a cada valor:
+| Valor | Tramo |
+|-------|-------|
+| 0 | NaN (fuera de rango) |
+| 100000 | Bajo |
+| 350000 | Bajo |
+| 350001 | Medio |
+| 500000 | Medio |
+| 800000 | Alto |
+| 1000000 | Alto |
+
+- **El 0 queda fuera del rango**: como el primer corte es 0 y el limite inferior esta excluido, el valor 0 no pertenece a ningun tramo. Se convierte en NaN.
+- **El 350000 cae en Bajo**: el limite superior del primer tramo esta incluido.
+- **El 350001 cae en Medio**: supera el limite del primer tramo.
+- **El 500000 cae en Medio**, **el 1000000 cae en Alto**: mismos criterios.
+
+**No usamos `right=False` ni notacion de parentesis y corchetes.** Existen, pero **no las recomendamos**. Mezclar criterios de bordes es la fuente mas comun de errores silenciosos con `pd.cut()`. Usamos un solo metodo en todo el curso: el default.
+
+#### 2. El problema del 0 y como resolverlo
+
+El valor 0 es un dato real. Ingreso cero, personas sin ingreso, frecuencia cero. Con `bins=[0, 350000, ...]` y `right=True`, el 0 queda fuera. El analista pierde ese caso sin saberlo.
+
+**Solucion**: desplazar el primer corte a un valor negativo. Ese valor es un "comodin" que nunca aparece en los datos, solo define el piso del primer intervalo.
 
 ::: {.monitor-box}
 ```python
-print(pd.cut(base_trabajo['ingreso_dec'], bins=cortes).head(10))
+cortes_con_cero = [-1, 350000, 500000, 1000000]
+prueba_cero = pd.Series([0, 349999, 350000, 350001, 500000])
+
+print(pd.cut(prueba_cero, bins=cortes_con_cero, labels=labels))
 ```
 :::
 
-::: {.callout-note}
-## Lo que estamos haciendo
+Ahora el primer tramo arranca en -1, y 0, 1, 2... hasta 350000 quedan incluidos. No cambiamos `right`, ajustamos los cortes.
 
-1. **`(280000, 350000]`**: el parentesis `(` significa que el extremo izquierdo (280000) esta **excluido** del intervalo. El corchete `]` significa que el extremo derecho (350000) esta **incluido**.
+#### 3. Labels
 
-2. **Por defecto `right=True`**: el extremo derecho de cada intervalo esta incluido. El izquierdo esta excluido.
+`labels=['Bajo', 'Medio', 'Alto']` asigna nombre a cada tramo. Siempre tiene que haber la misma cantidad de labels que de intervalos.
+
+#### 4. `bins=cortes` en lugar de `bins=3`
+
+Controlamos los limites explicitamente. Con `bins=3` pandas divide el rango en 3 partes iguales sin preguntarnos. Para exploracion rapida sirve, pero para un informe final queremos decidir nosotros donde corta cada tramo.
+
+::: {.callout-important}
+## Regla del curso
+
+`right=True` siempre. Si necesitas incluir el extremo izquierdo (como el valor 0 en el primer tramo), ajustas los cortes con un valor negativo (`bins=[-1, ...]`). No cambias `right`. Esto mantiene el codigo predecible y evita errores entre proyectos.
 :::
-
-#### El peligro de los extremos
-
-Los valores que caen exactamente en un borde cambian de categoria segun un parametro que pasa facil desapercibido: `right`.
-
-::: {.monitor-box}
-```python
-# Probamos valores exactamente en los bordes
-prueba = pd.Series([0, 349999, 350000, 350001, 499999, 500000, 500001])
-
-print("Por defecto (right=True): el extremo derecho incluido")
-print(pd.cut(prueba, bins=cortes, labels=labels))
-
-print("\nCon right=False: el extremo izquierdo incluido")
-print(pd.cut(prueba, bins=cortes, labels=labels, right=False))
-```
-:::
-
-::: {.callout-note}
-## Lo que estamos haciendo
-
-1. **`right=True` (default)**: el intervalo se lee como `(0, 350000]`. El 350000 esta **incluido** en `'Bajo'`. El 350001 esta en `'Medio'`.
-
-2. **`right=False`**: el intervalo se lee como `[0, 350000)`. El 350000 esta **excluido** de `'Bajo'` y pasa a `'Medio'`. El 0 esta incluido en `'Bajo'`.
-
-3. **El mismo numero, distinta categoria segun `right`**: 350000 puede ser `'Bajo'` o `'Medio'` dependiendo de este parametro. Con datos reales (precios, edades, puntajes de corte) esto cambia el resultado del analisis. No es un detalle tecnico menor: **es una decision del analista** que hay que tomar explicitamente y documentar.
-:::
-
-::: {.callout-tip}
-## Mesa de Ayuda: ¿right=True o right=False?
-
-Depende de como se definieron los tramos en la realidad. Si la consigna dice "de 0 a 350000", usamos `right=True` (el 350000 incluido en Bajo). Si dice "de 0 a 349999", usamos `right=False` (el 350000 en el tramo siguiente). No hay respuesta correcta universal: hay que conocer los datos y la definicion de los cortes.
 :::
 
 #### Valores fuera de rango y NaN
 
+`pd.cut()` produce NaN por **dos razones distintas** que es importante separar:
+
+1. **Propagacion de NaN originales**: si la variable que estamos cortando ya tiene NaN, esos NaN pasan a la columna resultante. No se puede categorizar lo que no existe.
+2. **Valores fuera de los cortes**: si un valor esta por debajo del primer corte o por encima del ultimo, `pd.cut()` devuelve NaN.
+
 ::: {.monitor-box}
 ```python
-# Los NaN originales se propagan como NaN en la categoria
-# Si un valor esta por fuera de los cortes, tambien da NaN
+# value_counts con y sin NaN
+print("Conteo sin NaN (por defecto):")
 print(base_trabajo['ingreso_tramo'].value_counts())
 
-# Para ver los NaN:
+print("\nConteo con NaN incluidos:")
 print(base_trabajo['ingreso_tramo'].value_counts(dropna=False))
+
+print(f"\nTotal NaN en ingreso_tramo: {base_trabajo['ingreso_tramo'].isna().sum()}")
+```
+:::
+
+Las dos fuentes de NaN conviven en la misma columna y **no se pueden distinguir a simple vista**:
+
+::: {.monitor-box}
+```python
+# Ver los casos con NaN en ingreso_tramo
+con_nan = base_trabajo[base_trabajo['ingreso_tramo'].isna()]
+print(con_nan[['ingreso_dec', 'ingreso_tramo']])
+
+# Comparar NaN originales vs cortados
+nan_original = base_trabajo['ingreso_dec'].isna().sum()
+nan_cortado = base_trabajo['ingreso_tramo'].isna().sum()
+
+print(f"\nNaN en ingreso_dec (original): {nan_original}")
+print(f"NaN en ingreso_tramo (cortado): {nan_cortado}")
+print(f"Diferencia: {nan_cortado - nan_original} NaN por valores fuera de rango")
 ```
 :::
 
 ::: {.callout-note}
 ## Lo que estamos haciendo
 
-1. **`value_counts()`**: por defecto no cuenta los NaN. Solo muestra las categorias validas.
+1. **`value_counts(dropna=False)`**: al incluir los NaN vemos cuantos casos quedaron sin clasificar. Sin `dropna=False`, los NaN se ocultan y el total de casos no suma 20.
 
-2. **`value_counts(dropna=False)`**: incluye los NaN en el conteo. Util para diagnosticar cuantos casos quedaron sin clasificar.
+2. **`isna().sum()`**: cuenta todos los NaN de la columna, vengan de donde vengan.
 
-3. **Los NaN de la variable original se propagan**: si `ingreso_dec` tiene NaN, `ingreso_tramo` tambien. No se puede categorizar lo que no existe.
+3. **Dos origenes, un mismo NaN**: no hay forma de saber, solo con la columna `ingreso_tramo`, si un NaN vino porque `ingreso_dec` era NaN o porque el valor estaba fuera de los cortes. Hay que rastrear al dato original para entender la causa.
+
+4. **Si la diferencia es positiva** (mas NaN en la cortada que en la original), hay valores que quedaron fuera del rango de cortes. En ese caso hay que revisar los `cortes` que definimos.
+:::
+
+::: {.callout-important}
+## Diagnosticar siempre
+
+Antes de usar la columna categorica para cualquier analisis, verificar:
+
+```python
+nan_original = base_trabajo['ingreso_dec'].isna().sum()
+nan_cortado = base_trabajo['ingreso_tramo'].isna().sum()
+
+if nan_cortado > nan_original:
+    print("ATENCION: hay valores fuera del rango de cortes")
+    print(f"  NaN adicionales: {nan_cortado - nan_original}")
+else:
+    print("OK: todos los valores estan dentro del rango de cortes")
+```
+
+**Regla**: si hay mas NaN en la columna cortada que en la original, los cortes estan mal definidos. No es culpa de los datos, es decision del analista.
 :::
 
 ---
@@ -741,7 +784,7 @@ En todos los casos hay un denominador comun: **las categorias no vienen dadas**.
 | **Recodificacion** | Cambiar los pesos de la variable numerica. El mismo texto puede producir numeros distintos segun la decision del analista. |
 | **`pivot_table`** | Tabla resumen con n (cuantos eligieron cada opcion) y % (proporcion). La media general se muestra aparte. |
 | **`.str.*`** | Herramientas para limpiar texto: `.strip()`, `.lower()`, `.title()`. Se encadenan para normalizar. Lo estructural con `.str`, lo puntual con `.map()`. |
-| **`pd.cut()`** | Divide una variable continua en tramos. **Los cortes los definis vos** con `bins`. El parametro `right` controla que extremo del intervalo esta incluido. **Peligro: el mismo numero cambia de categoria segun `right`.** |
+| **`pd.cut()`** | Divide una variable continua en tramos. **Los cortes los definis vos** con `bins`. Usamos `right=True` (default) siempre. **Atencion**: el valor 0 queda fuera del rango si el primer corte es 0. Solucion: `bins=[-1, ...]`. Dos fuentes de NaN: propagacion de NaN originales + valores fuera del rango. Diagnosticar con `value_counts(dropna=False)`. |
 | **`.assign()`** | Crea una columna nueva en una copia del DataFrame, sin modificar el original. |
 | **Paso ineludible** | No importa el metodo. El orden de las categorias hay que definirlo en algun lado. No hay atajo. |
 
